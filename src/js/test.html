@@ -1,0 +1,329 @@
+<div class="eGrafiks">
+  <div class="box">
+    <div v-if="fileloadstatus != 'parsed'">
+      <h1 class="title is-1 has-text-centered">
+        Выберите файл для построения графика...
+      </h1>
+
+      <input
+        placeholder="Выберите файл"
+        class="input"
+        @change="loadFile"
+        type="file"
+        name="resume"
+      />
+    </div>
+
+    <div class="" v-show="loading">
+      <h1 class="title is-1">Загрузка...</h1>
+    </div>
+
+    <div v-if="fileloadstatus=='parsed'">
+      <div class="columns">
+        <div class="column is-2">
+          <button class="is-primary button" @click="openGrafSelectModal">
+            Добавить график
+          </button>
+        </div>
+        <div class="column is-6 is-offset-1">
+          <h2 class="title is-2 has-text-centered">Графики по Excell</h2>
+          <h3 class="title is-3 has-text-centered">{{filename}}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="box" v-for="(eGrafik,idx) in eGrafiks" :key="idx">
+    <div class="panel columns my-2 py-3">
+    <div class="mx-2">
+
+   
+      <button
+        @click="copyImg(eGrafik)"
+        class="button is-primary"
+        :disabled="!eGrafik.grafik"
+      >
+        <span class="mdi mdi-content-copy"> </span>
+      </button>
+    </div>
+      <div v-if="eGrafik.loadType=='db'" class="mx-2">
+        <button
+          class="button is-primary"
+          @click="unlockGrafik(eGrafik)"
+          :disabled="fileloadstatus!='parsed'"
+        >
+          Разблокировать график
+        </button>
+      </div>
+    </div>
+
+    <div v-if="eGrafik.type =='zapusk'">
+      <h2 class="title is-2">График по запускам</h2>
+      <h3 class="title is-3">Выберите активности:</h3>
+      <select
+        v-model="eGrafik.selectedIdx"
+        multiple
+        class="my-6"
+        :disabled="eGrafik.loadType == 'db'"
+      >
+        <option
+          v-for="selectValue in selectValuesZapusk"
+          :value="selectValue.idx"
+        >
+          {{selectValue.label}}
+        </option>
+      </select>
+
+      <div class="nagruzkas">
+        <div class="is-flex">
+          <h4 class="title is-4 mx-2">Комментарии на графике:</h4>
+          <div class="mx-2">
+            <button
+              :disabled="eGrafik.loadType == 'db'"
+              @click="addNagruzka(eGrafik)"
+              class="button is-success"
+            >
+              <span class="mdi mdi-plus"></span>
+            </button>
+          </div>
+
+          <div class="mx-2">
+            <button
+              @click="deleteNagruzka(eGrafik)"
+              class="button is-danger"
+              :disabled="!eGrafik.nagruzkas.length || eGrafik.loadType == 'db'"
+            >
+              <span class="mdi mdi-minus"></span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <ul>
+            <li v-for="nagruzka in eGrafik.nagruzkas">
+              <div class="columns">
+                <div class="column is-4">
+                  <input
+                    type="text"
+                    class="input is-primary"
+                    placeholder="Информация"
+                    v-model="nagruzka.label"
+                    :disabled="eGrafik.loadType == 'db'"
+                  />
+                </div>
+                <div class="column is-4">
+                  <input
+                    type="text"
+                    class="input is-primary datepicker-nagruzka"
+                    placeholder="Дата"
+                    v-model.lazy="nagruzka.date"
+                    :disabled="eGrafik.loadType == 'db'"
+                  />
+                </div>
+                <div class="column is-4">
+                  <input
+                    type="text"
+                    class="input is-primary"
+                    placeholder="Колличество (высота)"
+                    v-model="nagruzka.value"
+                    :disabled="eGrafik.loadType == 'db'"
+                  />
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="box">
+        <h2 class="title is-2 has-text-centered">Даты</h2>
+        <div class="columns">
+          <div class="column is-6 has-text-centered">
+            <input
+              type="text"
+              v-model.lazy="eGrafik.fdate"
+              class="datepicker input"
+              :disabled="eGrafik.loadType == 'db'"
+            />
+          </div>
+          <div class="column is-6 has-text-centered">
+            <input
+              type="text"
+              v-model.lazy="eGrafik.sdate"
+              class="datepicker input"
+              :disabled="eGrafik.loadType == 'db'"
+            />
+          </div>
+        </div>
+        <div class="columns">
+          <button
+            class="button is-danger column is-2 is-offset-5 is-size-4"
+            @click="initGrafik(eGrafik)"
+            :disabled="eGrafik.loadType == 'db'"
+          >
+            Создать график
+          </button>
+        </div>
+        <div class="columns">
+          <div class="column is-8 is-offset-2">
+            <canvas :id="'eGrafik'+idx" style="background-color: #fff"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="eGrafik.type =='planFact'">
+      <h2 class="title is-2">График по План/Факту</h2>
+      <h3 class="title is-3">Выберите активность:</h3>
+      <select
+        v-model="eGrafik.selectedIdx"
+        class="my-6"
+        :disabled="eGrafik.loadType == 'db'"
+      >
+        <option value="" selected></option>
+        <option
+          v-for="selectValue in selectValuesPlanFact"
+          :value="selectValue.idx"
+        >
+          {{selectValue.label}}
+        </option>
+      </select>
+
+      <div class="center">
+        <label :for="'factCheck'+idx">
+          <input
+            type="checkbox"
+            v-model="eGrafik.fact"
+            :id="'factCheck'+idx"
+            :disabled="eGrafik.loadType == 'db'"
+          />
+          <span>Факт</span>
+        </label>
+      </div>
+
+      <div class="nagruzkas">
+        <div class="is-flex">
+          <h4 class="title is-4 mx-2">Комментарии на графике:</h4>
+          <div class="mx-2">
+            <button
+              :disabled="eGrafik.loadType == 'db'"
+              @click="addNagruzka(eGrafik)"
+              class="button is-success"
+            >
+              <span class="mdi mdi-plus"></span>
+            </button>
+          </div>
+
+          <div class="mx-2">
+            <button
+              @click="deleteNagruzka(eGrafik)"
+              class="button is-danger"
+              :disabled="!eGrafik.nagruzkas.length || eGrafik.loadType == 'db'"
+            >
+              <span class="mdi mdi-minus"></span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <ul>
+            <li v-for="nagruzka in eGrafik.nagruzkas">
+              <div class="columns">
+                <div class="column is-4">
+                  <input
+                    type="text"
+                    class="input is-primary"
+                    placeholder="Информация"
+                    v-model="nagruzka.label"
+                    :disabled="eGrafik.loadType == 'db'"
+                  />
+                </div>
+                <div class="column is-4">
+                  <input
+                    type="text"
+                    class="input is-primary datepicker-nagruzka"
+                    placeholder="Дата"
+                    v-model.lazy="nagruzka.date"
+                    :disabled="eGrafik.loadType == 'db'"
+                  />
+                </div>
+                <div class="column is-4">
+                  <input
+                    type="text"
+                    class="input is-primary"
+                    placeholder="Колличество (высота)"
+                    v-model="nagruzka.value"
+                    :disabled="eGrafik.loadType == 'db'"
+                  />
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="box">
+        <h2 class="title is-2 has-text-centered">Даты</h2>
+        <div class="columns">
+          <div class="column is-6 has-text-centered">
+            <input
+              type="text"
+              v-model.lazy="eGrafik.fdate"
+              class="datepicker input"
+              :disabled="eGrafik.loadType == 'db'"
+            />
+          </div>
+          <div class="column is-6 has-text-centered">
+            <input
+              type="text"
+              v-model.lazy="eGrafik.sdate"
+              class="datepicker input"
+              :disabled="eGrafik.loadType == 'db'"
+            />
+          </div>
+        </div>
+        <div class="columns">
+          <button
+            class="button is-danger column is-2 is-offset-5 is-size-4"
+            @click="initGrafik(eGrafik)"
+            :disabled="eGrafik.loadType == 'db'"
+          >
+            Создать график
+          </button>
+        </div>
+        <div class="columns">
+          <div class="column is-8 is-offset-2">
+            <canvas :id="'eGrafik'+idx" style="background-color: #fff"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="selectGrafikModal">
+    <div class="modal-content">
+      <div class="box is-clickable" @click="addGrafZapusk">
+        График для прогноза по запускам
+      </div>
+      <div class="box is-clickable" @click="addGrafPlanFact">
+        График для План Факт 1 Линия
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a class="modal-close waves-effect waves-green btn-flat">Закрыть</a>
+    </div>
+  </div>
+
+  <div class="modal" id="imageCopyModal">
+    <div class="modal-content">
+      <h2 class="title is-2 has-text-centered">Скопируйте картинку</h2>
+      <div class="columns">
+        <div class="column is-12 has-text-centered">
+          <img :src="eGrafikImg" alt="" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a class="modal-close waves-effect waves-green btn-flat">Закрыть</a>
+    </div>
+  </div>
+</div>
