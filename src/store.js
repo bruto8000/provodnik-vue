@@ -14,6 +14,55 @@ store.commit("setEmployees", result.data)
        M.toast({html: "Упс, не удалось получить данные с сервера [Данные о пользователях]"})
      }); 
 }
+const getTabel = store =>{
+  axios
+  .all([
+    axios.get(URL + "/vendor/showTabel.php"),
+    axios.get(
+      "https://isdayoff.ru/api/getdata?year=2021&pre=0&delimeter=DAY"
+    ),
+  ])
+  .then(
+    axios.spread(( Tres, Dres) => {
+     let datesFromApi = Dres.data.split("DAY");
+
+      Tres.data.forEach((dt, idxOfDay, dateArr) => {
+        dt.presomes = [];
+        dt.vixod = datesFromApi[idxOfDay] == 1;
+
+        if (dt.vixod) {
+          if (idxOfDay == 0) return;
+
+          dateArr[idxOfDay - 1].isNextDayVixod = true;
+        } else {
+          dateArr[idxOfDay - 1].isNextDayVixod = false;
+        }
+
+        if (idxOfDay == dateArr.length - 1) {
+          dt.isNextDayVixod = true;
+        }
+
+        store.state.employees.forEach((em) => {
+          if (!dt.body[em.nid]) {
+            dt.body[em.nid] = "";
+          }
+          if (dt.body[em.nid] == "" && dt.vixod) {
+            dt.body[em.nid] = "В";
+          }
+        });
+      });
+  
+
+      store.commit('setTabel', Tres.data)
+      // this.tabel = Tres.data;
+      // this.employees = Eres.data;
+      //  this.changeOnServer();
+    })
+  );
+}
+
+
+
 
 
 
@@ -22,10 +71,16 @@ const store = new Vuex.Store({
   state: {
     activities: [],
     employees: [],
+    tabel: []
   },
   mutations: {
     setEmployees(state, employees) {
       state.employees = employees;
+    },
+    setTabel(state,tabel){
+
+ state.tabel = tabel;   
+
     },
     editEmployee(state, editedEmployee) {
       state.employees.forEach((employee) => {
@@ -103,7 +158,11 @@ const store = new Vuex.Store({
       });
     }
   },
-  plugins: [getEmployees]
+  getters: {
+   trueNID : (state) => state.employees.map((em) =>em.nid)
+  
+},
+  plugins: [getEmployees,getTabel]
 });
 
 export default store;

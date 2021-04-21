@@ -1,6 +1,6 @@
 
 
-let Kalendar = (()=>{
+ let Kalendar = (()=>{
 
 
 
@@ -102,3 +102,6 @@ let Kalendar = (()=>{
 set: kalendarSet
     }
 })();
+
+
+export default Kalendar;

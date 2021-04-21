@@ -5,10 +5,11 @@ import axios from 'axios'
 Vue.config.productionTip = false
 
 
-import './js/components/preloader.js'
+// import './js/components/preloader.js'
 import './js/materializeWithKvartal.js'
-
-
+import Kalendar from './js/kalendar.js'
+Vue.prototype.$Kalendar = Kalendar;
+console.log(Kalendar)
 import router from './router.js'
 import store from './store.js'
 new Vue({
