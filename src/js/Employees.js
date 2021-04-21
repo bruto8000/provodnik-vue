@@ -16,11 +16,7 @@ let Employees = {
     },
 
 mounted(){
-  axios.get('./vendor/showEmployees.php').then((result)=>{
-    this.employees = result.data.reverse();
-  }, (err)=>{
-    M.toast({html: "Упс, не удалось получить данные с сервера : ("})
-  });
+  
 
  this.modals.editModal =  M.Modal.init(document.getElementById('editModal'));
  this.modals.deleteModal =  M.Modal.init(document.getElementById('deleteModal'));

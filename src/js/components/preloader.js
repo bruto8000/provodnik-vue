@@ -1,3 +1,4 @@
+import Vue from 'vue'
 Vue.component('preloader', { props: ['status'],
 data(){
     return{
