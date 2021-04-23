@@ -1,23 +1,31 @@
 import Vuex from "vuex";
 import Vue from "vue";
 import axios from 'axios'
-URL = 'http://192.168.0.104' 
+Vue.prototype.$URL = '' 
 Vue.use(Vuex);
-console.log(URL)
+
+
+
+const showReceivingError =  function(err){
+  M.toast({
+    html: `Упс, не удалось получить данные с сервера ${err}`
+  });
+}
 
 
 
 const getEmployees = store => {
- axios.get(URL + '/vendor/showEmployees.php').then((result)=>{
-store.commit("setEmployees", result.data)
+ axios.get(Vue.prototype.$URL + '/vendor/showEmployees.php').then((result)=>{
+store.dispatch("setEmployees", result.data.reverse())
      }, (err)=>{
-       M.toast({html: "Упс, не удалось получить данные с сервера [Данные о пользователях]"})
+      showReceivingError(`[Пользователи] ${err.message}`)
+    
      }); 
 }
 const getTabel = store =>{
   axios
   .all([
-    axios.get(URL + "/vendor/showTabel.php"),
+    axios.get(Vue.prototype.$URL + "/vendor/showTabel.php"),
     axios.get(
       "https://isdayoff.ru/api/getdata?year=2021&pre=0&delimeter=DAY"
     ),
@@ -54,13 +62,29 @@ const getTabel = store =>{
   
 
       store.commit('setTabel', Tres.data)
+      store.commit('setEditableTabel', JSON.parse(JSON.stringify(Tres.data)))
       // this.tabel = Tres.data;
       // this.employees = Eres.data;
       //  this.changeOnServer();
     })
   );
 }
+const getActivities = store =>{
+  axios.get( "./vendor/showActivities.php").then(
+    (res) => {
 
+      
+store.dispatch('addActivities',{
+  activities:  res.data.reverse()
+} );
+ 
+    },
+    (err) => {
+      showReceivingError(`[Активности] ${err.message}`)
+    }
+  );
+
+}
 
 
 
@@ -71,17 +95,22 @@ const store = new Vuex.Store({
   state: {
     activities: [],
     employees: [],
-    tabel: []
+    tabel: [],
+    editableTabel: [],
+    currentDisplayingActivity: {}
   },
   mutations: {
-    setEmployees(state, employees) {
-      state.employees = employees;
-    },
+   
     setTabel(state,tabel){
 
  state.tabel = tabel;   
 
     },
+    setEditableTabel(state,tabel){
+
+      state.editableTabel = tabel;   
+     
+         },
     editEmployee(state, editedEmployee) {
       state.employees.forEach((employee) => {
         if (employee.nid == editedEmployee.nid) {
@@ -101,13 +130,32 @@ const store = new Vuex.Store({
         nid: newEmployee.nid,
         login: newEmployee.login,
       });
+    },
+    addActivities(state,{activities}){
+   
+      state.activities =   state.activities.concat(activities);
+    },
+    setDisplayingActivity(state,activity){
+  
+      state.currentDisplayingActivity = activity ;
+    },
+    changeActivityOcenka(state,{
+      id,
+      ocenka
+    }){
+console.log('id',id)
+console.log('ocenka',ocenka)
+let foundedActivity = state.activities.find(activity=>activity.id==id)
+if(foundedActivity) foundedActivity.ocenka = ocenka
+//.ocenka = ocenka;
+
     }
   },
   actions: {
     async  editEmployee(context, editedEmployee) {
       axios
         .post(
-          URL + "/vendor/editEmployee.php",
+          Vue.prototype.$URL + "/vendor/editEmployee.php",
           JSON.stringify(editedEmployee)
         )
         .then(
@@ -121,10 +169,15 @@ const store = new Vuex.Store({
           }
         );
     },
+    setEmployees(context, employees) {
+     employees.forEach((employee)=>{
+      context.commit('addEmployee',employee)  
+     }) 
+    },
     async  deleteEmployee(context, deletableEmployee) {
       axios
         .post(
-          URL + "/vendor/deleteEmployee.php",
+          Vue.prototype.$URL + "/vendor/deleteEmployee.php",
           JSON.stringify(deletableEmployee)
         )
         .then(
@@ -141,11 +194,11 @@ const store = new Vuex.Store({
   async  addEmployee(context,newEmployee){
    await   axios
       .post(
-        URL + "/vendor/addEmployee.php",
+        Vue.prototype.$URL + "/vendor/addEmployee.php",
         JSON.stringify(newEmployee)
       )
       .then((res) => {
-        console.log(res.data);
+      
         if (res.data == "OK") {
           M.toast({ html: "Сотрудник добавлен" });
         context.commit('addEmployee', newEmployee)
@@ -156,13 +209,74 @@ const store = new Vuex.Store({
           M.toast({ html: "Что-то не так. Зовите программиста" + res.data });
         }
       });
+    },
+    async saveTabel(context,newTabel){
+      axios
+      .post( Vue.prototype.$URL + "/vendor/saveTabel.php", JSON.stringify(newTabel))
+      .then((res) => {
+
+        if (res.data == "OK") {
+         
+          M.toast({
+            html: "Данные сохранены.",
+          });
+          context.commit('setTabel',JSON.parse( JSON.stringify (newTabel)));
+        } else {
+          M.toast({
+            html: "Синхронизация не удалась" + res.data,
+          });
+        }
+      });
+    },
+    addActivities(context,{activities}){
+
+      activities.forEach((activity) => {
+    if(!activity.ocenka){
+      activity.ocenka = {
+        type: "",
+        reason: "",
+      }
     }
+        let htmlEl = document.createElement("div");
+        htmlEl.innerHTML = activity.opisanieBody;
+ 
+        activity.opisanieBodyCuted =
+          htmlEl.innerText.length < 50
+            ? htmlEl.innerText
+            : htmlEl.innerText.slice(0, 50) + "...";
+            activity.opisanieBodyHTML = htmlEl;
+      });
+context.commit('addActivities', {activities,})
+    },
+    async changeActivityOcenka(context,{id,ocenka}){
+ console.log(id, 'suka id')
+      return  new Promise((resolve,reject)=>{
+
+        axios.post(
+          "./vendor/changeOcenka.php",
+          JSON.stringify({
+            id: id,
+            ocenka:ocenka,
+          })
+        ).then(()=>{
+          context.commit('changeActivityOcenka',{
+            id,
+            ocenka
+          })
+        resolve()
+        
+        
+        }, (err)=>reject(err))
+     
+    }
+
+      )}
   },
   getters: {
    trueNID : (state) => state.employees.map((em) =>em.nid)
   
 },
-  plugins: [getEmployees,getTabel]
+  plugins: [getEmployees,getTabel,getActivities]
 });
 
 export default store;

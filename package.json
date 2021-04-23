@@ -7,8 +7,11 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
+    "material-design-icons-iconfont": "^6.1.0",
     "vue": "^2.6.11",
     "vue-router": "^3.5.1",
+    "vuesax": "^3.12.2",
     "vuex": "^3.6.2"
   },
   "devDependencies": {

@@ -111,10 +111,10 @@
         </div>
       </div>
       <div class="modal-footer">
-        <a href="#!" class="button is-info modal-close" @click="editOnServ"
+        <a class="button is-info modal-close" @click="editOnServ"
           >Изменить</a
         >
-        <a href="#!" class="button is-primary modal-close">Закрыть</a>
+        <a  class="button is-primary modal-close">Закрыть</a>
       </div>
     </div>
     <div id="deleteModal" class="modal">
