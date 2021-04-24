@@ -2,7 +2,7 @@
   <vs-popup :active.sync="active" class="holamundo" :title="activity.nazvanie">
     <div class="">
       <div class="right" v-if="activity.ocenka">
-        <vs-select label="Оценка" v-model="currentOcenkaType">
+        <vs-select  label="Оценка" v-model="currentOcenkaType">
           <vs-select-item @click="console.log('sik')" value="" text="Без оценки" />
           <vs-select-item value="Успешно" text="Успешно" />
           <vs-select-item value="С ошибкой" text="С ошибкой" />
@@ -291,6 +291,7 @@ this.changeOcenka({
       type == "" ||
       reason != ""
       ) {
+          if(type == this.activity.ocenka.type) return;
      (this.needReasonModal && (this.needReasonModal = false))
    this.changeOcenkaOnServ({
        type,reason
@@ -317,7 +318,7 @@ this.needReasonModal = true
        }).then(()=>{
            this.$vs.notify({title:"Оценка изменена"})
        }).catch(err=>{
-             this.$vs.notify({title:`Оценкане изменена ${err}`, color : 'red', })  
+             this.$vs.notify({title:`Оценкане НЕ изменена ${err}`, color : 'red', })  
        })
     },
   },

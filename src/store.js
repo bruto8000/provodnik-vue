@@ -149,7 +149,8 @@ let foundedActivity = state.activities.find(activity=>activity.id==id)
 if(foundedActivity) foundedActivity.ocenka = ocenka
 //.ocenka = ocenka;
 
-    }
+    },
+   
   },
   actions: {
     async  editEmployee(context, editedEmployee) {
@@ -270,7 +271,27 @@ context.commit('addActivities', {activities,})
      
     }
 
-      )}
+      )},
+
+    async addActivity({commit},activity){
+
+  return new Promise((resolve,reject)=>{
+
+    axios.post('../vendor/addActivity.php', JSON.stringify(activity))
+  .then((res)=>{
+   
+    console.log(res.data)
+
+  //  commit('addActivities',{
+  //   activities : [activity]})
+   resolve()
+  }).catch((err)=>{
+reject(err)
+  })
+  }
+
+
+  )}  
   },
   getters: {
    trueNID : (state) => state.employees.map((em) =>em.nid)

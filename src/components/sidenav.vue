@@ -20,7 +20,7 @@
         >
       </li>
       <li>
-        <a @click="routeTo('add-proj')"
+        <a @click="routeTo('add-activity')"
           ><i class="mdi mdi-briefcase-edit-outline mdi-36px"></i>Добавление
           активностей</a
         >

@@ -4,6 +4,10 @@ import VueRouter from 'vue-router'
 import axios from 'axios'
 import _ from 'lodash'
 
+console.log(FroalaEditor)
+Vue.prototype.$FroalaEditor = FroalaEditor
+// Load a plugin.
+
 
 Vue.config.productionTip = false
 import Vuesax from 'vuesax'
@@ -15,6 +19,7 @@ Vue.use(Vuesax, {
 // import './js/components/preloader.js'
 import './js/materializeWithKvartal.js'
 import './js/chart.js'
+
 import Kalendar from './js/kalendar.js'
 Vue.prototype.$Kalendar = Kalendar;
 console.log(Kalendar)

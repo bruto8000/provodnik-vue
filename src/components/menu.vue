@@ -14,7 +14,7 @@
 
         <div class="text">Редактирование табеля</div>
       </div>
-      <div class="right center" @click="routeTo('show-proj')">
+      <div class="right center" @click="routeTo('show-activities')">
         <i class="mdi mdi-briefcase-outline w100 f100 "></i>
         <div class="text">Просмотр активностей</div>
       </div>

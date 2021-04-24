@@ -337,11 +337,7 @@ export default {
         },
       })
     );
-    // M.AutoInit();
-    // this.modal.modal = M.Modal.init(document.getElementById('activityModal'));
-    // this.modal.modal.$overlay[0].onclick  = ()=>{
-    //     this.modal.modal.close();
-    // }
+ 
   },
   activated() {},
   methods: {
@@ -418,7 +414,8 @@ export default {
     },
     setQueryParams() {
       let urls = window.location.href.split("?");
-      if (urls.length != 2) return;
+      if (urls.length > 2) return;
+    
       let query = "";
       this.filters.forEach((filter) => {
         for (let prop in this[filter]) {
