@@ -24,6 +24,10 @@ setTimeout(() => {
 
 
     this.$router.beforeEach((to, from, next) => {
+      // if(to.path == from.path){
+      //   next()
+      //   return;
+      // }
       this.preloader = true;
  this.$forceUpdate();
 
