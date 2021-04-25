@@ -1,95 +1,83 @@
 import Vuex from "vuex";
 import Vue from "vue";
-import axios from 'axios'
-Vue.prototype.$URL = '' 
+import axios from "axios";
+Vue.prototype.$URL = "";
 Vue.use(Vuex);
 
-
-
-const showReceivingError =  function(err){
+const showReceivingError = function(err) {
   M.toast({
-    html: `Упс, не удалось получить данные с сервера ${err}`
+    html: `Упс, не удалось получить данные с сервера ${err}`,
   });
-}
+};
 
-
-
-const getEmployees = store => {
- axios.get(Vue.prototype.$URL + '/vendor/showEmployees.php').then((result)=>{
-store.dispatch("setEmployees", result.data.reverse())
-     }, (err)=>{
-      showReceivingError(`[Пользователи] ${err.message}`)
-    
-     }); 
-}
-const getTabel = store =>{
-  axios
-  .all([
-    axios.get(Vue.prototype.$URL + "/vendor/showTabel.php"),
-    axios.get(
-      "https://isdayoff.ru/api/getdata?year=2021&pre=0&delimeter=DAY"
-    ),
-  ])
-  .then(
-    axios.spread(( Tres, Dres) => {
-     let datesFromApi = Dres.data.split("DAY");
-
-      Tres.data.forEach((dt, idxOfDay, dateArr) => {
-        dt.presomes = [];
-        dt.vixod = datesFromApi[idxOfDay] == 1;
-
-        if (dt.vixod) {
-          if (idxOfDay == 0) return;
-
-          dateArr[idxOfDay - 1].isNextDayVixod = true;
-        } else {
-          dateArr[idxOfDay - 1].isNextDayVixod = false;
-        }
-
-        if (idxOfDay == dateArr.length - 1) {
-          dt.isNextDayVixod = true;
-        }
-
-        store.state.employees.forEach((em) => {
-          if (!dt.body[em.nid]) {
-            dt.body[em.nid] = "";
-          }
-          if (dt.body[em.nid] == "" && dt.vixod) {
-            dt.body[em.nid] = "В";
-          }
-        });
-      });
-  
-
-      store.commit('setTabel', Tres.data)
-      store.commit('setEditableTabel', JSON.parse(JSON.stringify(Tres.data)))
-      // this.tabel = Tres.data;
-      // this.employees = Eres.data;
-      //  this.changeOnServer();
-    })
-  );
-}
-const getActivities = store =>{
-  axios.get( "./vendor/showActivities.php").then(
-    (res) => {
-
-      
-store.dispatch('addActivities',{
-  activities:  res.data.reverse()
-} );
- 
+const getEmployees = (store) => {
+  axios.get(Vue.prototype.$URL + "/vendor/showEmployees.php").then(
+    (result) => {
+      store.dispatch("setEmployees", result.data.reverse());
     },
     (err) => {
-      showReceivingError(`[Активности] ${err.message}`)
+      showReceivingError(`[Пользователи] ${err.message}`);
     }
   );
+};
+const getTabel = (store) => {
+  axios
+    .all([
+      axios.get(Vue.prototype.$URL + "/vendor/showTabel.php"),
+      axios.get(
+        "https://isdayoff.ru/api/getdata?year=2021&pre=0&delimeter=DAY"
+      ),
+    ])
+    .then(
+      axios.spread((Tres, Dres) => {
+        let datesFromApi = Dres.data.split("DAY");
 
-}
+        Tres.data.forEach((dt, idxOfDay, dateArr) => {
+          dt.presomes = [];
+          dt.vixod = datesFromApi[idxOfDay] == 1;
 
+          if (dt.vixod) {
+            if (idxOfDay == 0) return;
 
+            dateArr[idxOfDay - 1].isNextDayVixod = true;
+          } else {
+            dateArr[idxOfDay - 1].isNextDayVixod = false;
+          }
 
+          if (idxOfDay == dateArr.length - 1) {
+            dt.isNextDayVixod = true;
+          }
 
+          store.state.employees.forEach((em) => {
+            if (!dt.body[em.nid]) {
+              dt.body[em.nid] = "";
+            }
+            if (dt.body[em.nid] == "" && dt.vixod) {
+              dt.body[em.nid] = "В";
+            }
+          });
+        });
 
+        store.commit("setTabel", Tres.data);
+        store.commit("setEditableTabel", JSON.parse(JSON.stringify(Tres.data)));
+        // this.tabel = Tres.data;
+        // this.employees = Eres.data;
+        //  this.changeOnServer();
+      })
+    );
+};
+const getActivities = (store) => {
+  axios.get("./vendor/showActivities.php").then(
+    (res) => {
+      store.dispatch("addActivities", {
+        activities: res.data.reverse(),
+      });
+    },
+    (err) => {
+      showReceivingError(`[Активности] ${err.message}`);
+    }
+  );
+};
 
 const store = new Vuex.Store({
   state: {
@@ -97,20 +85,54 @@ const store = new Vuex.Store({
     employees: [],
     tabel: [],
     editableTabel: [],
-    currentDisplayingActivity: {}
+    currentDisplayingActivity: {},
+    currentEditingActivity: {
+      id: null,
+      fdate: "",
+      sdate: "",
+      nazvanie: "",
+      bizness: "",
+
+      zapusk: "",
+      soprovod: "",
+      status: "",
+      zakazchik: "",
+      flags: [],
+      ocenka: {
+        type: "",
+        reason: "",
+      },
+      AB: [
+        // {
+        // type: 'big',
+        // range: [1,2,3,4],
+        // TRs: [
+        //   {
+        //     type : "Смс-рассылка",
+        //     inputs: [{value}]
+        //   },
+        //   {type : "Смс-рассылка",
+        //     inputs: [{value}]
+        //   },
+      ],
+
+      statusZapusk: [],
+      risks: [],
+      audits: [],
+      difficulty: "",
+      bugs: [],
+      dopinfo: "",
+      //  opisanieBody: "", Will added Automaticly
+      //   opisanie: "", OLD
+    },
   },
   mutations: {
-   
-    setTabel(state,tabel){
-
- state.tabel = tabel;   
-
+    setTabel(state, tabel) {
+      state.tabel = tabel;
     },
-    setEditableTabel(state,tabel){
-
-      state.editableTabel = tabel;   
-     
-         },
+    setEditableTabel(state, tabel) {
+      state.editableTabel = tabel;
+    },
     editEmployee(state, editedEmployee) {
       state.employees.forEach((employee) => {
         if (employee.nid == editedEmployee.nid) {
@@ -124,36 +146,41 @@ const store = new Vuex.Store({
         return e.nid != deletableEmployee.nid;
       });
     },
-    addEmployee(state, newEmployee){
+    addEmployee(state, newEmployee) {
       state.employees.unshift({
         full_name: newEmployee.full_name,
         nid: newEmployee.nid,
         login: newEmployee.login,
       });
     },
-    addActivities(state,{activities}){
-   
-      state.activities =   state.activities.concat(activities);
+    addActivities(state, { activities }) {
+      state.activities = state.activities.concat(activities);
     },
-    setDisplayingActivity(state,activity){
-  
-      state.currentDisplayingActivity = activity ;
+    setDisplayingActivity(state, activity) {
+      state.currentDisplayingActivity = activity;
     },
-    changeActivityOcenka(state,{
-      id,
-      ocenka
-    }){
-console.log('id',id)
-console.log('ocenka',ocenka)
-let foundedActivity = state.activities.find(activity=>activity.id==id)
-if(foundedActivity) foundedActivity.ocenka = ocenka
-//.ocenka = ocenka;
-
+    changeActivityOcenka(state, { id, ocenka }) {
+      console.log("id", id);
+      console.log("ocenka", ocenka);
+      let foundedActivity = state.activities.find(
+        (activity) => activity.id == id
+      );
+      if (foundedActivity) foundedActivity.ocenka = ocenka;
+      //.ocenka = ocenka;
     },
-   
+    setEditingActivity(state, activity) {
+      if (state.currentEditingActivity.id === activity.id) return;
+      state.currentEditingActivity = _.cloneDeep(activity);
+    },
+    deleteActivity(state, activityForDelete) {
+      console.log('activity for delete es,', activityForDelete)
+      state.activities = state.activities.filter((activity) => {
+        return activity.id != activityForDelete.id;
+      });
+    },
   },
   actions: {
-    async  editEmployee(context, editedEmployee) {
+    async editEmployee(context, editedEmployee) {
       axios
         .post(
           Vue.prototype.$URL + "/vendor/editEmployee.php",
@@ -171,11 +198,11 @@ if(foundedActivity) foundedActivity.ocenka = ocenka
         );
     },
     setEmployees(context, employees) {
-     employees.forEach((employee)=>{
-      context.commit('addEmployee',employee)  
-     }) 
+      employees.forEach((employee) => {
+        context.commit("addEmployee", employee);
+      });
     },
-    async  deleteEmployee(context, deletableEmployee) {
+    async deleteEmployee(context, deletableEmployee) {
       axios
         .post(
           Vue.prototype.$URL + "/vendor/deleteEmployee.php",
@@ -192,112 +219,129 @@ if(foundedActivity) foundedActivity.ocenka = ocenka
         )
         .then(() => {});
     },
-  async  addEmployee(context,newEmployee){
-   await   axios
-      .post(
-        Vue.prototype.$URL + "/vendor/addEmployee.php",
-        JSON.stringify(newEmployee)
-      )
-      .then((res) => {
-      
-        if (res.data == "OK") {
-          M.toast({ html: "Сотрудник добавлен" });
-        context.commit('addEmployee', newEmployee)
-          
-        } else if (res.data == "NID") {
-          M.toast({ html: "Уникальный ID уже существует" });
-        } else {
-          M.toast({ html: "Что-то не так. Зовите программиста" + res.data });
-        }
-      });
+    async addEmployee(context, newEmployee) {
+      await axios
+        .post(
+          Vue.prototype.$URL + "/vendor/addEmployee.php",
+          JSON.stringify(newEmployee)
+        )
+        .then((res) => {
+          if (res.data == "OK") {
+            M.toast({ html: "Сотрудник добавлен" });
+            context.commit("addEmployee", newEmployee);
+          } else if (res.data == "NID") {
+            M.toast({ html: "Уникальный ID уже существует" });
+          } else {
+            M.toast({ html: "Что-то не так. Зовите программиста" + res.data });
+          }
+        });
     },
-    async saveTabel(context,newTabel){
+    async saveTabel(context, newTabel) {
       axios
-      .post( Vue.prototype.$URL + "/vendor/saveTabel.php", JSON.stringify(newTabel))
-      .then((res) => {
-
-        if (res.data == "OK") {
-         
-          M.toast({
-            html: "Данные сохранены.",
-          });
-          context.commit('setTabel',JSON.parse( JSON.stringify (newTabel)));
-        } else {
-          M.toast({
-            html: "Синхронизация не удалась" + res.data,
-          });
-        }
-      });
+        .post(
+          Vue.prototype.$URL + "/vendor/saveTabel.php",
+          JSON.stringify(newTabel)
+        )
+        .then((res) => {
+          if (res.data == "OK") {
+            M.toast({
+              html: "Данные сохранены.",
+            });
+            context.commit("setTabel", JSON.parse(JSON.stringify(newTabel)));
+          } else {
+            M.toast({
+              html: "Синхронизация не удалась" + res.data,
+            });
+          }
+        });
     },
-    addActivities(context,{activities}){
-
+    addActivities(context, { activities }) {
       activities.forEach((activity) => {
-    if(!activity.ocenka){
-      activity.ocenka = {
-        type: "",
-        reason: "",
-      }
-    }
+        if (!activity.ocenka) {
+          activity.ocenka = {
+            type: "",
+            reason: "",
+          };
+        }
         let htmlEl = document.createElement("div");
         htmlEl.innerHTML = activity.opisanieBody;
- 
+
         activity.opisanieBodyCuted =
           htmlEl.innerText.length < 50
             ? htmlEl.innerText
             : htmlEl.innerText.slice(0, 50) + "...";
-            activity.opisanieBodyHTML = htmlEl;
+        activity.opisanieBodyHTML = htmlEl;
       });
-context.commit('addActivities', {activities,})
+      context.commit("addActivities", { activities });
     },
-    async changeActivityOcenka(context,{id,ocenka}){
- console.log(id, 'suka id')
-      return  new Promise((resolve,reject)=>{
+    async changeActivityOcenka(context, { id, ocenka }) {
+      console.log(id, "suka id");
+      return new Promise((resolve, reject) => {
+        axios
+          .post(
+            "./vendor/changeOcenka.php",
+            JSON.stringify({
+              id: id,
+              ocenka: ocenka,
+            })
+          )
+          .then(
+            () => {
+              context.commit("changeActivityOcenka", {
+                id,
+                ocenka,
+              });
+              resolve();
+            },
+            (err) => reject(err)
+          );
+      });
+    },
 
-        axios.post(
-          "./vendor/changeOcenka.php",
+    async addActivity({ commit }, activity) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post("../vendor/addActivity.php", JSON.stringify(activity))
+          .then((res) => {
+            console.log(res.data);
+
+            //  commit('addActivities',{
+            //   activities : [activity]})
+            resolve();
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    editActivity({ commit }, activity) {},
+    async deleteActivity({ commit }, activity) {
+      await axios
+        .post(
+          "/vendor/deleteProj.php",
           JSON.stringify({
-            id: id,
-            ocenka:ocenka,
+            id: activity.id,
           })
-        ).then(()=>{
-          context.commit('changeActivityOcenka',{
-            id,
-            ocenka
-          })
-        resolve()
-        
-        
-        }, (err)=>reject(err))
-     
-    }
-
-      )},
-
-    async addActivity({commit},activity){
-
-  return new Promise((resolve,reject)=>{
-
-    axios.post('../vendor/addActivity.php', JSON.stringify(activity))
-  .then((res)=>{
-   
-    console.log(res.data)
-
-  //  commit('addActivities',{
-  //   activities : [activity]})
-   resolve()
-  }).catch((err)=>{
-reject(err)
-  })
-  }
-
-
-  )}  
+        )
+        .then((responce) => {
+          console.log(responce)
+          if (responce.data == "OK") {
+            commit("deleteActivity", activity);
+            return Promise.resolve();
+          } else {
+            throw new Error(responce.data);
+          }
+        })
+        .catch((e) => {
+          return Promise.reject(e);
+        });
+    
   },
+ },
   getters: {
-   trueNID : (state) => state.employees.map((em) =>em.nid)
-  
-},
-  plugins: [getEmployees,getTabel,getActivities]
+    trueNID: (state) => state.employees.map((em) => em.nid),
+  },
+  plugins: [getEmployees, getTabel, getActivities],
 });
 
 export default store;

@@ -81,8 +81,11 @@
       </div>
 
       <div class="modal-footer">
-        <a class="modal-close btn-flat" @click="editactivity()">Изменить</a>
-        <a class="modal-close  btn-flat">Закрыть</a>
+    
+    
+       
+        <vs-button @click="editactivity()" size="large">Изменить</vs-button>
+    <vs-button @click='hideMe' size="large">Закрыть</vs-button>
       </div>
     </div>
 
@@ -268,10 +271,10 @@ this.changeOcenka({
       });
     },
     editactivity() {
-      // this.destroyDonuts();
-      // this.destroyGrafiks();
-      //  this.$emit("edit-proj", this.activity);
-      // location.replace('./editProj.html?'+this.activity.id);
+      this.destroyDonuts();
+      this.destroyGrafiks();
+    this.$store.commit('setEditingActivity',this.activity)
+     this.$router.push({path:'/edit-activity'})
     },
     initactivity() {
       this.$nextTick(() => {
@@ -321,6 +324,9 @@ this.needReasonModal = true
              this.$vs.notify({title:`Оценкане НЕ изменена ${err}`, color : 'red', })  
        })
     },
+    hideMe(){
+      this.$emit('update:show',false)
+    }
   },
 };
 </script>

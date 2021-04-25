@@ -6,6 +6,7 @@ import showTabel from './components/showTabel.vue'
 import editTabel from './components/editTabel.vue'
 import addActivity from './components/addActivity.vue'
 import showActivities from './components/showActivities.vue'
+import editActivity from './components/editActivity.vue'
 
 Vue.use(VueRouter)
 
@@ -18,6 +19,7 @@ const routes = [
     { path: '/edit-tabel', component: editTabel },
     { path: '/show-activities', component: showActivities },
     { path: '/add-activity', component: addActivity },
+    { path: '/edit-activity', component: editActivity },
     { path: '*', component: menu }
   ]
 const router = new VueRouter({

@@ -14,7 +14,7 @@
           />
         </div>
         <div class="is-flex is-align-items-center">
-          <h1 class="title is-1 mx-2">Активности</h1>
+          <h1 class="title is-1 mx-2">Активности {{$store.state.activities.length}}</h1>
 
           <div class="button is-small is-primary mx-2" @click="resetFilter">
             СБРОС

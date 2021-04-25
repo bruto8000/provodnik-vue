@@ -13,6 +13,8 @@ Vue.config.productionTip = false
 import Vuesax from 'vuesax'
 import 'vuesax/dist/vuesax.css' 
 import 'material-design-icons-iconfont'
+import XLSX from 'xlsx'
+Vue.prototype.$XLSX = XLSX
 Vue.use(Vuesax, {
   // options here
 })
