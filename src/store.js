@@ -69,7 +69,7 @@ const getTabel = (store) => {
 const getActivities = (store) => {
   axios.get("./vendor/showActivities.php").then(
     (res) => {
-      store.dispatch("addActivities", {
+      store.dispatch("insertActivities", {
         activities: res.data.reverse(),
       });
     },
@@ -103,17 +103,8 @@ const store = new Vuex.Store({
         reason: "",
       },
       AB: [
-        // {
-        // type: 'big',
-        // range: [1,2,3,4],
-        // TRs: [
-        //   {
-        //     type : "Смс-рассылка",
-        //     inputs: [{value}]
-        //   },
-        //   {type : "Смс-рассылка",
-        //     inputs: [{value}]
-        //   },
+     
+        
       ],
 
       statusZapusk: [],
@@ -153,7 +144,7 @@ const store = new Vuex.Store({
         login: newEmployee.login,
       });
     },
-    addActivities(state, { activities }) {
+    insertActivities(state, { activities }) {
       state.activities = state.activities.concat(activities);
     },
     setDisplayingActivity(state, activity) {
@@ -178,6 +169,14 @@ const store = new Vuex.Store({
         return activity.id != activityForDelete.id;
       });
     },
+    updateActivity(state,activityForEdit){
+    let foundedActivity =  state.activities.find((activity)=>activity.id === activityForEdit.id);
+    if(!foundedActivity) return;
+   for(let prop in activityForEdit) {
+    foundedActivity[prop] = activityForEdit[prop]
+   }
+ 
+    }
   },
   actions: {
     async editEmployee(context, editedEmployee) {
@@ -255,7 +254,7 @@ const store = new Vuex.Store({
           }
         });
     },
-    addActivities(context, { activities }) {
+    insertActivities(context, { activities }) {
       activities.forEach((activity) => {
         if (!activity.ocenka) {
           activity.ocenka = {
@@ -272,7 +271,7 @@ const store = new Vuex.Store({
             : htmlEl.innerText.slice(0, 50) + "...";
         activity.opisanieBodyHTML = htmlEl;
       });
-      context.commit("addActivities", { activities });
+      context.commit("insertActivities", { activities });
     },
     async changeActivityOcenka(context, { id, ocenka }) {
       console.log(id, "suka id");
@@ -305,6 +304,7 @@ const store = new Vuex.Store({
           .then((res) => {
             console.log(res.data);
 
+            ///BUG because cant get Id of inserted activity
             //  commit('addActivities',{
             //   activities : [activity]})
             resolve();
@@ -314,11 +314,31 @@ const store = new Vuex.Store({
           });
       });
     },
-    editActivity({ commit }, activity) {},
+   async editActivity({ commit }, activity) {
+
+  await  axios
+    .post("../vendor/editActivity.php", JSON.stringify(activity))
+    .then((r) => {
+    
+
+      if (r.data == "OK") {
+        commit('updateActivity', activity)
+     return Promise.resolve()
+       
+      } else {
+        throw new Error(r.data);
+      }
+    })
+    .catch((e) => {
+      return Promise.reject()
+    });
+
+
+   },
     async deleteActivity({ commit }, activity) {
       await axios
         .post(
-          "/vendor/deleteProj.php",
+          "/vendor/deleteActivity.php",
           JSON.stringify({
             id: activity.id,
           })
@@ -337,6 +357,29 @@ const store = new Vuex.Store({
         });
     
   },
+  async archiveActivity({ commit }, activity) {
+    await axios
+      .post(
+        "/vendor/archiveActivity.php",
+        JSON.stringify({
+          id: activity.id,
+        })
+      )
+      .then((responce) => {
+        console.log(responce)
+        if (responce.data == "OK") {
+          commit("deleteActivity", activity);
+          return Promise.resolve();
+        } else {
+          throw new Error(responce.data);
+        }
+      })
+      .catch((e) => {
+        return Promise.reject(e);
+      });
+  
+},
+
  },
   getters: {
     trueNID: (state) => state.employees.map((em) => em.nid),

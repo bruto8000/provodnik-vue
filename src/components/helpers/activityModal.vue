@@ -84,8 +84,8 @@
     
     
        
-        <vs-button @click="editactivity()" size="large">Изменить</vs-button>
-    <vs-button @click='hideMe' size="large">Закрыть</vs-button>
+        <vs-button class="mx-3" @click="editActivity()" size="large">Изменить</vs-button>
+    <vs-button class="mx-3" @click='hideMe' size="large">Закрыть</vs-button>
       </div>
     </div>
 
@@ -129,7 +129,7 @@ currentOcenka : null,
     activity: function(n, o) {
       this.destroyDonuts(o);
       this.destroyGrafiks(o);
-      this.initactivity();
+      this.initActivity();
   }
     
 
@@ -270,13 +270,13 @@ this.changeOcenka({
         }
       });
     },
-    editactivity() {
-      this.destroyDonuts();
-      this.destroyGrafiks();
+    editActivity() {
+   
     this.$store.commit('setEditingActivity',this.activity)
+    this.hideMe();
      this.$router.push({path:'/edit-activity'})
     },
-    initactivity() {
+    initActivity() {
       this.$nextTick(() => {
         this.createDonuts(this.activity.audits);
         this.createGrafiks(this.activity.AB);

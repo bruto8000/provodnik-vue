@@ -5,7 +5,7 @@
       <div class="column is-3 ">
         <div class="center">Дата спуска</div>
         <input
-          v-model.lazy="project.fdate"
+          v-model.lazy="activity.fdate"
           id="fdate"
           type="text"
           class="datepicker center input"
@@ -17,7 +17,7 @@
         <div class="center" @click="undateZapusk" ref="sdate">Дата запуска</div>
         <input
           :disabled="undate"
-          v-model.lazy="project.sdate"
+          v-model.lazy="activity.sdate"
           id="sdate"
           type="text"
           class="datepicker center input"
@@ -29,7 +29,7 @@
         <div class="  ">Название</div>
         <input
           placeholder="Введите Название"
-          v-model="project.nazvanie"
+          v-model="activity.nazvanie"
           id="nazvanie"
           type="text"
           class="validate input"
@@ -40,7 +40,7 @@
       <div class="column is-3 p-1 center ">
         <div class="  ">Вид бизнеса</div>
         <div class="">
-          <select v-model="project.bizness" id="bizness">
+          <select v-model="activity.bizness" id="bizness">
             <option value="" disabled selected>Вид бизнеса</option>
             <option value="FMC">FMC</option>
             <option value="B2B">B2B</option>
@@ -56,7 +56,7 @@
       <div class="column is-3  p-1 center">
         <div class="  ">Тип запуска</div>
         <div class="">
-          <select v-model="project.zapusk" id="zapusk">
+          <select v-model="activity.zapusk" id="zapusk">
             <option value="" disabled selected>Тип запуска</option>
             <option value="Запуск ТП">Запуск ТП</option>
             <option value="Перезапуск ТП">Перезапуск ТП</option>
@@ -83,7 +83,7 @@
 
       <div class="column is-3 center p-1">
         <div class="  ">Сложность</div>
-        <select v-model="project.difficulty" id="difficulty">
+        <select v-model="activity.difficulty" id="difficulty">
           <option value="1">1</option>
           <option value="1.5">1.5</option>
           <option value="2">2</option>
@@ -98,7 +98,7 @@
         <div class="  ">Заказчик</div>
         <input
           placeholder="Введите заказчика"
-          v-model="project.zakazchik"
+          v-model="activity.zakazchik"
           id="zakazchik"
           type="text"
           class="validate input"
@@ -109,7 +109,7 @@
       <div class="column is-6 p-1">
         <div class="   center">Сопровождающий</div>
         <div class="">
-          <select v-model="project.soprovod" id="soprovod">
+          <select v-model="activity.soprovod" id="soprovod">
             <option value="" selected>Сопровождающий</option>
             <option
               v-for="employee in employees"
@@ -124,7 +124,7 @@
       <div class="column is-3  p-1 center ">
         <div class="">Статус</div>
         <div class="">
-          <select v-model="project.status" id="status">
+          <select v-model="activity.status" id="status">
             <option value="" disabled selected>Статус</option>
             <option value="В работе">В работе </option>
             <option value="Выполнено">Выполнено </option>
@@ -140,7 +140,7 @@
         <div class="  ">Флаги</div>
         <select
           placeholder="Флаги"
-          v-model="project.flags"
+          v-model="activity.flags"
           id="zakazchik"
           type="text"
           class="validate"
@@ -170,7 +170,7 @@
     </div>
     <div class="columns">
       <div
-        @click="addProj"
+        @click="addActivity"
         class="button has-text-white is-large is-primary column is-12 black-text title is-3"
       >
         Добавить активность
@@ -183,7 +183,7 @@
 export default {
   data() {
     return {
-      project: {
+      activity: {
         fdate: "",
         sdate: "",
         nazvanie: "",
@@ -217,7 +217,7 @@ export default {
         //     type: 'public | private | secret'
         // }
       ],
-      projectNameErrors: {
+      activityNameErrors: {
         fdate: "Дата спуска",
         sdate: "Дата запуска",
         nazvanie: "Название",
@@ -232,24 +232,22 @@ export default {
     };
   },
   mounted: function() {
-      this.project = {
-                fdate: "123",
-        sdate: "123",
-        nazvanie: "12",
-        bizness: "123",
+      // this.activity = {
+      //           fdate: "123",
+      //   sdate: "123",
+      //   nazvanie: "12",
+      //   bizness: "123",
 
-        zapusk: "123",
-        soprovod: "12",
-        status: "123",
-        zakazchik: "123",
-        flags: [],
-        difficulty: "123",
-      }
-      this.$forceUpdate();
-    this.$nextTick(function() {
-      M.FormSelect.init(document.querySelectorAll("select"));
-    });
+      //   zapusk: "123",
+      //   soprovod: "12",
+      //   status: "123",
+      //   zakazchik: "123",
+      //   flags: [],
+      //   difficulty: "123",
+      // }
+      // this.$forceUpdate();
 
+this.initSelects()
     this.editor = new FroalaEditor("#pbody", {
       // Set the file upload URL.
 
@@ -280,23 +278,11 @@ export default {
       },
       language: "ru",
     });
+this.initDateSelects();
 
-    let someDate = new Date();
-    this.kalendar[0] = this.$Kalendar.set(
-      {
-        showMonthBtn: true,
-        events: [someDate.toDateString()],
-      },
-      "#sdate"
-    );
-    this.kalendar[1] = this.$Kalendar.set({}, "#fdate");
-
-    this.$refs.sdate.dataset.tooltip = "Нажмите чтобы сделать неопределенной";
-    this.$refs.sdate.dataset.position = "top";
-    M.Tooltip.init(this.$refs.sdate);
   },
   methods: {
-    addProj: function(event) {
+    addActivity: function(event) {
       event.target.classList.toggle("is-loading");
       if (!this.validateMainRows()) {
         setTimeout(() => {
@@ -304,25 +290,25 @@ export default {
         }, 400);
         return;
       }
-      this.project.opisanieBody = this.editor.html.get().replace(/'/gi, '"');
-      this.$vs.notify({title : this.project})
+      this.activity.opisanieBody = this.editor.html.get().replace(/'/gi, '"');
+
       this.$store
-        .dispatch("addActivity", this.project)
+        .dispatch("addActivity", this.activity)
 
         .then(() => {
           this.$vs.notify({ title: "Активность добавлена" });
 
-          for (let prop in this.project) {
+          for (let prop in this.activity) {
             if (prop == "flags") {
-              this.project[prop] = [];
+              this.activity[prop] = [];
               continue;
             }
 
-            this.project[prop] = "";
+            this.activity[prop] = "";
           }
 
           this.editor.html.set(" ");
-          delete this.project["opisanieBody"];
+          delete this.activity["opisanieBody"];
         })
         .catch((e) => {
           this.$vs.notify({
@@ -336,16 +322,31 @@ export default {
           }, 400);
         });
     },
+    initDateSelects(){
+    let dateNow = new Date();
+    this.kalendar[0] = this.$Kalendar.set(
+      {
+        showMonthBtn: true,
+        events: [dateNow.toDateString()],
+      },
+      "#sdate"
+    );
+    this.kalendar[1] = this.$Kalendar.set({}, "#fdate");
+
+    this.$refs.sdate.dataset.tooltip = "Нажмите чтобы сделать неопределенной";
+    this.$refs.sdate.dataset.position = "top";
+    M.Tooltip.init(this.$refs.sdate);
+    },
     undateZapusk: function() {
       this.undate = !this.undate;
-      this.project.sdate = this.undate ? "Не определена" : "";
+      this.activity.sdate = this.undate ? "Не определена" : "";
     },
     validateMainRows() {
       try {
-        for (let prop in this.project) {
-          if (!this.project[prop]) {
+        for (let prop in this.activity) {
+          if (!this.activity[prop]) {
             throw new Error(
-              `Пусто,  не хватает: [${this.projectNameErrors[prop]}]`
+              `Пусто,  не хватает: [ ${this.activityNameErrors[prop]} ]`
             );
           }
         }
@@ -362,13 +363,16 @@ export default {
         return false;
       }
     },
+    initSelects(){
+    this.$nextTick(function() {
+      M.FormSelect.init(document.querySelectorAll("select"));
+    });
+    }
   },
 
   watch: {
     employees() {
-      this.$nextTick(() => {
-        M.FormSelect.init(document.querySelectorAll("select"));
-      });
+    this.initSelects()
     },
   },
   computed: {
