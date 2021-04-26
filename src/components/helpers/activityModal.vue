@@ -2,13 +2,18 @@
   <vs-popup :active.sync="active" class="holamundo" :title="activity.nazvanie">
     <div class="">
       <div class="right" v-if="activity.ocenka">
-        <vs-select  label="Оценка" v-model="currentOcenkaType">
+        <vs-select v-if="admin"  label="Оценка" v-model="currentOcenkaType">
           <vs-select-item @click="console.log('sik')" value="" text="Без оценки" />
           <vs-select-item value="Успешно" text="Успешно" />
           <vs-select-item value="С ошибкой" text="С ошибкой" />
         </vs-select>
 
-
+<div v-else>
+  <h4 class="title is-4 m-0">
+    Оценка :
+  </h4>
+   <p class="mx-2">{{currentOcenkaType || "Не оценена"}}</p>
+</div>
         <div
           v-if="
             currentOcenkaType == 'С ошибкой' && currentOcenkaReason != ''
@@ -84,7 +89,7 @@
     
     
        
-        <vs-button class="mx-3" @click="editActivity()" size="large">Изменить</vs-button>
+        <vs-button v-if='admin' class="mx-3" @click="editActivity()" size="large">Изменить</vs-button>
     <vs-button class="mx-3" @click='hideMe' size="large">Закрыть</vs-button>
       </div>
     </div>
@@ -106,7 +111,7 @@
 
 <script>
 export default {
-  props: ["show"],
+  props: ["show",'admin'],
 
   data() {
     return {

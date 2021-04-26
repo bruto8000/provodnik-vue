@@ -32,7 +32,7 @@
         >
       </li>
       <li>
-        <a @click="routeTo('show-calendar')"
+        <a @click="routeTo('public-calendar')"
           ><i class="mdi mdi-calendar-outline mdi-36px"></i> Просмотр
           календаря</a
         >

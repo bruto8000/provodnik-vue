@@ -102,10 +102,7 @@ const store = new Vuex.Store({
         type: "",
         reason: "",
       },
-      AB: [
-     
-        
-      ],
+      AB: [],
 
       statusZapusk: [],
       risks: [],
@@ -145,6 +142,7 @@ const store = new Vuex.Store({
       });
     },
     insertActivities(state, { activities }) {
+
       state.activities = state.activities.concat(activities);
     },
     setDisplayingActivity(state, activity) {
@@ -164,19 +162,20 @@ const store = new Vuex.Store({
       state.currentEditingActivity = _.cloneDeep(activity);
     },
     deleteActivity(state, activityForDelete) {
-      console.log('activity for delete es,', activityForDelete)
+      console.log("activity for delete es,", activityForDelete);
       state.activities = state.activities.filter((activity) => {
         return activity.id != activityForDelete.id;
       });
     },
-    updateActivity(state,activityForEdit){
-    let foundedActivity =  state.activities.find((activity)=>activity.id === activityForEdit.id);
-    if(!foundedActivity) return;
-   for(let prop in activityForEdit) {
-    foundedActivity[prop] = activityForEdit[prop]
-   }
- 
-    }
+    updateActivity(state, activityForEdit) {
+      let foundedActivity = state.activities.find(
+        (activity) => activity.id === activityForEdit.id
+      );
+      if (!foundedActivity) return;
+      for (let prop in activityForEdit) {
+        foundedActivity[prop] = activityForEdit[prop];
+      }
+    },
   },
   actions: {
     async editEmployee(context, editedEmployee) {
@@ -314,27 +313,21 @@ const store = new Vuex.Store({
           });
       });
     },
-   async editActivity({ commit }, activity) {
-
-  await  axios
-    .post("../vendor/editActivity.php", JSON.stringify(activity))
-    .then((r) => {
-    
-
-      if (r.data == "OK") {
-        commit('updateActivity', activity)
-     return Promise.resolve()
-       
-      } else {
-        throw new Error(r.data);
-      }
-    })
-    .catch((e) => {
-      return Promise.reject()
-    });
-
-
-   },
+    async editActivity({ commit }, activity) {
+      await axios
+        .post("../vendor/editActivity.php", JSON.stringify(activity))
+        .then((r) => {
+          if (r.data == "OK") {
+            commit("updateActivity", activity);
+            return Promise.resolve();
+          } else {
+            throw new Error(r.data);
+          }
+        })
+        .catch((e) => {
+          return Promise.reject();
+        });
+    },
     async deleteActivity({ commit }, activity) {
       await axios
         .post(
@@ -344,7 +337,7 @@ const store = new Vuex.Store({
           })
         )
         .then((responce) => {
-          console.log(responce)
+          console.log(responce);
           if (responce.data == "OK") {
             commit("deleteActivity", activity);
             return Promise.resolve();
@@ -355,32 +348,29 @@ const store = new Vuex.Store({
         .catch((e) => {
           return Promise.reject(e);
         });
-    
-  },
-  async archiveActivity({ commit }, activity) {
-    await axios
-      .post(
-        "/vendor/archiveActivity.php",
-        JSON.stringify({
-          id: activity.id,
+    },
+    async archiveActivity({ commit }, activity) {
+      await axios
+        .post(
+          "/vendor/archiveActivity.php",
+          JSON.stringify({
+            id: activity.id,
+          })
+        )
+        .then((responce) => {
+          console.log(responce);
+          if (responce.data == "OK") {
+            commit("deleteActivity", activity);
+            return Promise.resolve();
+          } else {
+            throw new Error(responce.data);
+          }
         })
-      )
-      .then((responce) => {
-        console.log(responce)
-        if (responce.data == "OK") {
-          commit("deleteActivity", activity);
-          return Promise.resolve();
-        } else {
-          throw new Error(responce.data);
-        }
-      })
-      .catch((e) => {
-        return Promise.reject(e);
-      });
-  
-},
-
- },
+        .catch((e) => {
+          return Promise.reject(e);
+        });
+    },
+  },
   getters: {
     trueNID: (state) => state.employees.map((em) => em.nid),
   },

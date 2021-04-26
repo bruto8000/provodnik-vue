@@ -284,7 +284,7 @@
       </div>
     </div>
 
-    <activity-modal :show.sync="needActivityModal"></activity-modal>
+    <activity-modal     :admin='true' :show.sync="needActivityModal"></activity-modal>
   </div>
 </template>
 
