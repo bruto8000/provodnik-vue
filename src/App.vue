@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import Sidenav from "./components/sidenav.vue";
-import preloader from "./components/helpers/preloader.vue";
+import Sidenav from "./components/pages/index/sidenav.vue";
+import preloader from "./components/pages/index/preloader.vue";
 export default {
   created() {
 
@@ -24,6 +24,7 @@ setTimeout(() => {
 
 
     this.$router.beforeEach((to, from, next) => {
+   
       // if(to.path == from.path){
       //   next()
       //   return;

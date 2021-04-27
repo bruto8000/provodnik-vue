@@ -26,7 +26,7 @@
             @click="exportToExcel"
           >
             <img
-              src="../assets/EX.png"
+              src="../../../assets/EX.png"
               width="100%"
               style="border-radius: 50%;"
               alt=""
@@ -289,7 +289,7 @@
 </template>
 
 <script>
-import activityModal from "./helpers/activityModal";
+import activityModal from "./global/activityModal";
 export default {
   data() {
     return {

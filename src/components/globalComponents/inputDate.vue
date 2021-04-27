@@ -1,9 +1,27 @@
-Vue.component('inputDateComponent',{
-  props: ['value','miniHeader','canUndate','showYearBtn','showMonthBtn','showKvartalBtn'],
+<template>
+  
+  <div>
+    <div class="center" data-position="tooltipPos || top"
+     @click="undate" 
+     :id="'tltp'+rnd_id"
+     data-tooltip="Нажмите чтобы сделать неактивной" >{{header}}</div> 
+    <input 
+    v-model.lazy="innerDate" 
+    :id="'inp'+rnd_id"  
+    type="text"
+    class="datepicker center input"
+    placeholder="Выберите дату">
+</div>
+
+</template>
+
+<script>
+export default {
+  props: ['value','header','canUndate','showYearBtn','showMonthBtn','showKvartalBtn'],
   data() {
     return {
       // date: "", //FRIN PARENT
-      // miniHeader: "Дата Спуска",
+      // header: "Дата Спуска",
       rnd_id: "",
       innerDate: "",
       me: null,
@@ -31,7 +49,7 @@ console.log({showMonthBtn: this.showMonthBtn,
   showYearBtn: this.showYearBtn
 
 })
-      this.me = Kalendar.set({showMonthBtn: this.showMonthBtn,
+      this.me = this.$Kalendar.set({showMonthBtn: this.showMonthBtn,
         showKvartalBtn: this.showKvartalBtn,
         showYearBtn: this.showYearBtn
       
@@ -52,17 +70,9 @@ console.log({showMonthBtn: this.showMonthBtn,
       this.$emit("update:value", n);
     },
   },
-  template: `
-  <div>
-    <div class="center" data-position="tooltipPos || top"
-     @click="undate" 
-     :id="'tltp'+rnd_id"
-     data-tooltip="Нажмите чтобы сделать неактивной" >{{miniHeader}}</div> 
-    <input 
-    v-model.lazy="innerDate" 
-    :id="'inp'+rnd_id"  
-    type="text"
-    class="datepicker center input"
-    placeholder="Выберите дату">
-</div>`
-});
+}
+</script>
+
+<style>
+
+</style>

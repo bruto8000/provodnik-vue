@@ -1,4 +1,25 @@
-Vue.component('inputSelectComponent',{
+<template>
+   
+    <div>
+      <div class="center"
+    >{{miniHeader}}</div> 
+      <select 
+      v-model="innerSelected"
+      type="text"
+      class="center"
+      :id="'sel'+rnd_id"
+      >
+      <option value="" disabled>{{placeholder}}</option>
+      <option v-for="(option,idx) in options" :key='idx' :value="option">{{option}}</option>
+  
+      
+  </select>
+  
+  </div>
+</template>
+
+<script>
+export default {
     props: ['value','miniHeader','options','placeholder'],
   
     data() {
@@ -37,22 +58,9 @@ M.FormSelect.init(document.getElementById("sel" + this.rnd_id))
           this.$emit("update:value", n);
         }
     },
-    template: `  
-    <div>
-      <div class="center"
-    >{{miniHeader}}</div> 
-      <select 
-      v-model="innerSelected"
-      type="text"
-      class="center"
-      :id="'sel'+rnd_id"
-      >
-      <option value="" disabled>{{placeholder}}</option>
-      <option v-for="option in options" :value="option">{{option}}</option>
-  
-      
-  </select>
-  
-  </div>`
-  });
-  
+}
+</script>
+
+<style>
+
+</style>

@@ -910,9 +910,9 @@
 </template>
 
 <script>
-import tags from "./helpers/tags.vue";
-import eGrafiks from "./helpers/eGrafiks.vue";
-import zamenas from "./helpers/zamenas.vue";
+import tags from "./editActivity/tags.vue";
+import eGrafiks from "./editActivity/eGrafiks.vue";
+import zamenas from "./editActivity/zamenas.vue";
 export default {
   data() {
     return {

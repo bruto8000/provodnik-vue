@@ -37,6 +37,12 @@
           календаря</a
         >
       </li>
+       <li>
+        <a @click="routeTo('add-info-query')"
+          ><i class="mdi mdi-plus mdi-36px"></i> Добавить инфозапрос
+          </a
+        >
+      </li>
     </ul>
   </div>
 </template>

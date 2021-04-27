@@ -82,9 +82,9 @@
 </template>
 
 <script>
-import activityModal from './helpers/activityModal.vue';
-// import './helpers/Calendar-lang.js';
-import Calendar from './helpers/Calendar.js';
+import activityModal from './global/activityModal.vue';
+
+import Calendar from './publicCalendar/Calendar.js';
  Calendar.locales['ru'] = {
 	days: ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"],
 	daysShort: ["Вск", "Пнд", "Втр", "Срд", "Чтв", "Птн", "Суб"],

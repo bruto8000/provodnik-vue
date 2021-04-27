@@ -83,8 +83,9 @@
         :disabled="eGrafik.loadType == 'db'"
       >
         <option
-          v-for="selectValue in selectValuesZapusk"
+          v-for="(selectValue,idx) in selectValuesZapusk"
           :value="selectValue.idx"
+          :key='idx'
         >
           {{selectValue.label}}
         </option>
@@ -116,7 +117,7 @@
 
         <div>
           <ul>
-            <li v-for="nagruzka in eGrafik.nagruzkas">
+            <li v-for="(nagruzka,idx) in eGrafik.nagruzkas" :key='idx'>
               <div class="columns">
                 <div class="column is-4">
                   <input
@@ -199,6 +200,7 @@
         <option
           v-for="selectValue in selectValuesPlanFact"
           :value="selectValue.idx"
+          :key='selectValue.label'
         >
           {{selectValue.label}}
         </option>
@@ -242,7 +244,7 @@
 
         <div>
           <ul>
-            <li v-for="nagruzka in eGrafik.nagruzkas">
+            <li v-for="(nagruzka,idx) in eGrafik.nagruzkas" :key="idx">
               <div class="columns">
                 <div class="column is-4">
                   <input
