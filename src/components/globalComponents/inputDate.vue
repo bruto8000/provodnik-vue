@@ -1,23 +1,34 @@
 <template>
-  
   <div>
-    <div class="center" data-position="tooltipPos || top"
-     @click="undate" 
-     :id="'tltp'+rnd_id"
-     data-tooltip="Нажмите чтобы сделать неактивной" >{{header}}</div> 
-    <input 
-    v-model.lazy="innerDate" 
-    :id="'inp'+rnd_id"  
-    type="text"
-    class="datepicker center input"
-    placeholder="Выберите дату">
-</div>
-
+    <div
+      class="center"
+      data-position="tooltipPos || top"
+      @click="undate"
+      :id="'tltp' + rnd_id"
+      data-tooltip="Нажмите чтобы сделать неактивной"
+    >
+      {{ header }}
+    </div>
+    <input
+      v-model.lazy="innerDate"
+      :id="'inp' + rnd_id"
+      type="text"
+      class="datepicker center input"
+      placeholder="Выберите дату"
+    />
+  </div>
 </template>
 
 <script>
 export default {
-  props: ['value','header','canUndate','showYearBtn','showMonthBtn','showKvartalBtn'],
+  props: [
+    "value",
+    "header",
+    "canUndate",
+    "showYearBtn",
+    "showMonthBtn",
+    "showKvartalBtn",
+  ],
   data() {
     return {
       // date: "", //FRIN PARENT
@@ -43,36 +54,33 @@ export default {
         break;
     }
     this.$nextTick((n) => {
-  if(this.canUndate)    this.tooltipMe =  M.Tooltip.init(document.getElementById('tltp'+this.rnd_id));
-console.log({showMonthBtn: this.showMonthBtn,
-  showKvartalBtn: this.showKvartalBtn,
-  showYearBtn: this.showYearBtn
+      if (this.canUndate)
+        this.tooltipMe = M.Tooltip.init(
+          document.getElementById("tltp" + this.rnd_id)
+        );
 
-})
-      this.me = this.$Kalendar.set({showMonthBtn: this.showMonthBtn,
-        showKvartalBtn: this.showKvartalBtn,
-        showYearBtn: this.showYearBtn
-      
-      }, "#inp" + this.rnd_id);
+      this.me = this.$Kalendar.set(
+        {
+          showMonthBtn: this.showMonthBtn,
+          showKvartalBtn: this.showKvartalBtn,
+          showYearBtn: this.showYearBtn,
+          showClearBtn: true,
+        },
+        "#inp" + this.rnd_id
+      );
     });
-
-
   },
   destroyed() {
-    console.log('oh no i am destroyed')
+    console.log("oh no i am destroyed");
   },
-  computed: {
-  
-  },
+  computed: {},
   methods: {},
   watch: {
     innerDate(n) {
       this.$emit("update:value", n);
     },
   },
-}
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

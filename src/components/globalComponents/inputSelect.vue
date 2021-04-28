@@ -1,66 +1,69 @@
 <template>
-   
-    <div>
-      <div class="center"
-    >{{miniHeader}}</div> 
-      <select 
+  <div>
+    <div class="center">{{ header }}</div>
+    <select
       v-model="innerSelected"
       type="text"
       class="center"
-      :id="'sel'+rnd_id"
-      >
-      <option value="" disabled>{{placeholder}}</option>
-      <option v-for="(option,idx) in options" :key='idx' :value="option">{{option}}</option>
-  
-      
-  </select>
-  
+      :id="'sel' + rnd_id"
+    >
+      <option value="" :disabled="required">{{ placeholder }}</option>
+      <option v-for="(option, idx) in options" :key="idx" :value="option">{{
+        option
+      }}</option>
+      <slot></slot>
+    </select>
   </div>
 </template>
 
 <script>
 export default {
-    props: ['value','miniHeader','options','placeholder'],
-  
-    data() {
-      return {
-        innerSelected: '',
-        rnd_id: ""
-      };
-    },
-  
-    created() {
-        this.innerSelected = this.value; 
-    },
-    destroyed() {},
-    computed: {
-    
-    },
-    mounted(){
+  props: ["value", "header", "options", "placeholder", "required"],
 
-        while (true) {
-            let RND = (this.rnd_id = (Math.random() * 2000).toFixed());
-      
-            if (
-              !document.getElementById("sel" + this.rnd_id)
-      
-            )
-              break;
-          }
-          this.$nextTick((n) => {
-M.FormSelect.init(document.getElementById("sel" + this.rnd_id))
-          });
+  data() {
+    return {
+      innerSelected: "",
+      rnd_id: "",
+      me: null,
+    };
+  },
 
+  created() {
+    this.innerSelected = this.value;
+  },
+  destroyed() {},
+  computed: {},
+ 
+  mounted() {
+    this.initMe();
+  },
+  methods: {
+
+       initMe() {
+    if (!this.rnd_id) {
+      while (true) {
+        let RND = (this.rnd_id = (Math.random() * 2000).toFixed());
+
+        if (!document.getElementById("sel" + this.rnd_id)) break;
+      }
+    }
+    this.$nextTick((n) => {
+      this.me = M.FormSelect.init(document.getElementById("sel" + this.rnd_id));
+    });
+  },
+  },
+  watch: {
+    innerSelected(n) {
+      this.$emit("update:value", n);
     },
-    methods: {},
-    watch: {
-        innerSelected(n) {
-          this.$emit("update:value", n);
-        }
+    options() {
+      if (this.me) {
+        this.me.destroy();
+        this.initMe();
+      }
     },
-}
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>
