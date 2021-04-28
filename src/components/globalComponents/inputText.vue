@@ -1,41 +1,40 @@
 <template>
-    <div>
-    <div class="center"
-  >{{header}}</div> 
-    <input 
-    v-model="innerText"
-    type="text"
-    class="center input"
-    :placeholder="placeholder">
-</div>
+  <div>
+    <div class="center">{{ header }}</div>
+    <input
+      v-model="innerText"
+      type="text"
+      class="center input"
+      :placeholder="placeholder"
+    />
+  </div>
 </template>
-  
+
 <script>
 export default {
-    props: ['value','header','placeholder'],
-    data() {
-      return {
+  props: ["value", "header", "placeholder"],
+  data() {
+    return {
+      innerText: "",
+    };
+  },
 
-        innerText: ''
-      };
+  created() {
+    this.innerText = this.value;
+  },
+  destroyed() {},
+  computed: {},
+  methods: {},
+  watch: {
+    innerText(n) {
+      if(this.value != n)
+      this.$emit("update:value", n);
     },
-  
-    created() {
-        this.innerText = this.value; 
-    },
-    destroyed() {},
-    computed: {
-    
-    },
-    methods: {},
-    watch: {
-        innerText(n) {
-          this.$emit("update:value", n);
-        }
-    },
-}
+    value(n){
+      this.innerText = n
+    }
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

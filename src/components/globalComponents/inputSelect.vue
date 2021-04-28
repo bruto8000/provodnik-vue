@@ -31,36 +31,48 @@ export default {
   created() {
     this.innerSelected = this.value;
   },
-  destroyed() {},
+  destroyed() {
+    console.log(this.me);
+    this.me && this.me.destroy();
+  },
   computed: {},
- 
+
   mounted() {
     this.initMe();
   },
   methods: {
+    initMe() {
+            if (this.me) {
+        this.me.destroy();
+            }
 
-       initMe() {
-    if (!this.rnd_id) {
-      while (true) {
-        let RND = (this.rnd_id = (Math.random() * 2000).toFixed());
+      if (!this.rnd_id) {
+        while (true) {
+          let RND = (this.rnd_id = (Math.random() * 2000).toFixed());
 
-        if (!document.getElementById("sel" + this.rnd_id)) break;
+          if (!document.getElementById("sel" + this.rnd_id)) break;
+        }
       }
-    }
-    this.$nextTick((n) => {
-      this.me = M.FormSelect.init(document.getElementById("sel" + this.rnd_id));
-    });
-  },
+      this.$nextTick((n) => {
+        this.me = M.FormSelect.init(
+          document.getElementById("sel" + this.rnd_id)
+        );
+      });
+    },
   },
   watch: {
     innerSelected(n) {
+      if(n!=this.value)
       this.$emit("update:value", n);
     },
+    value(n){
+      this.innerSelected = n
+          //  this.initMe();
+    },
     options() {
-      if (this.me) {
-        this.me.destroy();
+
         this.initMe();
-      }
+      
     },
   },
 };

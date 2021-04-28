@@ -56,8 +56,8 @@
 
       <div class="column is-4 p-0">
         <input-select
-          :options="propblemOptions"
-          :value.sync="infoQuery.propblemOptions"
+          :options="problemOptions"
+          :value.sync="infoQuery.problem"
           header="Проблема"
         >
         </input-select>
@@ -104,7 +104,7 @@
       >
         <div class="column is-4 p-0">
           <input-select
-            :options="infoQueryStatusTypes"
+            :options="statusOptions"
             :value.sync="infoQuery.statuses[idx].type"
           ></input-select>
         </div>
@@ -118,7 +118,10 @@
     </div>
 
     <div class="columns">
-      <div @click='addInfoQuery' class="button column is-12 is-primary m-4 p-4 title is-3">
+      <div
+        @click="addInfoQuery"
+        class="button column is-12 is-primary m-4 p-4 title is-3"
+      >
         Добавить инфозапрос
       </div>
     </div>
@@ -158,46 +161,7 @@ export default {
         otvetfrom: "Кто от маркетинга предоставил ответ",
         days: "Время обработки дни",
       },
-      classificationOptions: [
-        " Прайс",
-        "Инструменты СУЗ",
-        "Услуги",
-        "Акции",
-        "Сайт",
-        "МП",
-        "ЛК",
-        "IVR/UIVR",
-        "Смс поддержка ЦПК/навигатор ТП",
-        "Рассылки",
-        "Нотификации внутри продукта",
-        "Процедура",
-        "Диагностика/BPM",
-        "ТП",
-        "Бэк-офисы",
-        "СФ",
-        "Оборудование",
-        "Ошибочный запрос",
-        "FAQ",
-        "Прочее",
-      ],
-      propblemOptions: [
-        "Отсутствует информация",
-        "Некорректная информация",
-        "Предложение по доработке продукта",
-        "Непонятность контента",
-        "Другое",
-      ],
-      infoQueryStatusTypes: [
-        "Назначено",
-        "В работе",
-        "Возвращено на доработку инициатору",
-        "Дан промежуточный ответ инициатору",
-        "Отказ. Ошибка в п/я",
-        "Отказ. Правки не требуются",
-        "Отказано",
-        "Удовлетворено",
-        "Уже в реализации",
-      ],
+
       requiredRows: ["nazvanie", "otvetstveniy"],
     };
   },
@@ -221,40 +185,24 @@ export default {
         }, 400);
         return;
       }
-      setTimeout(() => {
-          event.target.classList.toggle("is-loading");
-        }, 400);
 
-      // axios
-      //   .post("../vendor/addInfoQuery.php", JSON.stringify(this.infoQuery))
-      //   .then((r) => {
-      //     setTimeout(() => {
-      //       event.target.classList.toggle("is-loading");
-      //     }, 400);
-      //     console.log(r.data);
-      //     if (r.data == "OK") {
-      //       M.toast({
-      //         html: "Активность добавлена",
-      //       });
-      //       for (prop in this.infoQuery) {
-      //         if (prop == "flags") {
-      //           this.infoQuery[prop] = [];
-      //           continue;
-      //         }
-
-      //         this.infoQuery[prop] = "";
-      //       }
-      //       this.editor.html.set(" ");
-      //       delete this.infoQuery["opisanieBody"];
-      //     } else {
-      //       throw new Error(r.data);
-      //     }
-      //   })
-      //   .catch((e) => {
-      //     M.toast({
-      //       html: "Активность НЕ добавлена " + e,
-      //     });
-      //   });
+      this.$store
+        .dispatch("addInfoQuery", this.infoQuery)
+        .then(() => {
+          this.$vs.notify({ text: "Инфозапрос успешно добавлен" });
+        })
+        .catch((err) => {
+          this.$vs.notify({
+            text: `Инфозапрос не добавлен [${err}]`,
+            color: "red",
+            title: "Ошибка",
+          });
+        })
+        .finally(() => {
+          setTimeout(() => {
+            event.target.classList.toggle("is-loading");
+          }, 400);
+        });
     },
     validateAll() {
       return this.validateRows() && this.validateStatuses();
@@ -263,9 +211,8 @@ export default {
       try {
         for (let prop of this.requiredRows) {
           if (!this.infoQuery[prop]) {
-   
             throw new Error(
-             ` Вы пропустили что-то :  [${this.infoQueryNameErrors[prop]}]`
+              ` Вы пропустили что-то :  [${this.infoQueryNameErrors[prop]}]`
             );
           }
         }
@@ -281,8 +228,6 @@ export default {
     validateStatuses() {
       try {
         this.infoQuery.statuses.forEach((status, idx, arr) => {
-      
-      
           if (
             !status.fdate ||
             !status.type ||
@@ -294,7 +239,12 @@ export default {
           }
         });
       } catch (err) {
-        this.$vs.notify({ title: "Ошиба", text: err, color: "red",time:5000 });
+        this.$vs.notify({
+          title: "Ошиба",
+          text: err,
+          color: "red",
+          time: 5000,
+        });
         return false;
       }
       return true;
@@ -303,6 +253,15 @@ export default {
   computed: {
     employees() {
       return this.$store.state.employees.map((employee) => employee.full_name);
+    },
+    problemOptions() {
+      return this.$store.state.infoQueriesSelectOptions.problemOptions;
+    },
+    classificationOptions() {
+      return this.$store.state.infoQueriesSelectOptions.classificationOptions;
+    },
+    statusOptions() {
+      return this.$store.state.infoQueriesSelectOptions.statusOptions;
     },
   },
   watch: {},

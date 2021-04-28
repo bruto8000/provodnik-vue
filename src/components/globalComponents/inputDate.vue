@@ -67,18 +67,22 @@ export default {
           showClearBtn: true,
         },
         "#inp" + this.rnd_id
-      );
+      )[0];
     });
   },
   destroyed() {
-    console.log("oh no i am destroyed");
+    this.me && this.me.destroy();
   },
   computed: {},
   methods: {},
   watch: {
     innerDate(n) {
+      if(this.value != n)
       this.$emit("update:value", n);
     },
+    value(n){
+      this.innerDate = n
+    }
   },
 };
 </script>

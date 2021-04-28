@@ -14,7 +14,9 @@
           />
         </div>
         <div class="is-flex is-align-items-center">
-          <h1 class="title is-1 mx-2">Активности {{$store.state.activities.length}}</h1>
+          <h1 class="title is-1 mx-2">
+            Активности {{ $store.state.activities.length }}
+          </h1>
 
           <div class="button is-small is-primary mx-2" @click="resetFilter">
             СБРОС
@@ -284,7 +286,10 @@
       </div>
     </div>
 
-    <activity-modal     :admin='true' :show.sync="needActivityModal"></activity-modal>
+    <activity-modal
+      :admin="true"
+      :show.sync="needActivityModal"
+    ></activity-modal>
   </div>
 </template>
 
@@ -337,7 +342,6 @@ export default {
         },
       })
     );
- 
   },
   activated() {},
   methods: {
@@ -409,13 +413,10 @@ export default {
         this.table.created = false;
       });
     },
-    editProj(activity) {
-      this.$emit("edit-proj", activity);
-    },
     setQueryParams() {
       let urls = window.location.href.split("?");
       if (urls.length > 2) return;
-    
+
       let query = "";
       this.filters.forEach((filter) => {
         for (let prop in this[filter]) {

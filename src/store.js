@@ -13,7 +13,11 @@ const showReceivingError = function(err) {
 const getEmployees = (store) => {
   axios.get(Vue.prototype.$URL + "/vendor/showEmployees.php").then(
     (result) => {
-      store.dispatch("setEmployees", result.data.reverse());
+      store.dispatch("insertItems", {
+        items: result.data.reverse(),
+        insertTo: "employees",
+        parsingFunction: "employees",
+      });
     },
     (err) => {
       showReceivingError(`[Пользователи] ${err.message}`);
@@ -60,17 +64,16 @@ const getTabel = (store) => {
 
         store.commit("setTabel", Tres.data);
         store.commit("setEditableTabel", JSON.parse(JSON.stringify(Tres.data)));
-        // this.tabel = Tres.data;
-        // this.employees = Eres.data;
-        //  this.changeOnServer();
       })
     );
 };
 const getActivities = (store) => {
   axios.get("./vendor/showActivities.php").then(
     (res) => {
-      store.dispatch("insertActivities", {
-        activities: res.data.reverse(),
+      store.dispatch("insertItems", {
+        items: res.data.reverse(),
+        insertTo: "activities",
+        parsingFunction: "activities",
       });
     },
     (err) => {
@@ -78,10 +81,49 @@ const getActivities = (store) => {
     }
   );
 };
+const getInfoQueries = (store) => {
+  axios.get("./vendor/showInfoQueries.php").then(
+    (res) => {
+      store.dispatch("insertItems", {
+        items: res.data.reverse(),
+        insertTo: "infoQueries",
+        parsingFunction: "infoQueries",
+      });
+    },
+    (err) => {
+      showReceivingError(`[Инфозапросы] ${err.message}`);
+    }
+  );
+};
+const parsingFunctions = {
+  activities(activities) {
+    activities.forEach((activity) => {
+      if (!activity.ocenka) {
+        activity.ocenka = {
+          type: "",
+          reason: "",
+        };
+      }
+      let htmlEl = document.createElement("div");
+      htmlEl.innerHTML = activity.opisanieBody;
+
+      activity.opisanieBodyCuted =
+        htmlEl.innerText.length < 50
+          ? htmlEl.innerText
+          : htmlEl.innerText.slice(0, 50) + "...";
+      activity.opisanieBodyHTML = htmlEl;
+    });
+    return activities;
+  },
+  infoQueries(infoQueries) {
+    return infoQueries;
+  },
+};
 
 const store = new Vuex.Store({
   state: {
     activities: [],
+    infoQueries: [],
     employees: [],
     tabel: [],
     editableTabel: [],
@@ -113,6 +155,49 @@ const store = new Vuex.Store({
       //  opisanieBody: "", Will added Automaticly
       //   opisanie: "", OLD
     },
+
+    infoQueriesSelectOptions: {
+      classificationOptions: [
+        " Прайс",
+        "Инструменты СУЗ",
+        "Услуги",
+        "Акции",
+        "Сайт",
+        "МП",
+        "ЛК",
+        "IVR/UIVR",
+        "Смс поддержка ЦПК/навигатор ТП",
+        "Рассылки",
+        "Нотификации внутри продукта",
+        "Процедура",
+        "Диагностика/BPM",
+        "ТП",
+        "Бэк-офисы",
+        "СФ",
+        "Оборудование",
+        "Ошибочный запрос",
+        "FAQ",
+        "Прочее",
+      ],
+      problemOptions: [
+        "Отсутствует информация",
+        "Некорректная информация",
+        "Предложение по доработке продукта",
+        "Непонятность контента",
+        "Другое",
+      ],
+      statusOptions: [
+        "Назначено",
+        "В работе",
+        "Возвращено на доработку инициатору",
+        "Дан промежуточный ответ инициатору",
+        "Отказ. Ошибка в п/я",
+        "Отказ. Правки не требуются",
+        "Отказано",
+        "Удовлетворено",
+        "Уже в реализации",
+      ],
+    },
   },
   mutations: {
     setTabel(state, tabel) {
@@ -134,23 +219,21 @@ const store = new Vuex.Store({
         return e.nid != deletableEmployee.nid;
       });
     },
-    addEmployee(state, newEmployee) {
-      state.employees.unshift({
-        full_name: newEmployee.full_name,
-        nid: newEmployee.nid,
-        login: newEmployee.login,
-      });
-    },
-    insertActivities(state, { activities }) {
 
-      state.activities = state.activities.concat(activities);
+    insertItems(state, { items, insertTo }) {
+      console.log("adding", items, insertTo);
+      state[insertTo] = items.concat(state[insertTo]);
+    },
+    editItem(context, { item, editTo }) {
+      context.state["currentEditing" + editTo] = item;
+    },
+    displayItem(context, { item, displayTo }) {
+      context.state["currentDisplaying" + displayTo] = item;
     },
     setDisplayingActivity(state, activity) {
       state.currentDisplayingActivity = activity;
     },
     changeActivityOcenka(state, { id, ocenka }) {
-      console.log("id", id);
-      console.log("ocenka", ocenka);
       let foundedActivity = state.activities.find(
         (activity) => activity.id == id
       );
@@ -162,7 +245,6 @@ const store = new Vuex.Store({
       state.currentEditingActivity = _.cloneDeep(activity);
     },
     deleteActivity(state, activityForDelete) {
-      console.log("activity for delete es,", activityForDelete);
       state.activities = state.activities.filter((activity) => {
         return activity.id != activityForDelete.id;
       });
@@ -195,11 +277,11 @@ const store = new Vuex.Store({
           }
         );
     },
-    setEmployees(context, employees) {
-      employees.forEach((employee) => {
-        context.commit("addEmployee", employee);
-      });
-    },
+    // setEmployees(context, employees) {
+    //   employees.forEach((employee) => {
+    //     context.commit("addEmployee", employee);
+    //   });
+    // },
     async deleteEmployee(context, deletableEmployee) {
       axios
         .post(
@@ -226,7 +308,10 @@ const store = new Vuex.Store({
         .then((res) => {
           if (res.data == "OK") {
             M.toast({ html: "Сотрудник добавлен" });
-            context.commit("addEmployee", newEmployee);
+            context.commit("insertItems", {
+              items: [newEmployee],
+              insertTo: "employees",
+            });
           } else if (res.data == "NID") {
             M.toast({ html: "Уникальный ID уже существует" });
           } else {
@@ -253,25 +338,20 @@ const store = new Vuex.Store({
           }
         });
     },
-    insertActivities(context, { activities }) {
-      activities.forEach((activity) => {
-        if (!activity.ocenka) {
-          activity.ocenka = {
-            type: "",
-            reason: "",
-          };
-        }
-        let htmlEl = document.createElement("div");
-        htmlEl.innerHTML = activity.opisanieBody;
+    insertItems(context, { items, insertTo, parsingFunction }) {
+      console.log("inserting", insertTo);
+      parsingFunctions[parsingFunction] &&
+        (items = parsingFunctions[parsingFunction](items));
 
-        activity.opisanieBodyCuted =
-          htmlEl.innerText.length < 50
-            ? htmlEl.innerText
-            : htmlEl.innerText.slice(0, 50) + "...";
-        activity.opisanieBodyHTML = htmlEl;
-      });
-      context.commit("insertActivities", { activities });
+      context.commit("insertItems", { items, insertTo });
     },
+
+    // insertInfoQueries(context, { infoQueries }) {
+    //   infoQueries.forEach((infoQuery) => {
+
+    //   });
+    //   context.commit("insertInfoQueries", { infoQueries });
+    // },
     async changeActivityOcenka(context, { id, ocenka }) {
       console.log(id, "suka id");
       return new Promise((resolve, reject) => {
@@ -295,17 +375,19 @@ const store = new Vuex.Store({
           );
       });
     },
-
-    async addActivity({ commit }, activity) {
+    //ACTIVITIES////
+    async addActivity({ commit, dispatch }, activity) {
       return new Promise((resolve, reject) => {
         axios
           .post("../vendor/addActivity.php", JSON.stringify(activity))
           .then((res) => {
-            console.log(res.data);
+            let activity = res.data;
+            dispatch("insertItems", {
+              items: [activity],
+              insertTo: "activities",
+              parsingFunction: parsingFunctions["activities"],
+            });
 
-            ///BUG because cant get Id of inserted activity
-            //  commit('addActivities',{
-            //   activities : [activity]})
             resolve();
           })
           .catch((err) => {
@@ -370,11 +452,36 @@ const store = new Vuex.Store({
           return Promise.reject(e);
         });
     },
+    /////// INFO QUERIES /////
+
+    async addInfoQuery({ commit, dispatch }, infoQuery) {
+      return new Promise((resolve, reject) => {
+        console.log("adding");
+        axios
+          .post("../vendor/addInfoQuery.php", JSON.stringify(infoQuery))
+          .then((res) => {
+            let infoQuery = res.data;
+            dispatch("insertItems", {
+              items: [infoQuery],
+              insertTo: "infoQueries",
+              parsingFunction: "infoQueries",
+            });
+
+            resolve();
+          })
+          .catch((err) => {
+            console.log(err);
+            console.log(err.responce);
+            console.log(err.data);
+            reject(err);
+          });
+      });
+    },
   },
   getters: {
     trueNID: (state) => state.employees.map((em) => em.nid),
   },
-  plugins: [getEmployees, getTabel, getActivities],
+  plugins: [getEmployees, getTabel, getActivities, getInfoQueries],
 });
 
 export default store;

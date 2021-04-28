@@ -17,5 +17,8 @@ module.exports = {
       hot: true,
       hotOnly: true,
 
-    }
+    },
+
+      publicPath: './',
+
   }

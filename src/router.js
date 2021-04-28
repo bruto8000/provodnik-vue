@@ -20,6 +20,7 @@ import publicCalendar from './components/pages/activities/publicCalendar.vue'
 
 // InfoQueries //
 import addInfoQuery from './components/pages/infoQueries/addInfoQuery.vue'
+import showInfoQueries from './components/pages/infoQueries/showInfoQueries.vue'
 Vue.use(VueRouter)
 
 
@@ -34,6 +35,7 @@ const routes = [
     { path: '/edit-activity', component: editActivity },
     { path: '/public-calendar', component: publicCalendar },
     { path: '/add-info-query', component: addInfoQuery },
+    { path: '/show-info-queries', component: showInfoQueries },
     { path: '*', component: menu }
   ]
 const router = new VueRouter({
