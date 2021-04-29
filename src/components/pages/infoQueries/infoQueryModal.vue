@@ -68,7 +68,7 @@ export default {
     editInfoQuery() {
       this.$store.commit("setEditingInfoQuery", this.infoQuery);
       this.hideMe();
-      this.$router.push({ path: "/edit-infoQuery" });
+      this.$router.push({ path: "/edit-info-query" });
     },
 
     hideMe() {

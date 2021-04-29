@@ -45,7 +45,7 @@ export default {
   },
   mounted() {
     while (true) {
-      let RND = (this.rnd_id = (Math.random() * 2000).toFixed());
+      this.rnd_id = (Math.random() * 2000).toFixed();
 
       if (
         !document.getElementById("inp" + this.rnd_id) &&
@@ -77,12 +77,11 @@ export default {
   methods: {},
   watch: {
     innerDate(n) {
-      if(this.value != n)
-      this.$emit("update:value", n);
+      if (this.value != n) this.$emit("update:value", n);
     },
-    value(n){
-      this.innerDate = n
-    }
+    value(n) {
+      this.innerDate = n;
+    },
   },
 };
 </script>

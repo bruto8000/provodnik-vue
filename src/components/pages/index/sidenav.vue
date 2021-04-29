@@ -1,49 +1,50 @@
 <template>
   <div id="sidenav" class="sidenav">
-    <ul>
-      <li>
-        <a @click="routeTo('show-tabel')"
-          ><i class="mdi mdi-table-eye mdi-36px"></i> Табель</a
-        >
-      </li>
+    <vs-collapse accordion>
+      <vs-collapse-item>
+        <div slot="header">
+          Табель
+        </div>
+        <ul>
+          <li @click="routeTo('show-tabel')" class="is-clickable p-1 ">
+            Просмотр
+          </li>
+          <li @click="routeTo('edit-tabel')" class="is-clickable p-1 ">
+            Редактирование
+          </li>
+        </ul>
+      </vs-collapse-item>
+      <vs-collapse-item>
+        <div slot="header">
+          Активности
+        </div>
+        <ul>
+          <li class="is-clickable " @click="routeTo('show-activities')">
+            Просмотр
+          </li>
+          <li class="is-clickable " @click="routeTo('add-activity')">
+            Добавление
+          </li>
+          <li class="is-clickable " @click="routeTo('public-calendar')">
+            Календарь
+          </li>
+        </ul>
+      </vs-collapse-item>
 
-      <li>
-        <a @click="routeTo('edit-tabel')"
-          ><i class="mdi mdi-table-edit mdi-36px"></i> Редактирование табеля</a
-        >
-      </li>
-
-      <li>
-        <a @click="routeTo('show-activities')"
-          ><i class="mdi mdi-briefcase-outline mdi-36px"></i> Просмотр
-          активностей</a
-        >
-      </li>
-      <li>
-        <a @click="routeTo('add-activity')"
-          ><i class="mdi mdi-briefcase-edit-outline mdi-36px"></i>Добавление
-          активностей</a
-        >
-      </li>
-      <li>
-        <a @click="routeTo('employees')">
-          <i class="mdi mdi-account-plus-outline mdi-36px"></i> Добавление
-          сотрудника</a
-        >
-      </li>
-      <li>
-        <a @click="routeTo('public-calendar')"
-          ><i class="mdi mdi-calendar-outline mdi-36px"></i> Просмотр
-          календаря</a
-        >
-      </li>
-       <li>
-        <a @click="routeTo('add-info-query')"
-          ><i class="mdi mdi-plus mdi-36px"></i> Добавить инфозапрос
-          </a
-        >
-      </li>
-    </ul>
+      <vs-collapse-item>
+        <div slot="header">
+          Инфозапросы
+        </div>
+        <ul>
+          <li class="is-clickable " @click="routeTo('show-info-queries')">
+            Просмотр
+          </li>
+          <li class="is-clickable " @click="routeTo('add-info-query')">
+            Добавление
+          </li>
+        </ul>
+      </vs-collapse-item>
+    </vs-collapse>
   </div>
 </template>
 
@@ -52,13 +53,15 @@ export default {
   data() {
     return {
       sidenav: null,
+      sidenavInner: null,
     };
   },
   mounted() {
     this.sidenav = M.Sidenav.init(document.getElementById("sidenav"));
+
     document.addEventListener(
       "keydown",
-      function (key) {
+      function(key) {
         if (key.code == "Escape") {
           if (!this.sidenav.isOpen) this.sidenav.open();
           else this.sidenav.close();

@@ -42,9 +42,10 @@ export default {
   },
   methods: {
     initMe() {
-            if (this.me) {
+      console.log('initing Select', this.options)
+      if (!!this.me) {
         this.me.destroy();
-            }
+      }
 
       if (!this.rnd_id) {
         while (true) {
@@ -62,17 +63,13 @@ export default {
   },
   watch: {
     innerSelected(n) {
-      if(n!=this.value)
-      this.$emit("update:value", n);
+      if (n != this.value) this.$emit("update:value", n);
     },
-    value(n){
-      this.innerSelected = n
-          //  this.initMe();
+    value(n) {
+      this.innerSelected = n;
     },
     options() {
-
-        this.initMe();
-      
+      this.initMe();
     },
   },
 };

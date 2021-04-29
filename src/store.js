@@ -63,7 +63,7 @@ const getTabel = (store) => {
         });
 
         store.commit("setTabel", Tres.data);
-        store.commit("setEditableTabel", JSON.parse(JSON.stringify(Tres.data)));
+        store.commit("setEditableTabel", _.cloneDeep(Tres.data));
       })
     );
 };
@@ -155,10 +155,24 @@ const store = new Vuex.Store({
       //  opisanieBody: "", Will added Automaticly
       //   opisanie: "", OLD
     },
+    currentEditingInfoQuery: {
+      inicatior: "",
+      fdate: "",
+      sdate: "",
+      nazvanie: "",
+      otvetstveniy: "",
+      otchot: "",
+      statuses: [],
+      classification: "",
+      problem: "",
+      produkt: "",
+      otvetfrom: "",
+      days: "",
+    },
 
     infoQueriesSelectOptions: {
       classificationOptions: [
-        " Прайс",
+        "Прайс",
         "Инструменты СУЗ",
         "Услуги",
         "Акции",
@@ -219,16 +233,12 @@ const store = new Vuex.Store({
         return e.nid != deletableEmployee.nid;
       });
     },
-
     insertItems(state, { items, insertTo }) {
       console.log("adding", items, insertTo);
       state[insertTo] = items.concat(state[insertTo]);
     },
-    editItem(context, { item, editTo }) {
-      context.state["currentEditing" + editTo] = item;
-    },
-    displayItem(context, { item, displayTo }) {
-      context.state["currentDisplaying" + displayTo] = item;
+    setEditingInfoQuery(state, infoQuery) {
+      state.currentEditingInfoQuery = _.cloneDeep(infoQuery);
     },
     setDisplayingActivity(state, activity) {
       state.currentDisplayingActivity = activity;
@@ -257,6 +267,20 @@ const store = new Vuex.Store({
       for (let prop in activityForEdit) {
         foundedActivity[prop] = activityForEdit[prop];
       }
+    },
+    updateInfoQuery(state, infoQueryForEdit) {
+      let foundedInfoQuery = state.infoQueries.find(
+        (infoQuery) => infoQuery.id === infoQueryForEdit.id
+      );
+      if (!foundedInfoQuery) return;
+      for (let prop in infoQueryForEdit) {
+        foundedInfoQuery[prop] = infoQueryForEdit[prop];
+      }
+    },
+    deleteInfoQuery(state, infoQueryForDelete) {
+      state.infoQueries = state.infoQueries.filter((infoQuery) => {
+        return infoQuery.id != infoQueryForDelete.id;
+      });
     },
   },
   actions: {
@@ -477,9 +501,66 @@ const store = new Vuex.Store({
           });
       });
     },
+    async editInfoQuery({ commit, dispatch }, infoQuery) {
+      return new Promise((resolve, reject) => {
+        console.log("adding");
+        axios
+          .post("../vendor/editInfoQuery.php", JSON.stringify(infoQuery))
+          .then((res) => {
+            commit("updateInfoQuery", infoQuery);
+
+            resolve();
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    async deleteInfoQuery({ commit }, infoQuery) {
+      await axios
+        .post(
+          "/vendor/deleteInfoQuery.php",
+          JSON.stringify({
+            id: infoQuery.id,
+          })
+        )
+        .then((responce) => {
+          if (responce.data == "OK") {
+            commit("deleteInfoQuery", infoQuery);
+            return Promise.resolve();
+          } else {
+            throw new Error(responce.data);
+          }
+        })
+        .catch((e) => {
+          return Promise.reject(e);
+        });
+    },
+    async archiveInfoQuery({ commit }, infoQuery) {
+      await axios
+        .post(
+          "/vendor/archiveInfoQuery.php",
+          JSON.stringify({
+            id: infoQuery.id,
+          })
+        )
+        .then((responce) => {
+          console.log(responce);
+          if (responce.data == "OK") {
+            commit("deleteInfoQuery", infoQuery);
+            return Promise.resolve();
+          } else {
+            throw new Error(responce.data);
+          }
+        })
+        .catch((e) => {
+          return Promise.reject(e);
+        });
+    },
   },
   getters: {
     trueNID: (state) => state.employees.map((em) => em.nid),
+    employees: (state) => state.employees.map((em) => em.full_name),
   },
   plugins: [getEmployees, getTabel, getActivities, getInfoQueries],
 });

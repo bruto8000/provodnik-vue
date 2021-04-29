@@ -331,9 +331,6 @@ export default {
     };
   },
   mounted: function() {
-    console.log(this.$route);
-    console.log(this.$router);
-
     this.readQueryParams();
     M.FormSelect.init(
       document.querySelectorAll("select", {

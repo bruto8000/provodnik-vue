@@ -27,12 +27,11 @@ export default {
   methods: {},
   watch: {
     innerText(n) {
-      if(this.value != n)
-      this.$emit("update:value", n);
+      if (this.value != n) this.$emit("update:value", n);
     },
-    value(n){
-      this.innerText = n
-    }
+    value(n) {
+      this.innerText = n;
+    },
   },
 };
 </script>

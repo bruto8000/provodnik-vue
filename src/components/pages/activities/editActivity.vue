@@ -1081,7 +1081,6 @@ export default {
           this.dopeditor.html.set(this.activity.dopinfo);
         }, 1000);
         this.$nextTick(function() {
-          console.log(this);
           M.FormSelect.init(document.querySelectorAll("select"));
           M.Collapsible.init(document.querySelectorAll(".collapsible"));
           this.initStatusZapusk();
@@ -1126,46 +1125,38 @@ export default {
       );
       this.kalendar[1] = this.$Kalendar.set({}, "#fdate");
     },
-       editActivity: function (event) {
-
-
-    if (!this.validateALL()) {
-      return;
+    editActivity: function(event) {
+      if (!this.validateALL()) {
+        return;
       }
 
       this.editButtonToggle(true);
 
-  
-      let activityToSend = _.cloneDeep(this.activity)
-     
+      let activityToSend = _.cloneDeep(this.activity);
 
       activityToSend.opisanieBody = this.editor.html.get().replace(/'/gi, '"');
       activityToSend.dopinfo = this.dopeditor.html.get().replace(/'/gi, '"');
 
-
-
-    activityToSend.audits = [];
+      activityToSend.audits = [];
 
       this.activity.audits.forEach((audit, idx) => {
         activityToSend.audits[idx] = {
           ...audit,
-          donut: null
-        }
+          donut: null,
+        };
         // if (audit.donut) {
         //   audit.donut.destroy();
         //   audit.donut = null;
         // }
       });
 
-      console.log(activityToSend.audits)
-
       activityToSend.AB = [];
       this.activity.AB.forEach((table, idx) => {
         activityToSend.AB[idx] = {
           ...table,
-          line: null
-        }
-        
+          line: null,
+        };
+
         // if (table.type == "big") {
         //   if (table.line) {
         //     table.line.destroy();
@@ -1174,48 +1165,37 @@ export default {
         // }
       });
       activityToSend.eGrafiks = [];
-      
+
       this.activity.eGrafiks.forEach((eGrafik, idx) => {
         if (eGrafik.grafik) {
-          activityToSend.eGrafiks[idx] = 
-          { 
-     ...eGrafiks,
-     grafik: null
-
-          }
-        
-          console.log(eGrafik);
-          // eGrafik.grafik.destroy();
-          // eGrafik.grafik = null;
-
-      //     activityToSend.eGrafiks[idx].datasets = eGrafik.datasets.map((e) => {
-      //  let returnable = {
-      //         ...e,
-      //         _meta : null
-      //       };
-      //       delete returnable._meta;
-      //       return returnable;
-      //     });
+          activityToSend.eGrafiks[idx] = {
+            ...eGrafiks,
+            grafik: null,
+          };
         }
       });
-      console.log(activityToSend);
-this.$store.dispatch('editActivity', activityToSend)
-   .then(()=>{
-     this.$vs.notify({title: "Успех", title:"Активность успешно изменена"})
-   }) .catch(
 
-     ()=>{
-     this.$vs.notify({title: "Ошибка", title:"Активность не изменена", color:'red'})
-   }
-   )
+      this.$store
+        .dispatch("editActivity", activityToSend)
+        .then(() => {
+          this.$vs.notify({
+            title: "Успех",
+            title: "Активность успешно изменена",
+          });
+        })
+        .catch(() => {
+          this.$vs.notify({
+            title: "Ошибка",
+            title: "Активность не изменена",
+            color: "red",
+          });
+        })
 
-
-   .finally(()=>{
-       setTimeout(() => {
-        this.editButtonToggle(false);
-      }, 400);
-   })
-   
+        .finally(() => {
+          setTimeout(() => {
+            this.editButtonToggle(false);
+          }, 400);
+        });
     },
     editButtonToggle(status) {
       if (status) {
@@ -1233,7 +1213,6 @@ this.$store.dispatch('editActivity', activityToSend)
       try {
         for (let prop of this.requirements) {
           if (!this.activity[prop]) {
-            console.log(prop);
             throw new Error(
               "Пусто, чего-то не хватает: " + this.activityNameErrors[prop]
             );
@@ -1304,13 +1283,10 @@ this.$store.dispatch('editActivity', activityToSend)
       }
     },
     createDonut(audit) {
-      console.log("CREATING DONUT...");
       if (!audit) {
         return;
       }
       if (audit.donut) {
-        console.log(audit);
-        console.log("has donut");
         this.updateDonut(audit);
         return;
       }
@@ -1351,7 +1327,6 @@ this.$store.dispatch('editActivity', activityToSend)
       });
     },
     updateDonut(audit) {
-      console.log("UPDATING DONUT...");
       if (!audit.donut) {
         this.createDonut(audit);
         return;
@@ -1469,8 +1444,6 @@ this.$store.dispatch('editActivity', activityToSend)
         );
 
         setTimeout(() => {
-          console.log(document.querySelectorAll(".statusZapuskInput"));
-
           M.Autocomplete.init(document.querySelectorAll(".statusZapuskInput"), {
             minLength: 1,
             data: {
@@ -1696,13 +1669,11 @@ this.$store.dispatch('editActivity', activityToSend)
       this.updateGrafik(table);
     },
     deleteTableTR(table, type) {
-      console.log(table, type);
       let idxOfTR = table.TRs.indexOf(table.TRs.find((v) => v.type === type));
 
-      console.log(idxOfTR);
       table.TRs.splice(idxOfTR, 1);
       let color = table.colors[idxOfTR];
-      console.log(color);
+
       table.colors.splice(idxOfTR, 1);
       table.colors.push(color);
       let idxOfLabel = table.line.data.datasets.indexOf(
@@ -1878,7 +1849,6 @@ this.$store.dispatch('editActivity', activityToSend)
         });
 
         table.line.data.datasets[idxOfTR].label = TR.type;
-        console.log(table.line.data.datasets);
 
         if (
           table.line.data.datasets[idxOfTR] &&
@@ -1943,7 +1913,8 @@ this.$store.dispatch('editActivity', activityToSend)
               eGrafik.nagruzkas.find((nagruzka) => {
                 return !nagruzka.label || !nagruzka.date || !nagruzka.value;
               })) ||
-            !eGrafik.sdate || !eGrafik.fdate ||
+            !eGrafik.sdate ||
+            !eGrafik.fdate ||
             (eGrafik.type == "zapusk" && !eGrafik.selectedIdx.length) ||
             (eGrafik.type != "zapusk" && eGrafik.selectedIdx === "")
           ) {
@@ -2003,8 +1974,6 @@ this.$store.dispatch('editActivity', activityToSend)
     },
   },
   deactivated() {
-    console.log("deactivated");
-
     this.destroyDonuts();
     this.destroyAB();
   },
