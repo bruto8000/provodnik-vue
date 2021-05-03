@@ -290,10 +290,13 @@ this.initDateSelects();
         }, 400);
         return;
       }
-      this.activity.opisanieBody = this.editor.html.get().replace(/'/gi, '"');
+      this.activity.opisanieBody =  this.editor.html.get().replace(/'/gi, '"');
+
+if(this.activity.sdate == "Не определена")
+this.activity.sdate = ''
 
       this.$store
-        .dispatch("addActivity", this.activity)
+        .dispatch("addActivity", _.cloneDeep(this.activity))
 
         .then(() => {
           this.$vs.notify({ title: "Активность добавлена" });

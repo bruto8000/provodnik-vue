@@ -1,127 +1,182 @@
 <template>
-   
-    <div @mouseup="unsetSomeClicked">
-
-
-
+  <div @mouseup="unsetSomeClicked">
     <div class="columns">
-
-  <div class="column is-6 is-offset-3">
-
-
-    <div class="columns center data-nachalo-konec">
-
-        <div class="column is-6  ">
+      <div class="column is-6 is-offset-3">
+        <div class="columns center data-nachalo-konec">
+          <div class="column is-6  ">
             <p>Дата начала:</p>
-            <input type="text" class="datepicker input" :disabled="some.step == 3 || some.step == 4"
-                v-model.lazy="date1">
-        </div>
+            <input
+              type="text"
+              class="datepicker input"
+              :disabled="some.step == 3 || some.step == 4"
+              v-model.lazy="date1"
+            />
+          </div>
 
-        <div class="column is-6">
+          <div class="column is-6">
             <p>Дата конца:</p>
-            <input type="text" class="datepicker input" :disabled="some.step == 3 || some.step == 4"
-                v-model.lazy="date2">
+            <input
+              type="text"
+              class="datepicker input"
+              :disabled="some.step == 3 || some.step == 4"
+              v-model.lazy="date2"
+            />
+          </div>
         </div>
 
-    </div>
-
-
-    <div class="columns">
-        <div class="column ">
+        <div class="columns">
+          <div class="column ">
             <div class="toolbar center block buttons-edit">
-    
-                <div class="block ">
-    
-    
-                    <button class="button is-success block" @click="changeOnServer"
-                        :disabled="some.step == 3 || some.step == 4"> <i class="mdi mdi-database-arrow-down mdi-24px"></i>
-                        Сохранить</button>
-                    <button class="button is-danger block" @click="clearSome(false,true)" :disabled="!(some.step == 3)"> <i
-                            class="mdi mdi-content-save-off-outline mdi-24px"></i> </button>
-    
-                    <button class="button is-primary block" @click="moveSome" :disabled="!(some.step == 3)"> <i
-                            class="mdi mdi-content-save-move-outline mdi-24px"></i> </button>
-                    <button class="button is-primary block" @click="history.copy = true;moveSome()"
-                        :disabled="!(some.step == 3)"> <i class="mdi mdi-content-save-all-outline mdi-24px"></i></button>
-                    <button class="button is-info block" @click="moveHistory(false)" :disabled="history.isFirst"> <i
-                            class="mdi mdi-undo mdi-24px"></i></button>
-                    <button class="button is-info block" @click="moveHistory(true)" :disabled="history.isLast"><i
-                            class="mdi mdi-redo mdi-24px"></i></button>
-                </div>
-    
-    
-                <div class="columns block"><input type="text" placeholder="Для нескольких"
-                        class="input column is-4 is-offset-4" v-model='some.input'></div>
-    
+              <div class="block ">
+                <button
+                  class="button is-success block"
+                  @click="changeOnServer"
+                  :disabled="some.step == 3 || some.step == 4"
+                >
+                  <i class="mdi mdi-database-arrow-down mdi-24px"></i> Сохранить
+                </button>
+                <button
+                  class="button is-danger block"
+                  @click="clearSome(false, true)"
+                  :disabled="!(some.step == 3)"
+                >
+                  <i class="mdi mdi-content-save-off-outline mdi-24px"></i>
+                </button>
+
+                <button
+                  class="button is-primary block"
+                  @click="moveSome"
+                  :disabled="!(some.step == 3)"
+                >
+                  <i class="mdi mdi-content-save-move-outline mdi-24px"></i>
+                </button>
+                <button
+                  class="button is-primary block"
+                  @click="
+                    history.copy = true;
+                    moveSome();
+                  "
+                  :disabled="!(some.step == 3)"
+                >
+                  <i class="mdi mdi-content-save-all-outline mdi-24px"></i>
+                </button>
+                <button
+                  class="button is-info block"
+                  @click="moveHistory(false)"
+                  :disabled="history.isFirst"
+                >
+                  <i class="mdi mdi-undo mdi-24px"></i>
+                </button>
+                <button
+                  class="button is-info block"
+                  @click="moveHistory(true)"
+                  :disabled="history.isLast"
+                >
+                  <i class="mdi mdi-redo mdi-24px"></i>
+                </button>
+              </div>
+
+              <div class="columns block">
+                <input
+                  type="text"
+                  placeholder="Для нескольких"
+                  class="input column is-4 is-offset-4"
+                  v-model="some.input"
+                />
+              </div>
             </div>
+          </div>
         </div>
       </div>
 
-
-</div>
-
-<div class="column is-2 is-offset-1 center">
-    <div class="box has-text-left is-inline-block" >
-
-
-    <div class="my-1"><div class="mx-1 p-3 min-w-36 tag  is-danger ">В</div>Выходной</div> 
-    <div class="my-1"><div class="mx-1 p-3 min-w-36 tag  is-warning ">Б</div>Больничный</div> 
-    <div class="my-1"><div class="mx-1 p-3 min-w-36 tag  is-info ">З</div>Замещение</div> 
-    <div class="my-1"><div class="mx-1 p-3 min-w-36 tag  is-primary ">О</div>Отпуск</div> 
-    <div class="my-1"><div class="mx-1 p-3 min-w-36 tag  is-success ">8|7</div>Смена</div> 
+      <div class="column is-2 is-offset-1 center">
+        <div class="box has-text-left is-inline-block">
+          <div class="my-1">
+            <div class="mx-1 p-3 min-w-36 tag  is-danger ">В</div>
+            Выходной
+          </div>
+          <div class="my-1">
+            <div class="mx-1 p-3 min-w-36 tag  is-warning ">Б</div>
+            Больничный
+          </div>
+          <div class="my-1">
+            <div class="mx-1 p-3 min-w-36 tag  is-info ">З</div>
+            Замещение
+          </div>
+          <div class="my-1">
+            <div class="mx-1 p-3 min-w-36 tag  is-primary ">О</div>
+            Отпуск
+          </div>
+          <div class="my-1">
+            <div class="mx-1 p-3 min-w-36 tag  is-success ">8|7</div>
+            Смена
+          </div>
+        </div>
+      </div>
     </div>
-   </div>
 
-    </div>
-
-   
     <div class="table-container">
-
-
-        <table class="table is-striped is-hoverable ">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th v-for="day in tabelFiltred"  :key="day.id" class="center" style="min-width: 40px;">{{day.date | cutYear}}
-                    </th>
-                </tr>
-                <tr>
-                    <td>ФИО</td>
-                    <th v-for="day in tabelFiltred"  :key="day.id" class="center">{{ day.date | dayOfWeek}}</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="employee in employees" :key="employee.nid">
-                    <td style="width: 1%;
+      <table class="table is-striped is-hoverable ">
+        <thead>
+          <tr>
+            <th></th>
+            <th
+              v-for="day in tabelFiltred"
+              :key="day.id"
+              class="center"
+              style="min-width: 40px;"
+            >
+              {{ day.date | cutYear }}
+            </th>
+          </tr>
+          <tr>
+            <td>ФИО</td>
+            <th v-for="day in tabelFiltred" :key="day.id" class="center">
+              {{ day.date | dayOfWeek }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="employee in employees" :key="employee.nid">
+            <td
+              style="width: 1%;
                 white-space: nowrap; text-align: left;
                 
                 position: sticky;
     left:0;
     z-index: 2;
     background: white;
-                "> {{employee['full_name']}}</td>
-                    <td v-for="day in tabelFiltred" :key="day.id" class="center" :class="{'has-background-danger' : day.somes.includes(employee.nid),
-                        'has-background-warning' :  day.presomes.includes(employee.nid) }"
-                        @mouseover="preEnterSome(day,employee.nid)">
-
-                        <input class=" input  p-0 center min-w-36" :class="classObjForTd(day,employee)"
-                            @mousedown="setSomeClicked(day,employee.nid)" type="text"
-                            v-model="day.body[employee.nid]" @input="filterInput(day, employee.nid)">
-                    </td>
-
-                </tr>
-            </tbody>
-        </table>
+                "
+            >
+              {{ employee["full_name"] }}
+            </td>
+            <td
+              v-for="day in tabelFiltred"
+              :key="day.id"
+              class="center"
+              :class="{
+                'has-background-danger': day.somes.includes(employee.nid),
+                'has-background-warning': day.presomes.includes(employee.nid),
+              }"
+              @mouseover="preEnterSome(day, employee.nid)"
+            >
+              <input
+                class=" input  p-0 center min-w-36"
+                :class="classObjForTd(day, employee)"
+                @mousedown="setSomeClicked(day, employee.nid)"
+                type="text"
+                v-model="day.body[employee.nid]"
+                @input="filterInput(day, employee.nid)"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-
-</div>
-    
-    
+  </div>
 </template>
 
 <script>
-
 export default {
   data() {
     return {
@@ -133,7 +188,7 @@ export default {
         isFirst: true,
         diff: 0,
       },
-   preloader: true,
+      preloader: true,
       kalendar: [],
       date1: "",
       date2: "",
@@ -190,14 +245,10 @@ export default {
         somes: [],
         presomes: [],
         input: "",
-      }
-
+      },
     };
   },
-  mounted: function () {
-    
-
-
+  mounted: function() {
     let year = new Date().getFullYear();
     let month = new Date().getMonth();
     let kvartal = "";
@@ -221,12 +272,12 @@ export default {
       showKvartalBtn: true,
       // showYearBtn: true
     });
-setTimeout(() => {
-    this.preloader = false
-}, 200);
+    setTimeout(() => {
+      this.preloader = false;
+    }, 200);
   },
   methods: {
-    dateRange: function () {
+    dateRange: function() {
       let date1 = this.date1;
       let date2 = this.date2;
 
@@ -323,7 +374,7 @@ setTimeout(() => {
       this.range = dates;
       return dates;
     },
-    createTable: function () {
+    createTable: function() {
       //THIS IS FOR BACKEND
       //             let range = this.dateRange();
       // range.forEach((element,idx) => {
@@ -335,7 +386,7 @@ setTimeout(() => {
       //     }, idx * 100);
       // });
     },
-    preEnterSome: function (day, nid, clear) {
+    preEnterSome: function(day, nid, clear) {
       if (this.some.OFF) return;
       this.some.OFF = true; //OPTIMIZATION
       setTimeout(() => {
@@ -347,7 +398,6 @@ setTimeout(() => {
       }
 
       if (this.some.clicked || this.some.step == 2) {
-    
         this.some.PRE.X = this.tabelFiltred.indexOf(day);
         this.some.PRE.Y = this.trueNID.indexOf(nid);
         this.some.presomes = [];
@@ -387,12 +437,9 @@ setTimeout(() => {
       }
     },
     setSomeClicked(day, who) {
-    
       if (this.some.clicked) return;
 
-  
       if (this.some.step == 4) {
-
         let x = this.some.L.X - this.some.F.X;
         let y = this.some.L.Y - this.some.F.Y;
 
@@ -423,7 +470,6 @@ setTimeout(() => {
               element.body[v] = this.history.arrOfHistory[
                 this.history.arrOfHistory.length - 1
               ][i];
-   
 
               element.presomes = [];
               i++;
@@ -449,8 +495,7 @@ setTimeout(() => {
       if (this.some.PRE.X == -1) {
         this.some.PRE.X == this.some.L.X;
         this.some.PRE.X == this.some.L.X;
-    
-    
+
         return;
       }
 
@@ -458,7 +503,6 @@ setTimeout(() => {
         this.some.PRE.X <= this.some.F.X &&
         this.some.PRE.Y <= this.some.F.Y
       ) {
-
         this.some.presomes.forEach((element) => {
           element.presomes = [];
         });
@@ -468,7 +512,6 @@ setTimeout(() => {
 
       if (!(this.some.step == 2)) return;
 
-
       this.some.L.X = this.some.PRE.X;
       this.some.L.Y = this.some.PRE.Y;
       this.some.PRE.X = -1;
@@ -477,7 +520,7 @@ setTimeout(() => {
       this.some.step = 3;
       this.modifSome();
     },
-    moveSome: function (day, who) {
+    moveSome: function(day, who) {
       if (this.some.step == 4) {
         M.toast({
           html: "Выберите новое начаало",
@@ -496,7 +539,7 @@ setTimeout(() => {
         html: "Выберите новое начало",
       });
     },
-    modifSome: function () {
+    modifSome: function() {
       // slice(this.some.F.X, this.some.L.X)
 
       this.tabelFiltred.forEach((element, idx) => {
@@ -511,7 +554,7 @@ setTimeout(() => {
         this.$forceUpdate();
       });
     },
-    clearSome: function (keepHistory, clearXY) {
+    clearSome: function(keepHistory, clearXY) {
       if (clearXY) {
         this.some.F.Y = -1;
         this.some.F.X = -1;
@@ -541,19 +584,18 @@ setTimeout(() => {
       this.some.somes = [];
       this.$forceUpdate();
     },
-    changeOnServer:async function (event) {
+    changeOnServer: async function(event) {
       event.target.classList.toggle("is-loading");
- await   this.$store.dispatch('saveTabel', this.tabel);
-     event.target.classList.toggle("is-loading");
+      await this.$store.dispatch("saveTabel", this.tabel);
+      event.target.classList.toggle("is-loading");
     },
-    exportToExcel: function (id) { },
-    moveHistory: function (direction) {
+    exportToExcel: function(id) {},
+    moveHistory: function(direction) {
       if (this.some.step != 3) {
         M.toast({ html: "История работает только для множества" });
         return;
       }
       if (!direction) {
-    
         this.history.isLast = false;
 
         this.history.diff++;
@@ -577,7 +619,6 @@ setTimeout(() => {
           this.history.write = true;
         });
       } else {
-  
         this.history.diff--;
         if (this.history.diff == 0) {
           this.history.isLast = true;
@@ -600,7 +641,7 @@ setTimeout(() => {
         });
       }
     },
-    filterInput: function (day, emp) {
+    filterInput: function(day, emp) {
       day.body[emp] = day.body[emp].toUpperCase().trim();
     },
     planFactCalculate() {
@@ -644,7 +685,9 @@ setTimeout(() => {
       });
     },
     classObjForTd(day, employee) {
-      if(!day.body[employee.nid]){ return;}
+      if (!day.body[employee.nid]) {
+        return;
+      }
       let dataOfDay = day.body[employee.nid].trim().toUpperCase();
       return {
         "has-background-info": dataOfDay == "З",
@@ -655,10 +698,10 @@ setTimeout(() => {
           Number(dataOfDay.replace(",", "."))
         ),
       };
-    }
+    },
   },
   watch: {
-    someInput: function (n, o) {
+    someInput: function(n, o) {
       if (this.some.step === 3) {
         this.some.somes.forEach((element) => {
           element.somes.forEach((v) => {
@@ -667,38 +710,37 @@ setTimeout(() => {
         });
       }
     },
-    date1: function (n, o) {
+    date1: function(n, o) {
       if (n.split(" ").length == 3 && this.date2.split(" ").length == 3) {
         this.dateRange();
         return;
       }
       if (n.split(" ").length == 2 || n.split(" ").length == 1) {
-        if(this.date2 != n){
-        this.date2 = n;
-        this.dateRange();
+        if (this.date2 != n) {
+          this.date2 = n;
+          this.dateRange();
         }
       }
       return;
     },
-    date2: function (n, o) {
+    date2: function(n, o) {
       if (n.split(" ").length == 3 && this.date1.split(" ").length == 3) {
         this.dateRange();
         return;
       }
       if (n.split(" ").length == 2 || n.split(" ").length == 1) {
-        if(this.date1 != n){
-        this.date1 = n;
-        this.dateRange();
-      }
+        if (this.date1 != n) {
+          this.date1 = n;
+          this.dateRange();
+        }
         return;
       }
       return;
     },
-    someArrInput: function (n, o) {
+    someArrInput: function(n, o) {
       if (!this.history.write || !n.length) return;
 
       if (!this.history.isLast) {
-
         this.history.arrOfHistory = this.history.arrOfHistory.slice(
           0,
           -this.history.diff
@@ -714,16 +756,15 @@ setTimeout(() => {
         this.history.isFirst = false;
       }
     },
-    tabelFiltred: function (n) {
-
+    tabelFiltred: function(n) {
       this.planFactCalculate();
     },
   },
   computed: {
-    someInput: function () {
+    someInput: function() {
       return this.some.input;
     },
-    tabelFiltred: function () {
+    tabelFiltred: function() {
       if (!this.range.length) return [];
 
       try {
@@ -735,7 +776,7 @@ setTimeout(() => {
         return [];
       }
     },
-    someArrInput: function () {
+    someArrInput: function() {
       let arr = [];
       this.some.somes.forEach((e) => {
         e.somes.forEach((ie) => {
@@ -744,23 +785,23 @@ setTimeout(() => {
       });
       return arr;
     },
-    employees(){
-return this.$store.state.employees
+    employees() {
+      return this.$store.state.employees;
     },
-    trueNID(){
-return this.$store.getters.trueNID;
+    trueNID() {
+      return this.$store.getters.trueNID;
     },
     tabel: {
-        get: function(){
-            return this.$store.state.editableTabel
-        },
-        set: function(newV){
-            console.log(newV)
-        }
-    }
+      get: function() {
+        return this.$store.state.editableTabel;
+      },
+      set: function(newV) {
+        console.log(newV);
+      },
+    },
   },
   filters: {
-    dayOfWeek: function (val) {
+    dayOfWeek: function(val) {
       let parts = val.split(" ");
 
       let filtredDate = new Date(parts[2], parts[1] - 1, parts[0]);
@@ -788,15 +829,14 @@ return this.$store.getters.trueNID;
       return val.toFixed(2);
     },
     cutYear(val) {
-      return val.split(" ").slice(0, -1).join(" ");
+      return val
+        .split(" ")
+        .slice(0, -1)
+        .join(" ");
     },
   },
-  components: {
-    
-  }
-}
+  components: {},
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

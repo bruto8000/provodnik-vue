@@ -44,6 +44,17 @@
           </li>
         </ul>
       </vs-collapse-item>
+
+      <vs-collapse-item>
+        <div slot="header">
+          Сотрудники
+        </div>
+        <ul>
+          <li class="is-clickable " @click="routeTo('employees')">
+            Управление
+          </li>
+        </ul>
+      </vs-collapse-item>
     </vs-collapse>
   </div>
 </template>

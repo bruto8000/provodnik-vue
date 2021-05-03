@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="center">{{ header }}</div>
+    <div class="center text2 ">{{ header }}</div>
     <select
       v-model="innerSelected"
       type="text"
@@ -42,14 +42,15 @@ export default {
   },
   methods: {
     initMe() {
-      console.log('initing Select', this.options)
+    
       if (!!this.me) {
         this.me.destroy();
+        this.me = null;
       }
 
       if (!this.rnd_id) {
         while (true) {
-          let RND = (this.rnd_id = (Math.random() * 2000).toFixed());
+       this.rnd_id = (Math.random() * 2000).toFixed();
 
           if (!document.getElementById("sel" + this.rnd_id)) break;
         }
@@ -72,6 +73,9 @@ export default {
       this.initMe();
     },
   },
+  activated(){
+        this.initMe();
+  }
 };
 </script>
 

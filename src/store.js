@@ -1,6 +1,7 @@
 import Vuex from "vuex";
 import Vue from "vue";
 import axios from "axios";
+
 Vue.prototype.$URL = "";
 Vue.use(Vuex);
 
@@ -11,7 +12,7 @@ const showReceivingError = function(err) {
 };
 
 const getEmployees = (store) => {
-  axios.get(Vue.prototype.$URL + "/vendor/showEmployees.php").then(
+  axios.get(Vue.prototype.$URL + "/vendor/showEmployees").then(
     (result) => {
       store.dispatch("insertItems", {
         items: result.data.reverse(),
@@ -25,9 +26,12 @@ const getEmployees = (store) => {
   );
 };
 const getTabel = (store) => {
+setTimeout(() => {
+  
+
   axios
     .all([
-      axios.get(Vue.prototype.$URL + "/vendor/showTabel.php"),
+      axios.get(Vue.prototype.$URL + "/vendor/showTabel"),
       axios.get(
         "https://isdayoff.ru/api/getdata?year=2021&pre=0&delimeter=DAY"
       ),
@@ -53,6 +57,7 @@ const getTabel = (store) => {
           }
 
           store.state.employees.forEach((em) => {
+        
             if (!dt.body[em.nid]) {
               dt.body[em.nid] = "";
             }
@@ -66,9 +71,11 @@ const getTabel = (store) => {
         store.commit("setEditableTabel", _.cloneDeep(Tres.data));
       })
     );
+
+  }, 2000);
 };
 const getActivities = (store) => {
-  axios.get("./vendor/showActivities.php").then(
+  axios.get("./vendor/showActivities").then(
     (res) => {
       store.dispatch("insertItems", {
         items: res.data.reverse(),
@@ -82,7 +89,7 @@ const getActivities = (store) => {
   );
 };
 const getInfoQueries = (store) => {
-  axios.get("./vendor/showInfoQueries.php").then(
+  axios.get("./vendor/showInfoQueries").then(
     (res) => {
       store.dispatch("insertItems", {
         items: res.data.reverse(),
@@ -112,6 +119,9 @@ const parsingFunctions = {
           ? htmlEl.innerText
           : htmlEl.innerText.slice(0, 50) + "...";
       activity.opisanieBodyHTML = htmlEl;
+   
+(activity.sdate == '0000-00-00') && (activity.sdate = '');
+(activity.fdate == '0000-00-00') && (activity.fdate = '');
     });
     return activities;
   },
@@ -287,7 +297,7 @@ const store = new Vuex.Store({
     async editEmployee(context, editedEmployee) {
       axios
         .post(
-          Vue.prototype.$URL + "/vendor/editEmployee.php",
+          Vue.prototype.$URL + "/vendor/editEmployee",
           JSON.stringify(editedEmployee)
         )
         .then(
@@ -309,7 +319,7 @@ const store = new Vuex.Store({
     async deleteEmployee(context, deletableEmployee) {
       axios
         .post(
-          Vue.prototype.$URL + "/vendor/deleteEmployee.php",
+          Vue.prototype.$URL + "/vendor/deleteEmployee",
           JSON.stringify(deletableEmployee)
         )
         .then(
@@ -326,7 +336,7 @@ const store = new Vuex.Store({
     async addEmployee(context, newEmployee) {
       await axios
         .post(
-          Vue.prototype.$URL + "/vendor/addEmployee.php",
+          Vue.prototype.$URL + "/vendor/addEmployee",
           JSON.stringify(newEmployee)
         )
         .then((res) => {
@@ -346,7 +356,7 @@ const store = new Vuex.Store({
     async saveTabel(context, newTabel) {
       axios
         .post(
-          Vue.prototype.$URL + "/vendor/saveTabel.php",
+          Vue.prototype.$URL + "/vendor/saveTabel",
           JSON.stringify(newTabel)
         )
         .then((res) => {
@@ -377,11 +387,11 @@ const store = new Vuex.Store({
     //   context.commit("insertInfoQueries", { infoQueries });
     // },
     async changeActivityOcenka(context, { id, ocenka }) {
-      console.log(id, "suka id");
+     
       return new Promise((resolve, reject) => {
         axios
           .post(
-            "./vendor/changeOcenka.php",
+            "./vendor/changeOcenka",
             JSON.stringify({
               id: id,
               ocenka: ocenka,
@@ -401,11 +411,13 @@ const store = new Vuex.Store({
     },
     //ACTIVITIES////
     async addActivity({ commit, dispatch }, activity) {
+    
       return new Promise((resolve, reject) => {
         axios
-          .post("../vendor/addActivity.php", JSON.stringify(activity))
+          .post("../vendor/addActivity", activity)
           .then((res) => {
-            let activity = res.data;
+            let activityId = res.data;
+            activity.id = activityId;
             dispatch("insertItems", {
               items: [activity],
               insertTo: "activities",
@@ -420,69 +432,46 @@ const store = new Vuex.Store({
       });
     },
     async editActivity({ commit }, activity) {
+      console.log('editing activity')
       await axios
-        .post("../vendor/editActivity.php", JSON.stringify(activity))
+        .post("../vendor/editActivity", activity)
         .then((r) => {
-          if (r.data == "OK") {
+   
             commit("updateActivity", activity);
             return Promise.resolve();
-          } else {
-            throw new Error(r.data);
-          }
+       
         })
         .catch((e) => {
-          return Promise.reject();
+          console.log(e)
+          return Promise.reject(e);
         });
     },
     async deleteActivity({ commit }, activity) {
       await axios
         .post(
-          "/vendor/deleteActivity.php",
-          JSON.stringify({
-            id: activity.id,
-          })
+          "/vendor/deleteActivity",
+        {
+            id: activity.id
+          }
         )
         .then((responce) => {
-          console.log(responce);
-          if (responce.data == "OK") {
+         
             commit("deleteActivity", activity);
             return Promise.resolve();
-          } else {
-            throw new Error(responce.data);
-          }
+       
         })
         .catch((e) => {
           return Promise.reject(e);
         });
     },
-    async archiveActivity({ commit }, activity) {
-      await axios
-        .post(
-          "/vendor/archiveActivity.php",
-          JSON.stringify({
-            id: activity.id,
-          })
-        )
-        .then((responce) => {
-          console.log(responce);
-          if (responce.data == "OK") {
-            commit("deleteActivity", activity);
-            return Promise.resolve();
-          } else {
-            throw new Error(responce.data);
-          }
-        })
-        .catch((e) => {
-          return Promise.reject(e);
-        });
-    },
+ 
     /////// INFO QUERIES /////
 
     async addInfoQuery({ commit, dispatch }, infoQuery) {
       return new Promise((resolve, reject) => {
         console.log("adding");
         axios
-          .post("../vendor/addInfoQuery.php", JSON.stringify(infoQuery))
+          .post("../vendor/addInfoQuery", JSON.stringify(infoQuery))
           .then((res) => {
             let infoQuery = res.data;
             dispatch("insertItems", {
@@ -505,7 +494,7 @@ const store = new Vuex.Store({
       return new Promise((resolve, reject) => {
         console.log("adding");
         axios
-          .post("../vendor/editInfoQuery.php", JSON.stringify(infoQuery))
+          .post("../vendor/editInfoQuery", JSON.stringify(infoQuery))
           .then((res) => {
             commit("updateInfoQuery", infoQuery);
 
@@ -519,7 +508,7 @@ const store = new Vuex.Store({
     async deleteInfoQuery({ commit }, infoQuery) {
       await axios
         .post(
-          "/vendor/deleteInfoQuery.php",
+          "/vendor/deleteInfoQuery",
           JSON.stringify({
             id: infoQuery.id,
           })
@@ -539,7 +528,7 @@ const store = new Vuex.Store({
     async archiveInfoQuery({ commit }, infoQuery) {
       await axios
         .post(
-          "/vendor/archiveInfoQuery.php",
+          "/vendor/archiveInfoQuery",
           JSON.stringify({
             id: infoQuery.id,
           })

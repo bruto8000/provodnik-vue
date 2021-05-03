@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="columns m-4 is-align-items-center">
-      <div class="mx-4"><h2 class="title is-2">Теги:</h2></div>
+      <div class="mx-4"><h2 class="title is-4">Теги:</h2></div>
       <div class="mx-4">
         <button
           data-target="tagDropDown"
@@ -13,7 +13,7 @@
     </div>
 
     <div class="field is-grouped is-grouped-multiline">
-      <div v-for="tag in tags" class="tags has-addons m-2">
+      <div v-for="(tag,idx) in tags" :key='idx' class="tags has-addons m-2">
         <span
           @click="editTagBody(tag)"
           class="tag is-clickable is-medium"

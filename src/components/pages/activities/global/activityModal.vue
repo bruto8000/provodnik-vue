@@ -66,7 +66,7 @@
             </div>
 
             <div class="column is-6">
-              <canvas class="" :id="'DONUT' + idx" width="400" height="400">
+              <canvas class="" :id="'modalDONUT' + idx" width="400" height="400">
               </canvas>
             </div>
           </div>
@@ -79,9 +79,22 @@
         </h3>
 
         <div class="box" v-for="(table, idx) in activity.AB" :key="idx">
-          <div class="columns">
-            <canvas :id="'line' + idx"> </canvas>
+          <div v-if='table.type == "big"' class="columns">
+            <canvas :id="'modalLine' + idx"> </canvas>
           </div>
+  <div v-else>
+<ul class="has-text-centered">
+  <li class="is-size-4" v-if="table.B2B">B2B: {{table.B2B}}</li>
+  <li class="is-size-4" v-if="table.B2C">B2C: {{table.B2C}}</li>
+  <li class="is-size-4" v-if="table.FIX">FIX: {{table.FIX}}</li>
+  <li class="is-size-4" v-if="table.FMC">FMC: {{table.FMC}}</li>
+  <li class="is-size-4" v-if="table.FTTB">FTTB: {{table.FTTB}}</li>
+  <li class="is-size-4" v-if="table.PC">PC: {{table.PC}}</li>
+</ul>
+
+
+  </div>
+          
         </div>
       </div>
 
@@ -188,7 +201,7 @@ this.changeOcenka({
           return;
         }
         let ctx = document
-          .getElementById("DONUT" + this.activity.audits.indexOf(audit))
+          .getElementById("modalDONUT" + this.activity.audits.indexOf(audit))
           .getContext("2d");
         let data = [];
         let labels = [];
@@ -237,7 +250,7 @@ this.changeOcenka({
           return;
         }
         let ctx = document.getElementById(
-          "line" + this.activity.AB.indexOf(table)
+          "modalLine" + this.activity.AB.indexOf(table)
         );
 
         table.lineactivityModal = new Chart(ctx, {

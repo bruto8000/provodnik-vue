@@ -4,7 +4,7 @@
 <div class="eGrafiks">
   <div class="box">
     <div v-if="fileloadstatus != 'parsed'">
-      <h1 class="title is-1 has-text-centered">
+      <h1 class="title is-4 has-text-centered">
         Выберите файл для построения графика...
       </h1>
 
@@ -401,6 +401,18 @@ export default {
   mounted() {
     // console.log('mounted')
     this.initimageCopyModal();
+
+
+          this.$nextTick().then(() => {
+        this.eGrafiks.forEach((eGrafik) => {
+          eGrafik.loadType = "db"; ///LOADED FROM DataBase
+
+          this.initGrafik(eGrafik);
+        });
+
+        this.initDates();
+        this.initSelect();
+      });
   },
   methods: {
     loadFile(e) {
@@ -967,6 +979,7 @@ export default {
   },
   watch: {
     eGrafiks(n, o) {
+    
       if (!this.watcherNeed) {
         this.watcherNeed = true;
         return;

@@ -183,7 +183,7 @@
         </div>
         <div class="collapsible-body">
           <div class="AB">
-            <h1 class="title is-1">
+            <h1 class="title  is-4  has-text-centered">
               Абонентская база
 
               <button class="button is-primary" @click="openABmodal()">
@@ -599,7 +599,7 @@
         </div>
         <div class="collapsible-body">
           <div class="audits ">
-            <h3 class="center fluid-text title is-3">
+            <h3 class="center fluid-text title is-4">
               Голос клиента (Аудит)
               <button
                 class="button is-danger"
@@ -850,16 +850,7 @@
         Изменить активность
       </div>
     </div>
-    <div class="columns my-4">
-      <div
-        @click="openArchivingModal"
-        :disabled="buttonIsLoading"
-        :class="{ 'is-loading': buttonIsLoading }"
-        class="button has-text-white is-large is-info column is-12 black-text title is-3"
-      >
-        Архивировать активность
-      </div>
-    </div>
+   
     <div class="columns my-4">
       <div
         @click="openDeletingModal"
@@ -888,24 +879,7 @@
       </div>
     </div>
 
-    <div class="modal" id="archivingModal">
-      <div class="modal-content">
-        <h2 class="title is-2">
-          Вы уверены что хотите архивировать эту активность?
-        </h2>
-        <p>
-          Активность уйдет в архив. Данные останутся но тянутся будут только при
-          запросе архивных.
-        </p>
-      </div>
-
-      <div class="modal-footer">
-        <button @click="archiveActivity" class="button modal-close is-danger">
-          Да, арихивировать
-        </button>
-        <button class="button modal-close is-primary">Нет, закрыть</button>
-      </div>
-    </div>
+ 
   </div>
 </template>
 
@@ -997,7 +971,7 @@ export default {
       buttonIsLoading: false,
       ABModal: {},
       deletingModal: null,
-      archivingModal: null,
+  
     };
   },
   mounted: function() {
@@ -1060,7 +1034,7 @@ export default {
     this.ABModal = M.Modal.init(document.getElementById("ABModal"));
     this.initGrafikDates();
     this.initdeletingModal();
-    this.initArchivingModal();
+
   },
   created() {
     this.loadactivity();
@@ -1086,7 +1060,12 @@ export default {
           this.initStatusZapusk();
           this.initDates();
           this.activity.audits.forEach((v) => {
-            this.createDonut(v);
+      
+
+              
+          this.createDonut(v);
+  
+
           });
 
           this.activity.AB.forEach((table) => {
@@ -1102,14 +1081,8 @@ export default {
         document.getElementById("deletingModal")
       );
     },
-    initArchivingModal() {
-      this.archivingModal = M.Modal.init(
-        document.getElementById("archivingModal")
-      );
-    },
-    openArchivingModal() {
-      this.openModal(this.archivingModal);
-    },
+ 
+
     openDeletingModal() {
       this.openModal(this.deletingModal);
     },
@@ -1143,6 +1116,7 @@ export default {
         activityToSend.audits[idx] = {
           ...audit,
           donut: null,
+          donutactivityModal: null
         };
         // if (audit.donut) {
         //   audit.donut.destroy();
@@ -1155,6 +1129,7 @@ export default {
         activityToSend.AB[idx] = {
           ...table,
           line: null,
+          lineactivityModal: null
         };
 
         // if (table.type == "big") {
@@ -1169,12 +1144,18 @@ export default {
       this.activity.eGrafiks.forEach((eGrafik, idx) => {
         if (eGrafik.grafik) {
           activityToSend.eGrafiks[idx] = {
-            ...eGrafiks,
+            ...eGrafik,
             grafik: null,
+      datasets  : eGrafik.datasets.map(dataset=>({
+...dataset,
+_meta: null
+      }))
           };
         }
       });
 
+window.activityToSend = activityToSend
+console.log(activityToSend)
       this.$store
         .dispatch("editActivity", activityToSend)
         .then(() => {
@@ -1283,10 +1264,14 @@ export default {
       }
     },
     createDonut(audit) {
+    
+    
+      console.log('CREAINT SUGKA')
       if (!audit) {
         return;
       }
       if (audit.donut) {
+
         this.updateDonut(audit);
         return;
       }
@@ -1325,6 +1310,8 @@ export default {
 
         // These labels appear in the legend and in the tooltips when hovering different arcs
       });
+
+      console.log(audit.donut)
     },
     updateDonut(audit) {
       if (!audit.donut) {
@@ -1946,24 +1933,8 @@ export default {
             color: "red",
           });
         });
-    },
-    archiveActivity() {
-      this.$store
-        .dispatch("archiveActivity", this.activity)
-        .then(() => {
-          this.$vs.notify({
-            text: "Активность архивирована ",
-          });
-          this.$router.push({ path: "/show-activities" });
-        })
-        .catch((e) => {
-          this.$vs.notify({
-            text: "Активность НЕ архивирована! ",
-            title: "Ошибка",
-            color: "red",
-          });
-        });
-    },
+    }
+ 
   },
   watch: {
     activity: function(n, o) {
@@ -1978,9 +1949,12 @@ export default {
     this.destroyAB();
   },
   activated() {
-    this.activity.audits.forEach((v) => {
-      this.createDonut(v);
+  this.$nextTick().then(()=>{
+ this.activity.audits.forEach((v) => {
+  
+      // this.createDonut(v);
     });
+  }) 
 
     this.activity.AB.forEach((table) => {
       if (table.type == "big") {

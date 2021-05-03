@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="center">{{ header }}</div>
+    <div class="text2 center ">{{ header }}</div>
     <input
       v-model="innerText"
       type="text"

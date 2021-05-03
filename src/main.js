@@ -6,9 +6,15 @@ import _ from 'lodash'
 
 
 
+
+
 // !!!!!!!!!!! FROALA EDITOR IN PUBLIC  !!!!!!!!!!!!!!!!
 Vue.prototype.$FroalaEditor = FroalaEditor
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
 
 import './js/materializeWithKvartal.js'
 import './js/chart.js'

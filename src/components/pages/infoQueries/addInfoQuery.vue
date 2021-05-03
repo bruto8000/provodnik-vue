@@ -18,6 +18,7 @@
         <input-date
           :value.sync="infoQuery.sdate"
           header="Дата отработки запроса"
+   
         >
         </input-date>
       </div>

@@ -9615,10 +9615,10 @@ $jscomp.polyfill = function (e, r, p, m) {
         this.close();
       }
     },
-    {
+    { 
         key: "_monthSelect",
         value: function _monthSelect() {
-          this.setInputValue(this.calendars[0].month+1 + ' ' + this.calendars[0].year);
+          this.setInputValue((this.calendars[0].month > 8 ? this.calendars[0].month +1 : '0' + (this.calendars[0].month+1))  + ' ' + this.calendars[0].year);
           this.close();
         }
       },
