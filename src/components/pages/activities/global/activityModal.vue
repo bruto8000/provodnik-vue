@@ -2,22 +2,24 @@
   <vs-popup :active.sync="active" class="holamundo" :title="activity.nazvanie">
     <div class="">
       <div class="right" v-if="activity.ocenka">
-        <vs-select v-if="admin"  label="Оценка" v-model="currentOcenkaType">
-          <vs-select-item @click="console.log('sik')" value="" text="Без оценки" />
+        <vs-select v-if="admin" label="Оценка" v-model="currentOcenkaType">
+          <vs-select-item
+            @click="console.log('sik')"
+            value=""
+            text="Без оценки"
+          />
           <vs-select-item value="Успешно" text="Успешно" />
           <vs-select-item value="С ошибкой" text="С ошибкой" />
         </vs-select>
 
-<div v-else>
-  <h4 class="title is-4 m-0">
-    Оценка :
-  </h4>
-   <p class="mx-2">{{currentOcenkaType || "Не оценена"}}</p>
-</div>
+        <div v-else>
+          <h4 class="title is-4 m-0">
+            Оценка :
+          </h4>
+          <p class="mx-2">{{ currentOcenkaType || "Не оценена" }}</p>
+        </div>
         <div
-          v-if="
-            currentOcenkaType == 'С ошибкой' && currentOcenkaReason != ''
-          "
+          v-if="currentOcenkaType == 'С ошибкой' && currentOcenkaReason != ''"
           class="ocenkaReason  has-text-centered"
         >
           <vs-tooltip position="bottom" :text="currentOcenkaReason"
@@ -66,7 +68,12 @@
             </div>
 
             <div class="column is-6">
-              <canvas class="" :id="'modalDONUT' + idx" width="400" height="400">
+              <canvas
+                class=""
+                :id="'modalDONUT' + idx"
+                width="400"
+                height="400"
+              >
               </canvas>
             </div>
           </div>
@@ -79,43 +86,44 @@
         </h3>
 
         <div class="box" v-for="(table, idx) in activity.AB" :key="idx">
-          <div v-if='table.type == "big"' class="columns">
+          <div v-if="table.type == 'big'" class="columns">
             <canvas :id="'modalLine' + idx"> </canvas>
           </div>
-  <div v-else>
-<ul class="has-text-centered">
-  <li class="is-size-4" v-if="table.B2B">B2B: {{table.B2B}}</li>
-  <li class="is-size-4" v-if="table.B2C">B2C: {{table.B2C}}</li>
-  <li class="is-size-4" v-if="table.FIX">FIX: {{table.FIX}}</li>
-  <li class="is-size-4" v-if="table.FMC">FMC: {{table.FMC}}</li>
-  <li class="is-size-4" v-if="table.FTTB">FTTB: {{table.FTTB}}</li>
-  <li class="is-size-4" v-if="table.PC">PC: {{table.PC}}</li>
-</ul>
-
-
-  </div>
-          
+          <div v-else>
+            <ul class="has-text-centered">
+              <li class="is-size-4" v-if="table.B2B">B2B: {{ table.B2B }}</li>
+              <li class="is-size-4" v-if="table.B2C">B2C: {{ table.B2C }}</li>
+              <li class="is-size-4" v-if="table.FIX">FIX: {{ table.FIX }}</li>
+              <li class="is-size-4" v-if="table.FMC">FMC: {{ table.FMC }}</li>
+              <li class="is-size-4" v-if="table.FTTB">
+                FTTB: {{ table.FTTB }}
+              </li>
+              <li class="is-size-4" v-if="table.PC">PC: {{ table.PC }}</li>
+            </ul>
+          </div>
         </div>
       </div>
 
       <div class="modal-footer">
-    
-    
-       
-        <vs-button v-if='admin' class="mx-3" @click="editActivity()" size="large">Изменить</vs-button>
-    <vs-button class="mx-3" @click='hideMe' size="large">Закрыть</vs-button>
+        <vs-button
+          v-if="admin"
+          class="mx-3"
+          @click="editActivity()"
+          size="large"
+          >Изменить</vs-button
+        >
+        <vs-button class="mx-3" @click="hideMe" size="large">Закрыть</vs-button>
       </div>
     </div>
 
-    <vs-popup title="Выберите причину:"  :active.sync="needReasonModal">
-      <vs-select      width="100%" v-model='currentOcenkaReason'>
+    <vs-popup title="Выберите причину:" :active.sync="needReasonModal">
+      <vs-select width="100%" v-model="currentOcenkaReason">
         <vs-select-item
-     
           v-for="(item, idx) in ocenkaReasons"
           :key="idx"
-         :text="item"
-         :value="item"
-          @click="$vs.notify({title:'sik'})"
+          :text="item"
+          :value="item"
+          @click="$vs.notify({ title: 'sik' })"
         />
       </vs-select>
     </vs-popup>
@@ -124,11 +132,11 @@
 
 <script>
 export default {
-  props: ["show",'admin'],
+  props: ["show", "admin"],
 
   data() {
     return {
-currentOcenka : null,
+      currentOcenka: null,
       activityTypes: {
         public: "Публичный",
         private: "Приватный",
@@ -148,35 +156,32 @@ currentOcenka : null,
       this.destroyDonuts(o);
       this.destroyGrafiks(o);
       this.initActivity();
-  }
-    
-
+    },
   },
   computed: {
-      currentOcenkaType: {
-          get() {return (this.activity.ocenka &&  this.activity.ocenka.type) || ""},
-          set(n){
-this.changeOcenka({
-    type : n,
-    reason: ''
-})
-
-          }
+    currentOcenkaType: {
+      get() {
+        return (this.activity.ocenka && this.activity.ocenka.type) || "";
       },
-         currentOcenkaReason() {
-         
+      set(n) {
+        this.changeOcenka({
+          type: n,
+          reason: "",
+        });
       },
-   currentOcenkaReason: {
-          get() { return (this.activity.ocenka &&  this.activity.ocenka.reason) || ""},
-          set(n){
-this.changeOcenka({
-    type : 'С ошибкой',
-    reason: n
-})
-
-          }
+    },
+    currentOcenkaReason() {},
+    currentOcenkaReason: {
+      get() {
+        return (this.activity.ocenka && this.activity.ocenka.reason) || "";
       },
-
+      set(n) {
+        this.changeOcenka({
+          type: "С ошибкой",
+          reason: n,
+        });
+      },
+    },
 
     active: {
       get() {
@@ -188,10 +193,17 @@ this.changeOcenka({
     },
     activity() {
       return this.$store.state.currentDisplayingActivity;
-    }
+    },
   },
-  mounted() {
+  mounted() {},
+  activated(){
 
+      this.initActivity();
+
+  },
+   deactivated(){
+         this.destroyDonuts();
+      this.destroyGrafiks();
   },
   methods: {
     createDonuts(audits) {
@@ -289,63 +301,51 @@ this.changeOcenka({
       });
     },
     editActivity() {
-   
-    this.$store.commit('setEditingActivity',this.activity)
-    this.hideMe();
-     this.$router.push({path:'/edit-activity'})
+      this.$store.commit("setEditingActivity", this.activity);
+      this.hideMe();
+      this.$router.push({ path: "/edit-activity" });
     },
     initActivity() {
       this.$nextTick(() => {
         this.createDonuts(this.activity.audits);
         this.createGrafiks(this.activity.AB);
-
       });
     },
-    changeOcenka({
-        type,
-        reason
-    }) {
-
-    
-      if (
-      type == "Успешно" ||
-      type == "" ||
-      reason != ""
-      ) {
-          if(type == this.activity.ocenka.type) return;
-     (this.needReasonModal && (this.needReasonModal = false))
-   this.changeOcenkaOnServ({
-       type,reason
-   });
+    changeOcenka({ type, reason }) {
+      if (type == "Успешно" || type == "" || reason != "") {
+        if (type == this.activity.ocenka.type) return;
+        this.needReasonModal && (this.needReasonModal = false);
+        this.changeOcenkaOnServ({
+          type,
+          reason,
+        });
       } else {
-    
-  this.openReasonModal();
+        this.openReasonModal();
       }
     },
     openReasonModal() {
-this.needReasonModal = true
+      this.needReasonModal = true;
+    },
 
+    changeOcenkaOnServ({ type, reason }) {
+      this.$store
+        .dispatch("changeActivityOcenka", {
+          id: this.activity.id,
+          ocenka: { type: type, reason: reason },
+        })
+        .then(() => {
+          this.$vs.notify({ title: "Оценка изменена" });
+        })
+        .catch((err) => {
+          this.$vs.notify({
+            title: `Оценкане НЕ изменена ${err}`,
+            color: "red",
+          });
+        });
     },
- 
-    changeOcenkaOnServ({
-        type,
-        reason
-    }) {
-      
-      this.$store.dispatch('changeActivityOcenka', {
-           id: this.activity.id,
-         ocenka :{ type:type,
-           reason:reason } 
-       }).then(()=>{
-           this.$vs.notify({title:"Оценка изменена"})
-       }).catch(err=>{
-             this.$vs.notify({title:`Оценкане НЕ изменена ${err}`, color : 'red', })  
-       })
+    hideMe() {
+      this.$emit("update:show", false);
     },
-    hideMe(){
-      this.$emit('update:show',false)
-    }
   },
 };
 </script>
-

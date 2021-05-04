@@ -196,6 +196,13 @@ export default {
           nid: this.nid,
           login: this.login,
         }).then(()=>{
+             M.toast({ html: `Сотрудник успешно добавлен` });
+        })
+        
+        .catch(err=>{
+            M.toast({ html: `Ошибка ${err}` });
+        })
+        .finally(()=>{
             event.target.classList.toggle("is-loading");
         })
   

@@ -26,52 +26,48 @@ const getEmployees = (store) => {
   );
 };
 const getTabel = (store) => {
-setTimeout(() => {
-  
+  setTimeout(() => {
+    axios
+      .all([
+        axios.get(Vue.prototype.$URL + "/vendor/showTabel"),
+        axios.get(
+          "https://isdayoff.ru/api/getdata?year=2021&pre=0&delimeter=DAY"
+        ),
+      ])
+      .then(
+        axios.spread((Tres, Dres) => {
+          let datesFromApi = Dres.data.split("DAY");
 
-  axios
-    .all([
-      axios.get(Vue.prototype.$URL + "/vendor/showTabel"),
-      axios.get(
-        "https://isdayoff.ru/api/getdata?year=2021&pre=0&delimeter=DAY"
-      ),
-    ])
-    .then(
-      axios.spread((Tres, Dres) => {
-        let datesFromApi = Dres.data.split("DAY");
+          Tres.data.forEach((dt, idxOfDay, dateArr) => {
+            dt.presomes = [];
+            dt.vixod = datesFromApi[idxOfDay] == 1;
 
-        Tres.data.forEach((dt, idxOfDay, dateArr) => {
-          dt.presomes = [];
-          dt.vixod = datesFromApi[idxOfDay] == 1;
+            if (dt.vixod) {
+              if (idxOfDay == 0) return;
 
-          if (dt.vixod) {
-            if (idxOfDay == 0) return;
-
-            dateArr[idxOfDay - 1].isNextDayVixod = true;
-          } else {
-            dateArr[idxOfDay - 1].isNextDayVixod = false;
-          }
-
-          if (idxOfDay == dateArr.length - 1) {
-            dt.isNextDayVixod = true;
-          }
-
-          store.state.employees.forEach((em) => {
-        
-            if (!dt.body[em.nid]) {
-              dt.body[em.nid] = "";
+              dateArr[idxOfDay - 1].isNextDayVixod = true;
+            } else {
+              dateArr[idxOfDay - 1].isNextDayVixod = false;
             }
-            if (dt.body[em.nid] == "" && dt.vixod) {
-              dt.body[em.nid] = "В";
+
+            if (idxOfDay == dateArr.length - 1) {
+              dt.isNextDayVixod = true;
             }
+
+            store.state.employees.forEach((em) => {
+              if (!dt.body[em.nid]) {
+                dt.body[em.nid] = "";
+              }
+              if (dt.body[em.nid] == "" && dt.vixod) {
+                dt.body[em.nid] = "В";
+              }
+            });
           });
-        });
 
-        store.commit("setTabel", Tres.data);
-        store.commit("setEditableTabel", _.cloneDeep(Tres.data));
-      })
-    );
-
+          store.commit("setTabel", Tres.data);
+          store.commit("setEditableTabel", _.cloneDeep(Tres.data));
+        })
+      );
   }, 2000);
 };
 const getActivities = (store) => {
@@ -119,9 +115,9 @@ const parsingFunctions = {
           ? htmlEl.innerText
           : htmlEl.innerText.slice(0, 50) + "...";
       activity.opisanieBodyHTML = htmlEl;
-   
-(activity.sdate == '0000-00-00') && (activity.sdate = '');
-(activity.fdate == '0000-00-00') && (activity.fdate = '');
+
+      activity.sdate == "0000-00-00" && (activity.sdate = "");
+      activity.fdate == "0000-00-00" && (activity.fdate = "");
     });
     return activities;
   },
@@ -295,21 +291,16 @@ const store = new Vuex.Store({
   },
   actions: {
     async editEmployee(context, editedEmployee) {
-      axios
-        .post(
-          Vue.prototype.$URL + "/vendor/editEmployee",
-          JSON.stringify(editedEmployee)
-        )
-        .then(
-          (result) => {
-            M.toast({ html: "Сотрудник изменен" });
+      axios.post("/vendor/editEmployee", editedEmployee).then(
+        (result) => {
+          M.toast({ html: "Сотрудник изменен" });
 
-            context.commit("editEmployee", editedEmployee);
-          },
-          (error) => {
-            M.toast({ html: "Сотрудник НЕ изменен" + error });
-          }
-        );
+          context.commit("editEmployee", editedEmployee);
+        },
+        (error) => {
+          M.toast({ html: "Сотрудник НЕ изменен" + error });
+        }
+      );
     },
     // setEmployees(context, employees) {
     //   employees.forEach((employee) => {
@@ -318,10 +309,7 @@ const store = new Vuex.Store({
     // },
     async deleteEmployee(context, deletableEmployee) {
       axios
-        .post(
-          Vue.prototype.$URL + "/vendor/deleteEmployee",
-          JSON.stringify(deletableEmployee)
-        )
+        .post(Vue.prototype.$URL + "/vendor/deleteEmployee", deletableEmployee)
         .then(
           (result) => {
             M.toast({ html: "Сотрудник удален" });
@@ -330,26 +318,29 @@ const store = new Vuex.Store({
           (error) => {
             M.toast({ html: "Сотрудник НЕ удален" + error });
           }
-        )
-        .then(() => {});
+        );
     },
-    async addEmployee(context, newEmployee) {
-      await axios
-        .post(
-          Vue.prototype.$URL + "/vendor/addEmployee",
-          JSON.stringify(newEmployee)
-        )
+    addEmployee(context, newEmployee) {
+      return axios
+        .post("/vendor/addEmployee", newEmployee)
         .then((res) => {
-          if (res.data == "OK") {
-            M.toast({ html: "Сотрудник добавлен" });
-            context.commit("insertItems", {
-              items: [newEmployee],
-              insertTo: "employees",
-            });
-          } else if (res.data == "NID") {
-            M.toast({ html: "Уникальный ID уже существует" });
+          context.commit("insertItems", {
+            items: [newEmployee],
+            insertTo: "employees",
+          });
+
+          return Promise.resolve();
+        })
+        .catch((err) => {
+          console.log(err);
+          console.log(err.response);
+          console.log(err.response.data);
+          if (err.response.data == "NID") {
+            return Promise.reject("Уникальный ID уже существует");
           } else {
-            M.toast({ html: "Что-то не так. Зовите программиста" + res.data });
+            return Promise.reject(
+              "Что-то не так. Зовите программиста" + err.response.data
+            );
           }
         });
     },
@@ -380,23 +371,13 @@ const store = new Vuex.Store({
       context.commit("insertItems", { items, insertTo });
     },
 
-    // insertInfoQueries(context, { infoQueries }) {
-    //   infoQueries.forEach((infoQuery) => {
-
-    //   });
-    //   context.commit("insertInfoQueries", { infoQueries });
-    // },
     async changeActivityOcenka(context, { id, ocenka }) {
-     
       return new Promise((resolve, reject) => {
         axios
-          .post(
-            "./vendor/changeOcenka",
-            JSON.stringify({
-              id: id,
-              ocenka: ocenka,
-            })
-          )
+          .post("./vendor/changeOcenka", {
+            id: id,
+            ocenka: ocenka,
+          })
           .then(
             () => {
               context.commit("changeActivityOcenka", {
@@ -411,7 +392,6 @@ const store = new Vuex.Store({
     },
     //ACTIVITIES////
     async addActivity({ commit, dispatch }, activity) {
-    
       return new Promise((resolve, reject) => {
         axios
           .post("../vendor/addActivity", activity)
@@ -432,39 +412,32 @@ const store = new Vuex.Store({
       });
     },
     async editActivity({ commit }, activity) {
-      console.log('editing activity')
+      console.log("editing activity");
       await axios
         .post("../vendor/editActivity", activity)
         .then((r) => {
-   
-            commit("updateActivity", activity);
-            return Promise.resolve();
-       
+          commit("updateActivity", activity);
+          return Promise.resolve();
         })
         .catch((e) => {
-          console.log(e)
+          console.log(e);
           return Promise.reject(e);
         });
     },
     async deleteActivity({ commit }, activity) {
       await axios
-        .post(
-          "/vendor/deleteActivity",
-        {
-            id: activity.id
-          }
-        )
+        .post("/vendor/deleteActivity", {
+          id: activity.id,
+        })
         .then((responce) => {
-         
-            commit("deleteActivity", activity);
-            return Promise.resolve();
-       
+          commit("deleteActivity", activity);
+          return Promise.resolve();
         })
         .catch((e) => {
           return Promise.reject(e);
         });
     },
- 
+
     /////// INFO QUERIES /////
 
     async addInfoQuery({ commit, dispatch }, infoQuery) {
@@ -494,7 +467,7 @@ const store = new Vuex.Store({
       return new Promise((resolve, reject) => {
         console.log("adding");
         axios
-          .post("../vendor/editInfoQuery", JSON.stringify(infoQuery))
+          .post("../vendor/editInfoQuery", infoQuery)
           .then((res) => {
             commit("updateInfoQuery", infoQuery);
 
@@ -507,34 +480,10 @@ const store = new Vuex.Store({
     },
     async deleteInfoQuery({ commit }, infoQuery) {
       await axios
-        .post(
-          "/vendor/deleteInfoQuery",
-          JSON.stringify({
-            id: infoQuery.id,
-          })
-        )
-        .then((responce) => {
-          if (responce.data == "OK") {
-            commit("deleteInfoQuery", infoQuery);
-            return Promise.resolve();
-          } else {
-            throw new Error(responce.data);
-          }
+        .post("/vendor/deleteInfoQuery", {
+          id: infoQuery.id,
         })
-        .catch((e) => {
-          return Promise.reject(e);
-        });
-    },
-    async archiveInfoQuery({ commit }, infoQuery) {
-      await axios
-        .post(
-          "/vendor/archiveInfoQuery",
-          JSON.stringify({
-            id: infoQuery.id,
-          })
-        )
         .then((responce) => {
-          console.log(responce);
           if (responce.data == "OK") {
             commit("deleteInfoQuery", infoQuery);
             return Promise.resolve();

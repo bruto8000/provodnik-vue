@@ -133,14 +133,7 @@
         Удалить инфозапрос
       </div>
     </div>
-    <div class="columns my-4">
-      <div
-        @click="openArchivingModal"
-        class="button has-text-white is-large is-info column is-12 black-text title is-3"
-      >
-        Архивировать инфозапрос
-      </div>
-    </div>
+
     <vs-popup :active.sync="needDeletingModal" title="Удаление">
       <h2 class="is-title is-2 my-4">
         Вы уверены что хотите удалить этот инфозапрос?
@@ -154,24 +147,6 @@
           Да</vs-button
         >
         <vs-button class="mx-4" @click="hideDeletingModal" color="black">
-          Нет, закрыть</vs-button
-        >
-      </div>
-    </vs-popup>
-
-    <vs-popup :active.sync="needArchivingModal" title="Архивирование">
-      <h2 class="is-title is-2 my-4">
-        Вы уверены что хотите архивировать этот инфозапрос?
-      </h2>
-      <p class="my-4">
-        Инфозапрос уйдет в архивированные. Данные останутся но тянутся не будут.
-      </p>
-
-      <div class="has-text-right">
-        <vs-button @click="archiveInfoQuery" class="mx-4 px-5" color="black">
-          Да</vs-button
-        >
-        <vs-button class="mx-4" @click="hideArchivingModal" color="black">
           Нет, закрыть</vs-button
         >
       </div>
@@ -259,7 +234,7 @@ export default {
       }
 
       this.$store
-        .dispatch("editInfoQuery", this.infoQuery)
+        .dispatch("editInfoQuery", _.cloneDeep(this.infoQuery))
         .then(() => {
           this.$vs.notify({ text: "Инфозапрос успешно изменен" });
         })
@@ -276,22 +251,7 @@ export default {
           }, 400);
         });
     },
-    archiveInfoQuery() {
-      this.$store
-        .dispatch("archiveInfoQuery", this.infoQuery)
-        .then((z) => {
-          this.$vs.notify({ title: "Успех", text: "Инфозапрос архивирован" });
-          this.hideArchivingModal();
-          this.goToShowPage();
-        })
-        .catch((err) =>
-          this.$vs.notify({
-            title: "Ошибка",
-            color: "red",
-            text: `Инфозапрос не архивирован [${err}]`,
-          })
-        );
-    },
+
     deleteInfoQuery() {
       this.$store
         .dispatch("deleteInfoQuery", this.infoQuery)
