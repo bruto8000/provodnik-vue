@@ -116,8 +116,8 @@ const parsingFunctions = {
           : htmlEl.innerText.slice(0, 50) + "...";
       activity.opisanieBodyHTML = htmlEl;
 
-      activity.sdate == "0000-00-00" && (activity.sdate = "");
-      activity.fdate == "0000-00-00" && (activity.fdate = "");
+      // activity.sdate == "0000-00-00" && (activity.sdate = "");
+      // activity.fdate == "0000-00-00" && (activity.fdate = "");
     });
     return activities;
   },
@@ -218,6 +218,35 @@ const store = new Vuex.Store({
         "Уже в реализации",
       ],
     },
+    projectsSelectOptions: {
+       businessTypeOptions: [
+         "FMC",
+         "B2B",
+         "ПК",
+         "FTTB",
+         "FMC/FTTB",
+         "B2B/B2C",
+         "FMC/B2C",
+         "Не применимо"
+       ],
+       statusOptions: [   
+        "В работе",
+        "Выполнено",
+        "Отложено",
+        "Отменено"
+ 
+      ],
+      CAOptions: [
+        "Группа сопровождения",
+        "ДОК",
+        "Клиенты",
+        "Обслуживание"
+      ],
+      projectTypeOptions: [
+        "Качественный",
+        "Количественный"
+      ]
+    }
   },
   mutations: {
     setTabel(state, tabel) {

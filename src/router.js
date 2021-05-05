@@ -21,6 +21,12 @@ import publicCalendar from "./components/pages/activities/publicCalendar.vue";
 import addInfoQuery from "./components/pages/infoQueries/addInfoQuery.vue";
 import showInfoQueries from "./components/pages/infoQueries/showInfoQueries.vue";
 import editInfoQuery from "./components/pages/infoQueries/editInfoQuery.vue";
+
+
+// Projects //
+import addProject from "./components/pages/projects/addProject.vue"
+
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -34,6 +40,7 @@ const routes = [
   { path: "/add-info-query", component: addInfoQuery },
   { path: "/show-info-queries", component: showInfoQueries },
   { path: "/edit-info-query", component: editInfoQuery },
+  { path: "/add-project", component: addProject },
   { path: "*", component: menu },
 ];
 const router = new VueRouter({

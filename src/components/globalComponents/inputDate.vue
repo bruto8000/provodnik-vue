@@ -15,6 +15,7 @@
       type="text"
       class="datepicker center input"
       placeholder="Выберите дату"
+      :disabled=disabled
     />
   </div>
 </template>
@@ -31,13 +32,11 @@ export default {
   ],
   data() {
     return {
-      // date: "", //FRIN PARENT
-      // header: "Дата Спуска",
       rnd_id: "",
       innerDate: "",
       me: null,
       tooltipPos: null,
-      undate: "",
+      disabled: false
     };
   },
   created() {
@@ -73,8 +72,13 @@ export default {
   destroyed() {
     this.me && this.me.destroy();
   },
-  computed: {},
-  methods: {},
+  computed: {
+
+    // disabled(){
+    //   return this.canUndate
+    // }
+  },
+
   watch: {
     innerDate(n) {
       if (this.value != n) this.$emit("update:value", n);
@@ -83,6 +87,13 @@ export default {
       this.innerDate = n;
     },
   },
+  methods: {
+    undate(){
+     if(this.canUndate){
+       this.disabled = !this.disabled
+     }
+    }
+  }
 };
 </script>
 

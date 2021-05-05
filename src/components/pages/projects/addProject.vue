@@ -1,0 +1,334 @@
+<template>
+  <div class="container">
+    <h1 class="center title is-1 my-5">Добавление Проекта</h1>
+    <div class="columns my-5">
+      <div class="column is-4 p-0">
+        <input-select
+          :value.sync="project.accompanying"
+          header="Сопровождающий"
+          :options="employees"
+          required
+        >
+        </input-select>
+      </div>
+
+      <div class="column is-4 ">
+        <input-date :value.sync="project.fdate" header="Дата старта проекта">
+        </input-date>
+      </div>
+
+      <div class="column is-4 ">
+        <input-date
+          :value.sync="project.sdate"
+          header="Дата завершения проекта"
+          :canUndate=true
+          :showKvartalBtn=true
+          :showMonthBtn=true
+        >
+        </input-date>
+      </div>
+    </div>
+
+    <div class="columns">
+      <div class="column is-4">
+        <input-text :value.sync="project.title" header="Название проекта">
+        </input-text>
+      </div>
+
+      <div class="column is-4">
+        <input-text :value.sync="project.description" header="Описание проекта">
+        </input-text>
+      </div>
+
+      <div class="column is-4 p-0">
+        <input-select
+          :options="businessTypeOptions"
+          :value.sync="project.businessType"
+          header="Вид бизнеса"
+        >
+        </input-select>
+      </div>
+    </div>
+
+    <div class="columns">
+      <div class="column is-4 ">
+        <input-text :value.sync="project.workGroup" header="Рабочая группа">
+        </input-text>
+      </div>
+
+      <div class="column is-4 p-0">
+        <input-select
+          :value.sync="project.status"
+          header="Статус"
+          :options="statusOptions"
+        >
+        </input-select>
+      </div>
+
+      <div class="column is-4 p-0">
+        <input-select :value.sync="project.CA" header="ЦА" :options="CAOptions">
+        </input-select>
+      </div>
+    </div>
+
+    <div
+      class=""
+      :class="[project.projectType == 'Количественный' ? 'columns' : '']"
+    >
+      <div
+        class="my-6"
+        :class="[
+          project.projectType == 'Количественный' ? 'column is-6 p-0' : 'is-12',
+        ]"
+      >
+        <input-select
+          :value.sync="project.projectType"
+          header="Тип проекта"
+          :options="projectTypeOptions"
+          required
+        >
+        </input-select>
+      </div>
+      <div
+        class="my-6"
+        :class="[
+          project.projectType == 'Количественный' ? 'is-6 column' : 'is-12',
+        ]"
+      >
+        <input-text
+          v-model="project.efficiency.title"
+          header="Эффективность"
+          required
+        >
+        </input-text>
+      </div>
+
+    </div>
+
+<div v-if="project.projectType == 'Количественный'">
+      <div class="my-5 is-flex is-justify-align-center">
+        <vs-dropdown>
+          <button class="button is-primary" href="#">
+           Добавить влияние 
+            <vs-icon class="" icon="expand_more"></vs-icon>
+          </button>
+
+          <vs-dropdown-menu>
+            <vs-dropdown-item @click="addEfficiency('AHT')">
+              AHT
+            </vs-dropdown-item>
+            <vs-dropdown-item @click="addEfficiency('tNPS')">
+              tNPS
+            </vs-dropdown-item>
+            <vs-dropdown-item @click="addEfficiency('tFCR')">
+              tFCR
+            </vs-dropdown-item>
+
+            <vs-dropdown-item @click="addEfficiency('CR')">
+              CR
+            </vs-dropdown-item>
+            <vs-dropdown-item @click="addEfficiency('AWT')">
+              AWT
+            </vs-dropdown-item>
+            <vs-dropdown-item @click="addEfficiency('Ресурсы')">
+              Ресурсы
+            </vs-dropdown-item>
+          </vs-dropdown-menu>
+        </vs-dropdown>
+             <button
+          class="button is-danger mx-2"
+          :disabled="!project.efficiency.rows.length"
+          @click="deleteEfficiency()"
+        >
+          -
+        </button>
+      </div>
+
+
+
+      <div v-if='project.efficiency.rows.length'>
+    
+    <div class="columns">
+
+<div class="column is-4">Влияние</div>
+<div class="column is-4">Было</div>
+<div class="column is-4">Стало</div>
+
+    </div>
+
+<div class="columns" :key='idx' v-for="(row,idx) in project.efficiency.rows">
+    
+<div class="column is-4">{{row.influence}}</div>
+<div class="column is-4"><input-text v-model="row.was" /></div>
+<div class="column is-4"><input-text v-model="row.now" /></div>
+
+
+
+
+
+</div>
+      </div>
+</div>
+
+
+    <div class="columns">
+      <div
+        @click="addproject"
+        class="button column is-12 is-primary m-4 p-4 title is-3"
+      >
+        Добавить проект
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+
+
+export default {
+ 
+
+  data() {
+    return {
+      InputSelectdate: "",
+      project: {
+        accompanying: "",
+        fdate: "",
+        sdate: "",
+        title: "",
+        description: "",
+        businessType: "",
+        workGroup: [],
+        status: "",
+        CA: "",
+
+        projectType: "",
+        efficiency: {
+          title: "",
+          rows: [
+            // {
+            // influence: '',
+            // was: '',
+            // now: ''
+            // }
+          ],
+        },
+      },
+      projectNameErrors: {
+        accompanying: "Сопровождающий",
+        fdate: "Дата старта проекта",
+        sdate: "Дата завершения проекта",
+        title: "Название проекта",
+        description: "Описание проекта",
+        businessType: "Вид бизнеса",
+        workGroup: "Рабочая группа",
+        status: "Статус",
+        CA: "ЦА",
+        projectType: "Тип проекта",
+        efficiency: "Эффективность",
+      },
+
+      requiredRows: [
+        "accompanying",
+        "fdate",
+        "title",
+        "description",
+        "businessType",
+        "status",
+        "CA",
+        "projectType",
+      ],
+    };
+  },
+  mounted: function() {},
+  methods: {
+    addEfficiency(type) {
+      this.project.efficiency.rows.push({
+        influence: type,
+        was: "",
+        now: "",
+      });
+    },
+    deleteEfficiency() {
+      this.project.efficiency.rows.length && this.project.efficiency.rows.pop();
+    },
+    addproject: function(event) {
+      event.target.classList.toggle("is-loading");
+      if (!this.validateAll()) {
+        setTimeout(() => {
+          event.target.classList.toggle("is-loading");
+        }, 400);
+        return;
+      }
+
+      this.$store
+        .dispatch("addproject", this.project)
+        .then(() => {
+          this.$vs.notify({ text: "Инфозапрос успешно добавлен" });
+        })
+        .catch((err) => {
+          this.$vs.notify({
+            text: `Инфозапрос не добавлен [${err}]`,
+            color: "red",
+            title: "Ошибка",
+          });
+        })
+        .finally(() => {
+          setTimeout(() => {
+            event.target.classList.toggle("is-loading");
+          }, 400);
+        });
+    },
+    validateAll() {
+      return this.validateRows() && this.validateEfficiency();
+    },
+    validateRows() {
+      try {
+        for (let prop of this.requiredRows) {
+          if (!this.project[prop]) {
+            throw new Error(
+              ` Вы пропустили что-то :  [${this.projectNameErrors[prop]}]`
+            );
+          }
+        }
+      } catch (e) {
+        M.toast({
+          html: e.message,
+        });
+
+        return false;
+      }
+      return true;
+    },
+    validateEfficiency() {
+      if (!this.efficiency.title) {
+        M.toast({
+          html: `Не заполнено поле ${this.projectNameErrors.efficiency}`,
+        });
+        return false;
+      }
+      return true;
+    },
+  },
+  computed: {
+    employees() {
+      return this.$store.state.employees.map((employee) => employee.full_name);
+    },
+    CAOptions() {
+      return this.$store.state.projectsSelectOptions.CAOptions;
+    },
+    businessTypeOptions() {
+      return this.$store.state.projectsSelectOptions.businessTypeOptions;
+    },
+    statusOptions() {
+      return this.$store.state.projectsSelectOptions.statusOptions;
+    },
+    projectTypeOptions() {
+      return this.$store.state.projectsSelectOptions.projectTypeOptions;
+    },
+  },
+  watch: {},
+};
+</script>
+
+<style></style>

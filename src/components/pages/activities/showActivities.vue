@@ -54,7 +54,13 @@
         <th class="" @click="sortChange('sdate')">Дата запуска</th>
         <th class="" @click="sortChange('bizness')">Вид бизнеса</th>
         <th class="" @click="sortChange('zapusk')">Тип запуска</th>
-        <th class="" @click="sortChange('nazvanie')">Название</th>
+        <th
+          class=""
+         
+          @click="sortChange('nazvanie')"
+        >
+          Название
+        </th>
         <th class="" @click="sortChange('opisanie')">Описание</th>
         <th class="" @click="sortChange('soprovod')">Сопровождающий</th>
         <th class="" @click="sortChange('zakazchik')">Заказчик</th>
@@ -237,7 +243,8 @@
         </select>
       </div>
       <div class="column is-1">
-        <input type="text" class="input" v-model="filterInput.nazvanie" />
+        <input type="text"  
+       class="input" v-model="filterInput.nazvanie" />
       </div>
       <div class="column is-2">
         <input type="text" class="input" v-model="filterHTML.opisanie" />

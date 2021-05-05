@@ -241,7 +241,7 @@ export default {
         });
       } catch (err) {
         this.$vs.notify({
-          title: "Ошиба",
+          title: "Ошибка",
           text: err,
           color: "red",
           time: 5000,
