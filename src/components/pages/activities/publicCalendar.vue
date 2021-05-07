@@ -142,15 +142,13 @@ export default {
       currentMonth: 0,
     };
   },
-  mounted: function() { 
-    this.$nextTick(()=>{
+  mounted: function() {
+    this.$nextTick(() => {
       this.monthSet();
-
-    })
+    });
   },
   methods: {
     monthSet() {
-
       this.monthWrappers = [];
       this.monthSpans = [];
       // Here Is magic, and please, dount touch. Please. Dont Fu#$@ng touch this.
