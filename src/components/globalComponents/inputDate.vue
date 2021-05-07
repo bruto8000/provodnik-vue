@@ -2,7 +2,7 @@
   <div>
     <div
       class="center"
-      data-position="tooltipPos || top"
+      :data-position="tooltipPos || 'top'"
       @click="undate"
       :id="'tltp' + rnd_id"
       data-tooltip="Нажмите чтобы сделать неактивной"
@@ -14,7 +14,7 @@
       :id="'inp' + rnd_id"
       type="text"
       class="datepicker center input"
-      placeholder="Выберите дату"
+      :placeholder="disabled ? 'Не определена' :  'Выберите дату'"
       :disabled=disabled
     />
   </div>
@@ -91,6 +91,9 @@ export default {
     undate(){
      if(this.canUndate){
        this.disabled = !this.disabled
+       if(this.disabled){
+         this.innerDate = ""
+       }
      }
     }
   }

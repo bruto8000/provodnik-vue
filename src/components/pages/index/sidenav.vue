@@ -55,6 +55,20 @@
           </li>
         </ul>
       </vs-collapse-item>
+
+           <vs-collapse-item>
+        <div slot="header">
+          Проекты
+        </div>
+          <ul>
+          <li class="is-clickable " @click="routeTo('show-projects')">
+            Просмотр
+          </li>
+          <li class="is-clickable " @click="routeTo('add-project')">
+            Добавление
+          </li>
+        </ul>
+      </vs-collapse-item>
     </vs-collapse>
   </div>
 </template>

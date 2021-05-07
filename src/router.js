@@ -25,6 +25,8 @@ import editInfoQuery from "./components/pages/infoQueries/editInfoQuery.vue";
 
 // Projects //
 import addProject from "./components/pages/projects/addProject.vue"
+import showProjects from "./components/pages/projects/showProjects.vue"
+import editProject from "./components/pages/projects/editProject.vue"
 
 
 Vue.use(VueRouter);
@@ -41,6 +43,8 @@ const routes = [
   { path: "/show-info-queries", component: showInfoQueries },
   { path: "/edit-info-query", component: editInfoQuery },
   { path: "/add-project", component: addProject },
+  { path: "/show-projects", component: showProjects },
+  { path: "/edit-project", component: editProject },
   { path: "*", component: menu },
 ];
 const router = new VueRouter({

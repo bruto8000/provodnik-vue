@@ -160,21 +160,6 @@ export default {
     return {
       needDeletingModal: false,
       needArchivingModal: false,
-
-      //   infoQuery: {
-      //     inicatior: "",
-      //     fdate: "",
-      //     sdate: "",
-      //     nazvanie: "",
-      //     otvetstveniy: "",
-      //     otchot: "",
-      //     statuses: [],
-      //     classification: "",
-      //     problem: "",
-      //     produkt: "",
-      //     otvetfrom: "",
-      //     days: "",
-      //   },
       infoQueryNameErrors: {
         inicatior: "Инициатор",
         fdate: "Дата получения запроса",
@@ -205,14 +190,8 @@ export default {
     openDeletingModal() {
       this.needDeletingModal = true;
     },
-    openArchivingModal() {
-      this.needArchivingModal = true;
-    },
     hideDeletingModal() {
       this.needDeletingModal = false;
-    },
-    hideArchivingModal() {
-      this.needArchivingModal = false;
     },
     addStatus() {
       this.infoQuery.statuses.push({

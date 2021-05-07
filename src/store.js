@@ -98,6 +98,21 @@ const getInfoQueries = (store) => {
     }
   );
 };
+const getProjects = (store) => {
+  axios.get("/vendor/showProjects").then(
+    (res) => {
+      console.log(res.data)
+      store.dispatch("insertItems", {
+        items: res.data.reverse(),
+        insertTo: "projects",
+        parsingFunction: null
+      });
+    },
+    (err) => {
+      showReceivingError(`[Проекты] ${err.message}`);
+    }
+  );
+};
 const parsingFunctions = {
   activities(activities) {
     activities.forEach((activity) => {
@@ -116,8 +131,6 @@ const parsingFunctions = {
           : htmlEl.innerText.slice(0, 50) + "...";
       activity.opisanieBodyHTML = htmlEl;
 
-      // activity.sdate == "0000-00-00" && (activity.sdate = "");
-      // activity.fdate == "0000-00-00" && (activity.fdate = "");
     });
     return activities;
   },
@@ -130,6 +143,7 @@ const store = new Vuex.Store({
   state: {
     activities: [],
     infoQueries: [],
+    projects: [],
     employees: [],
     tabel: [],
     editableTabel: [],
@@ -175,7 +189,24 @@ const store = new Vuex.Store({
       otvetfrom: "",
       days: "",
     },
+    currentEditingProject: {
+      
+        accompanying: "",
+        fdate: "",
+        sdate: "",
+        title: "",
+        description: "",
+        businessType: "",
+        workGroup: "",
+        status: "",
+        CA: "",
 
+        projectType: "",
+        efficiency: {
+          title: "",
+          rows: [],
+        }
+    },
     infoQueriesSelectOptions: {
       classificationOptions: [
         "Прайс",
@@ -275,6 +306,9 @@ const store = new Vuex.Store({
     setEditingInfoQuery(state, infoQuery) {
       state.currentEditingInfoQuery = _.cloneDeep(infoQuery);
     },
+    setEditingProject(state, project) {
+      state.currentEditingProject = _.cloneDeep(project);
+    },
     setDisplayingActivity(state, activity) {
       state.currentDisplayingActivity = activity;
     },
@@ -312,6 +346,15 @@ const store = new Vuex.Store({
         foundedInfoQuery[prop] = infoQueryForEdit[prop];
       }
     },
+    updateProject(state, projectForEdit) {
+      let foundedProject = state.projects.find(
+        (project) => project.id === projectForEdit.id
+      );
+      if (!foundedProject) return;
+      for (let prop in projectForEdit) {
+        foundedProject[prop] = projectForEdit[prop];
+      }
+    },
     deleteInfoQuery(state, infoQueryForDelete) {
       state.infoQueries = state.infoQueries.filter((infoQuery) => {
         return infoQuery.id != infoQueryForDelete.id;
@@ -331,11 +374,6 @@ const store = new Vuex.Store({
         }
       );
     },
-    // setEmployees(context, employees) {
-    //   employees.forEach((employee) => {
-    //     context.commit("addEmployee", employee);
-    //   });
-    // },
     async deleteEmployee(context, deletableEmployee) {
       axios
         .post(Vue.prototype.$URL + "/vendor/deleteEmployee", deletableEmployee)
@@ -394,12 +432,13 @@ const store = new Vuex.Store({
     },
     insertItems(context, { items, insertTo, parsingFunction }) {
       console.log("inserting", insertTo);
-      parsingFunctions[parsingFunction] &&
+      parsingFunction &&  parsingFunctions[parsingFunction] &&
         (items = parsingFunctions[parsingFunction](items));
 
       context.commit("insertItems", { items, insertTo });
     },
 
+ //ACTIVITIES////
     async changeActivityOcenka(context, { id, ocenka }) {
       return new Promise((resolve, reject) => {
         axios
@@ -418,17 +457,16 @@ const store = new Vuex.Store({
             (err) => reject(err)
           );
       });
-    },
-    //ACTIVITIES////
+    }, 
     async addActivity({ commit, dispatch }, activity) {
       return new Promise((resolve, reject) => {
         axios
           .post("../vendor/addActivity", activity)
           .then((res) => {
-            let activityId = res.data;
-            activity.id = activityId;
+            let id = res.data;
+            let newActivity =  Object.assign(_.cloneDeep(activity), {id});
             dispatch("insertItems", {
-              items: [activity],
+              items: [newActivity],
               insertTo: "activities",
               parsingFunction: parsingFunctions["activities"],
             });
@@ -467,17 +505,18 @@ const store = new Vuex.Store({
         });
     },
 
-    /////// INFO QUERIES /////
+ // INFO QUERIES ///
 
     async addInfoQuery({ commit, dispatch }, infoQuery) {
       return new Promise((resolve, reject) => {
         console.log("adding");
         axios
-          .post("../vendor/addInfoQuery", JSON.stringify(infoQuery))
+          .post("../vendor/addInfoQuery", infoQuery)
           .then((res) => {
-            let infoQuery = res.data;
+            let id = res.data;
+            let newInfoQuery =  Object.assign(_.cloneDeep(infoQuery), {id});
             dispatch("insertItems", {
-              items: [infoQuery],
+              items: [newInfoQuery],
               insertTo: "infoQueries",
               parsingFunction: "infoQueries",
             });
@@ -498,7 +537,7 @@ const store = new Vuex.Store({
         axios
           .post("../vendor/editInfoQuery", infoQuery)
           .then((res) => {
-            commit("updateInfoQuery", infoQuery);
+            commit("updateInfoQuery", _.cloneDeep(infoQuery));
 
             resolve();
           })
@@ -524,12 +563,64 @@ const store = new Vuex.Store({
           return Promise.reject(e);
         });
     },
+
+    /// PROJECTS ////
+    async addProject({ commit, dispatch }, project) {
+      return new Promise((resolve, reject) => {
+        console.log("adding");
+        axios
+          .post("../vendor/addProject", project)
+          .then((res) => {
+            let id = res.data;
+            let newProject = Object.assign(_.cloneDeep(project), {id});
+            dispatch("insertItems", {
+              items: [newProject],
+              insertTo: "projects",
+              parsingFunction: null,
+            });
+            resolve();
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    async editProject({ commit, dispatch }, project) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post("/vendor/editProject", project)
+          .then((res) => {
+            commit("updateProject", _.cloneDeep(project));
+
+            resolve();
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    async deleteProject({ commit }, project) {
+      await axios
+        .post("/vendor/deleteProject", {
+          id: project.id,
+        })
+        .then((responce) => {
+            commit("deleteProject", project);
+            return Promise.resolve();
+        })
+        .catch((e) => {
+          return Promise.reject(e);
+        });
+    }
+
+
+
   },
   getters: {
     trueNID: (state) => state.employees.map((em) => em.nid),
     employees: (state) => state.employees.map((em) => em.full_name),
   },
-  plugins: [getEmployees, getTabel, getActivities, getInfoQueries],
+  plugins: [getEmployees, getActivities, getInfoQueries, getProjects, getTabel]
 });
 
 export default store;

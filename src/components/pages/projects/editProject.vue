@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1 class="center title is-1 my-5">Добавление Проекта</h1>
+    <h1 class="center title is-1 my-5">Изменение Проекта</h1>
     <div class="columns my-5">
       <div class="column is-4 p-0">
         <input-select
@@ -171,14 +171,40 @@
 </div>
 
 
-    <div class="columns">
+    <div class="columns my-4">
       <div
-        @click="addProject"
-        class="button column is-12 is-primary m-4 p-4 title is-3"
+        @click="editProject"
+        class="button column is-12 is-primary my-4 title is-3"
       >
-        Добавить проект
+        Изменить проект
       </div>
     </div>
+    <div class="columns">
+      <div
+        @click="openDeletingModal"
+        class="button my-4 has-text-white is-large is-danger column is-12 black-text title is-3"
+      >
+        Удалить проект
+      </div>
+    </div>
+
+    <vs-popup :active.sync="needDeletingModal" title="Удаление">
+      <h2 class="is-title is-2 my-4">
+        Вы уверены что хотите удалить этот проект?
+      </h2>
+      <p class="my-4">
+        Проект уйдет в удаленные. Данные останутся но тянутся не будут.
+      </p>
+
+      <div class="has-text-right">
+        <vs-button @click="deleteProject" class="mx-4 px-5" color="black">
+          Да</vs-button
+        >
+        <vs-button class="mx-4" @click="hideDeletingModal" color="black">
+          Нет, закрыть</vs-button
+        >
+      </div>
+    </vs-popup>
   </div>
 </template>
 
@@ -190,30 +216,7 @@ export default {
 
   data() {
     return {
-      InputSelectdate: "",
-      project: {
-        accompanying: "",
-        fdate: "",
-        sdate: "",
-        title: "",
-        description: "",
-        businessType: "",
-        workGroup: "",
-        status: "",
-        CA: "",
 
-        projectType: "",
-        efficiency: {
-          title: "",
-          rows: [
-            // {
-            // influence: '',
-            // was: '',
-            // now: ''
-            // }
-          ],
-        },
-      },
       projectNameErrors: {
         accompanying: "Сопровождающий",
         fdate: "Дата старта проекта",
@@ -240,8 +243,21 @@ export default {
       ],
     };
   },
-  mounted: function() {},
+  created: function() {
+    if (!this.project.id) {
+      M.toast({
+        html: "Неверная ссылка,  перенаправление...",
+      });
+      this.$router.push({ path: "/show-projects" });
+    }
+  },
   methods: {
+     openDeletingModal() {
+      this.needDeletingModal = true;
+    },
+    hideDeletingModal() {
+      this.needDeletingModal = false;
+    },
     addEfficiency(type) {
       this.project.efficiency.rows.push({
         influence: type,
@@ -252,7 +268,7 @@ export default {
     deleteEfficiency() {
       this.project.efficiency.rows.length && this.project.efficiency.rows.pop();
     },
-    addProject: function(event) {
+       editProject: function(event) {
       event.target.classList.toggle("is-loading");
       if (!this.validateAll()) {
         setTimeout(() => {
@@ -262,13 +278,13 @@ export default {
       }
 
       this.$store
-        .dispatch("addProject", this.project)
+        .dispatch("editProject", _.cloneDeep(this.project))
         .then(() => {
-          this.$vs.notify({ text: "Инфозапрос успешно добавлен" });
+          this.$vs.notify({ text: "Проект успешно изменен" });
         })
         .catch((err) => {
           this.$vs.notify({
-            text: `Инфозапрос не добавлен [${err}]`,
+            text: `Проект не изменен [${err}]`,
             color: "red",
             title: "Ошибка",
           });
@@ -278,6 +294,26 @@ export default {
             event.target.classList.toggle("is-loading");
           }, 400);
         });
+    },
+
+    deleteProject() {
+      this.$store
+        .dispatch("deleteProject", this.project)
+        .then((z) => {
+          this.$vs.notify({ title: "Успех", text: "Проект удален" });
+          this.hideDeletingModal();
+          this.goToShowPage();
+        })
+        .catch((err) =>
+          this.$vs.notify({
+            title: "Ошибка",
+            color: "red",
+            text: `Проект не удален [${err}]`,
+          })
+        );
+    },
+     goToShowPage() {
+      this.$router.push({ path: "/show-projects" });
     },
     validateAll() {
       return this.validateRows() && this.validateEfficiency();
@@ -325,6 +361,9 @@ export default {
     },
     projectTypeOptions() {
       return this.$store.state.projectsSelectOptions.projectTypeOptions;
+    },
+        project() {
+      return this.$store.state.currentEditingProject;
     },
   },
   watch: {},
