@@ -2,7 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 
 // Index //
-import menu from "./components/pages/index/menu.vue";
+
 
 // Employees //
 import employees from "./components/pages/employees/employees.vue";
@@ -12,6 +12,7 @@ import showTabel from "./components/pages/tabel/showTabel.vue";
 import editTabel from "./components/pages/tabel/editTabel.vue";
 
 // Activities //
+import distribution from "./components/pages/activities/distribution.vue";
 import addActivity from "./components/pages/activities/addActivity.vue";
 import showActivities from "./components/pages/activities/showActivities.vue";
 import editActivity from "./components/pages/activities/editActivity.vue";
@@ -32,9 +33,11 @@ import editProject from "./components/pages/projects/editProject.vue"
 Vue.use(VueRouter);
 
 const routes = [
+  { path: "/", component: null },
   { path: "/employees", component: employees },
   { path: "/show-tabel", component: showTabel },
   { path: "/edit-tabel", component: editTabel },
+  { path: "/distribution", component: distribution },
   { path: "/show-activities", component: showActivities },
   { path: "/add-activity", component: addActivity },
   { path: "/edit-activity", component: editActivity },
@@ -45,7 +48,7 @@ const routes = [
   { path: "/add-project", component: addProject },
   { path: "/show-projects", component: showProjects },
   { path: "/edit-project", component: editProject },
-  { path: "*", component: menu },
+  { path: "*", redirect: '/' },
 ];
 const router = new VueRouter({
   routes,
