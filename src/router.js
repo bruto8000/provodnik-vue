@@ -29,7 +29,7 @@ import addProject from "./components/pages/projects/addProject.vue"
 import showProjects from "./components/pages/projects/showProjects.vue"
 import editProject from "./components/pages/projects/editProject.vue"
 
-
+import test from './components/globalComponents/inputEmployee.vue'
 Vue.use(VueRouter);
 
 const routes = [
@@ -48,6 +48,7 @@ const routes = [
   { path: "/add-project", component: addProject },
   { path: "/show-projects", component: showProjects },
   { path: "/edit-project", component: editProject },
+  { path: "/test", component: test },
   { path: "*", redirect: '/' },
 ];
 const router = new VueRouter({
