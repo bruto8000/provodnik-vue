@@ -462,7 +462,7 @@ export default {
         this.clearSome(true);
         this.some.step = 3;
         this.modifSome();
-        Vue.nextTick((e) => {
+       this.$nextTick((e) => {
           let i = 0;
 
           this.some.somes.forEach((element) => {
@@ -477,7 +477,7 @@ export default {
           });
 
           // this.some.input = oldinput;
-          Vue.nextTick(() => {
+         this.$nextTick(() => {
             this.history.write = true;
           });
         });
@@ -615,7 +615,7 @@ export default {
         });
 
         // this.some.input = oldinput;
-        Vue.nextTick(() => {
+       this.$nextTick(() => {
           this.history.write = true;
         });
       } else {
@@ -636,7 +636,7 @@ export default {
           });
         });
 
-        Vue.nextTick(() => {
+       this.$nextTick(() => {
           this.history.write = true;
         });
       }
