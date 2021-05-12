@@ -42,7 +42,7 @@
             <option value="all" selected>Все</option>
             <option value="">Без оценки</option>
             <option value="Успешно">Успешно</option>
-            <option value="С ошибкой">С ошбкой</option>
+            <option value="С ошибкой">С ошибкой</option>
           </select>
         </div>
       </div>
