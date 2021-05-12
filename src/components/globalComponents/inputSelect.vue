@@ -8,9 +8,17 @@
       :id="'sel' + rnd_id"
     >
       <option value="" :disabled="required">{{ placeholder }}</option>
-      <option v-for="(option, idx) in options" :key="idx" :value="option">{{
+      <template v-if='Array.isArray(options)'>
+   <option v-for="(option, idx) in options" :key="idx" :value="option">{{
         option
       }}</option>
+      </template>
+      <template v-else>
+         <option v-for="(option, prop) in options" :key="prop" :value="prop">{{
+        option
+      }}</option>  
+      </template>
+   
       <slot></slot>
     </select>
   </div>
