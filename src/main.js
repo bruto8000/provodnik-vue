@@ -6,13 +6,16 @@ import _ from 'lodash'
 
 
 
-
+import config from './config'
 
 // !!!!!!!!!!! FROALA EDITOR IN PUBLIC  !!!!!!!!!!!!!!!!
 Vue.prototype.$FroalaEditor = FroalaEditor
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
+
+
+Vue.prototype.$employeeGettingUrl = config.employeeGettingUrl;
 
 
 
