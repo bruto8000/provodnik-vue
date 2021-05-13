@@ -1,5 +1,7 @@
 <template>
   <div>
+
+ 
     <div class="block">
       <div
         class="center is-flex is-justify-content-space-between is-align-items-center"
@@ -37,6 +39,7 @@
         </div>
 
         <div>
+      
           <h5 class="is title is-5 m-0">Оценка:</h5>
           <select v-model="filterOcenka">
             <option value="all" selected>Все</option>
@@ -44,8 +47,19 @@
             <option value="Успешно">Успешно</option>
             <option value="С ошибкой">С ошбкой</option>
           </select>
+
+<div>
+
+  <label>
+        <input type="checkbox" v-model='needTagsFilter' />
+        <span>Поиск по тегам</span>
+      </label>
+</div>
+         
         </div>
       </div>
+  
+          <tags v-if='needTagsFilter' class="box" :tags='tagsFilter'></tags>
     </div>
 
     <table id="allTable" v-show="false" v-if="table.created">
@@ -59,7 +73,7 @@
          
           @click="sortChange('nazvanie')"
         >
-          Название
+          Название 
         </th>
         <th class="" @click="sortChange('opisanie')">Описание</th>
         <th class="" @click="sortChange('soprovod')">Сопровождающий</th>
@@ -300,10 +314,13 @@
 </template>
 
 <script>
+import Tags from './editActivity/tags.vue';
 import activityModal from "./global/activityModal";
 export default {
   data() {
     return {
+      tagsFilter: [],
+      needTagsFilter: false,
       filters: ["filterSelect", "filterInput", "filterHTML", "sort"],
       paginationCount: 30,
       kalendar: "",
@@ -355,6 +372,7 @@ export default {
       for (let prop in this.filterInput) {
         this.filterInput[prop] = "";
       }
+      this.needTagsFilter = false
       this.filterHTML.opisanie = "";
       this.sort.r = 1;
       this.sort.column = "";
@@ -506,6 +524,11 @@ export default {
             }
             return v.ocenka.type === this.filterOcenka;
           }
+          if(this.needTagsFilter && this.tagsFilter.length){
+             if(! this.tagsFilter.map(tag=>tag.label).find(tagLabel=>v.tags.map(tag=>tag.label).includes(tagLabel))){
+               return false;
+             }
+          }
           return true;
         })
         .sort((a, b) => {
@@ -546,6 +569,7 @@ export default {
   },
   components: {
     activityModal,
+    Tags,
   },
 };
 </script>
