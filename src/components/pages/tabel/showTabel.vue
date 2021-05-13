@@ -11,30 +11,7 @@
         <input type="text" class="datepicker input" v-model.lazy="date2" />
       </div>
 
-      <div class="column is-2 is-offset-1 center">
-        <div class="box has-text-left is-inline-block">
-          <div class="my-1">
-            <div class="mx-1 p-3 min-w-36 tag  is-danger ">В</div>
-            Выходной
-          </div>
-          <div class="my-1">
-            <div class="mx-1 p-3 min-w-36 tag  is-warning ">Б</div>
-            Больничный
-          </div>
-          <div class="my-1">
-            <div class="mx-1 p-3 min-w-36 tag  is-info ">З</div>
-            Замещение
-          </div>
-          <div class="my-1">
-            <div class="mx-1 p-3 min-w-36 tag  is-primary ">О</div>
-            Отпуск
-          </div>
-          <div class="my-1">
-            <div class="mx-1 p-3 min-w-36 tag  is-success ">8|7</div>
-            Смена
-          </div>
-        </div>
-      </div>
+    <description-table></description-table>
     </div>
 
     <h1 class="center title is-1">Табель</h1>
@@ -114,7 +91,9 @@
 </template>
 
 <script>
+import descriptionTable from './descriptionTable.vue';
 export default {
+  components: { descriptionTable },
   data() {
     return {
       history: {
@@ -330,11 +309,13 @@ this.employees = this.$store.state.employees
       }
       let dataOfDay = day.body[employee.nid].trim().toUpperCase();
       return {
-        "has-background-info": dataOfDay == "З",
-        "has-background-danger": dataOfDay == "В",
-        "has-background-primary": dataOfDay == "О",
-        "has-background-warning": dataOfDay == "Б",
-        "has-background-success": [7, 8, 8.25].includes(
+        "has-background-info has-text-white": dataOfDay == "З",
+        "has-background-primary-dark has-text-white": dataOfDay == "Д",
+        "has-background-success-dark has-text-white": dataOfDay == "С",
+        "has-background-danger has-text-white": dataOfDay == "В",
+        "has-background-primary has-text-white": dataOfDay == "О",
+        "has-background-warning ": dataOfDay == "Б",
+        "has-background-success has-text-white": [7, 8, 8.25].includes(
           Number(dataOfDay.replace(",", "."))
         ),
       };
