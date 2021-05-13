@@ -132,11 +132,17 @@ export default {
         "Создание 1 документа/правки в нескольких док-х >5",
         "Создание нескольких документов",
       ],
-
+      initedTooltips: [],
       currentTag: {
         body: "",
       },
     };
+  },
+  activated(){
+this.initTooltips();
+  },
+  deactivated(){
+this.destroyTooltips();
   },
   mounted() {
     M.Dropdown.init(document.querySelectorAll(".dropdown-trigger"));
@@ -152,12 +158,18 @@ export default {
         label: tag,
         body: "",
       });
-      this.tooltipsInit();
+      this.initTooltips();
     },
-    async tooltipsInit() {
+    async initTooltips() {
+      this.destroyTooltips();
       await this.$nextTick();
-      M.Tooltip.init(document.querySelectorAll(".tooltippedTag"));
+    
+    this.initedTooltips =  M.Tooltip.init(document.querySelectorAll(".tooltippedTag"));
     },
+    destroyTooltips(){
+  this.initedTooltips.forEach(tooltip=>tooltip.destroy())
+    },
+    
     editTagBody(tag) {
       this.currentTag = tag;
       this.openTagBodyModal();
