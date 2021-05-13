@@ -60,7 +60,7 @@
 
 <script>
 export default {
-  props: ["tags"],
+  props: ["tags", 'needEditingTagsBody'],
   data() {
     return {
       tagBodyModal: null,
@@ -163,6 +163,9 @@ export default {
       this.openTagBodyModal();
     },
     openTagBodyModal() {
+      if(!this.needEditingTagsBody){
+        return;
+      }
       this.tagBodyModal.open();
     },
     deleteTag(tag) {

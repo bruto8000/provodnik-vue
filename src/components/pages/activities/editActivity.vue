@@ -835,7 +835,7 @@
           </h3>
         </div>
         <div class="collapsible-body">
-          <tags :tags.sync="activity.tags"></tags>
+          <tags :tags.sync="activity.tags" :needEditingTagsBody="true"></tags>
         </div>
       </li>
     </ul>
