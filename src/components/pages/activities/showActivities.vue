@@ -42,7 +42,7 @@
             <option value="all" selected>Все</option>
             <option value="">Без оценки</option>
             <option value="Успешно">Успешно</option>
-            <option value="С ошибкой">С ошибкой</option>
+            <option value="С ошибкой">С ошбкой</option>
           </select>
         </div>
       </div>
@@ -192,18 +192,17 @@
       style="padding-right:16px; border-bottom: 2px solid #26a69a; padding-bottom: 10px; margin-bottom: 5px;"
     >
       <div class="column is-1">
-        <input
-          type="text"
-          class="datepicker input"
-          v-model.lazy="filterSelect.fdate"
-        />
+        <input-date
+
+   :value.sync="filterSelect.fdate"
+        ></input-date>
       </div>
       <div class="column is-1">
-        <input
-          type="text"
-          class="datepicker input"
-          v-model.lazy="filterSelect.sdate"
-        />
+        <input-date
+      
+          
+        :value.sync="filterSelect.sdate"
+        ></input-date>
       </div>
       <div class="column is-1 p-1">
         <select v-model="filterSelect.bizness" id="bizness">
@@ -281,15 +280,15 @@
         :key="activity.id"
         @click="openactivity(activity)"
       >
-        <div class="column is-1">{{ activity.fdate }}</div>
-        <div class="column is-1">{{ activity.sdate }}</div>
-        <div class="column is-1">{{ activity.bizness }}</div>
-        <div class="column is-1">{{ activity.zapusk }}</div>
-        <div class="column is-1">{{ activity.nazvanie }}</div>
-        <div class="column is-2">{{ activity.opisanieBodyCuted }}</div>
-        <div class="column is-2">{{ activity.soprovod }}</div>
-        <div class="column is-2">{{ activity.zakazchik }}</div>
-        <div class="column is-1">{{ activity.status }}</div>
+        <div class="column is-1 has-text-centered">{{ activity.fdate }}</div>
+        <div class="column is-1 has-text-centered">{{ activity.sdate }}</div>
+        <div class="column is-1 has-text-centered">{{ activity.bizness }}</div>
+        <div class="column is-1 has-text-centered">{{ activity.zapusk }}</div>
+        <div class="column is-1 has-text-centered">{{ activity.nazvanie }}</div>
+        <div class="column is-2 has-text-centered">{{ activity.opisanieBodyCuted }}</div>
+        <div class="column is-2 has-text-centered">{{ activity.soprovod }}</div>
+        <div class="column is-2 has-text-centered">{{ activity.zakazchik }}</div>
+        <div class="column is-1 has-text-centered">{{ activity.status }}</div>
       </div>
     </div>
 
