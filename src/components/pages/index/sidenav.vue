@@ -2,9 +2,12 @@
   <div>
     <div id="sidenav" class="sidenav">
       <vs-collapse accordion>
+        <div class="is-clickable p-1 " @click="routeTo('/')">
+          <span class="is-size-3">Главная</span>
+        </div>
         <vs-collapse-item>
           <div slot="header">
-            Табель
+            <span class="is-size-3">Табель</span>
           </div>
           <ul>
             <li @click="routeTo('show-tabel')" class="is-clickable p-1 ">
@@ -17,7 +20,7 @@
         </vs-collapse-item>
         <vs-collapse-item>
           <div slot="header">
-            Активности
+            <span class="is-size-3">Активности</span>
           </div>
           <ul>
             <li class="is-clickable " @click="routeTo('show-activities')">
@@ -37,7 +40,7 @@
 
         <vs-collapse-item>
           <div slot="header">
-            Инфозапросы
+            <span class="is-size-3">Инфозапросы</span>
           </div>
           <ul>
             <li class="is-clickable " @click="routeTo('show-info-queries')">
@@ -51,7 +54,7 @@
 
         <vs-collapse-item>
           <div slot="header">
-            Сотрудники
+            <span class="is-size-3">Сотрудники</span>
           </div>
           <ul>
             <li class="is-clickable " @click="routeTo('employees')">
@@ -62,7 +65,7 @@
 
         <vs-collapse-item>
           <div slot="header">
-            Проекты
+            <span class="is-size-3">Проекты</span>
           </div>
           <ul>
             <li class="is-clickable " @click="routeTo('show-projects')">
@@ -81,18 +84,65 @@
       style="height:100vh"
       class="is-flex is-flex-direction-column  is-justify-content-center is-align-items-center is-align-content-center"
     >
-      <div>
+      <div class="box p-6">
         <h1 class="is-2  title">ПРОЕКТ МИ</h1>
       </div>
       <div>
         <button
           @click="openMe"
-          class="title m-6 is-1 has-text-centered is-primary button"
+          class="title  p-6 my-1 is-1 has-text-centered is-info button"
         >
           Открыть меню
         </button>
       </div>
+
+      <div class="">
+        <button
+          @click="openArchivingModal"
+          class="title p-6 is-3 has-text-centered is-primary button"
+        >
+          Загрузить архив
+        </button>
+      </div>
     </div>
+
+    <vs-popup
+      class="holamundo"
+      title="Выберите даты для загрузки архива"
+      :active.sync="archiveModalShow"
+    >
+      <p class="is-size-4">
+        Загруженные данные заменят текущие
+      </p>
+      <p class="is-size-4">
+        Загружаем:
+      </p>
+      <input-select
+        class=""
+        :value.sync="archive.propertyToGet"
+        :options="allDataTypes"
+      ></input-select>
+      <div class="columns my-4">
+        <div class="column is-6">
+          <input-date :value.sync="archive.fdate" header="Начало"></input-date>
+        </div>
+        <div class="column is-6">
+          <input-date :value.sync="archive.sdate" header="Конец"></input-date>
+        </div>
+      </div>
+      <div class="is-flex is-justify-content-center">
+        <div class="">
+          <button
+            @click="getArchived"
+            :disabled="!catGetArchive"
+            class="button is-danger"
+            :class="{ 'is-loading': waitingForBackend }"
+          >
+            Загрузить
+          </button>
+        </div>
+      </div>
+    </vs-popup>
   </div>
 </template>
 
@@ -101,7 +151,26 @@ export default {
   data() {
     return {
       sidenav: null,
-      sidenavInner: null,
+      archiveModalShow: false,
+      archive: {
+        fdate: null,
+        sdate: [
+          new Date().getDate() > 9
+            ? new Date().getDate()
+            : "0" + new Date().getDate(),
+          new Date().getMonth() + 1 > 9
+            ? new Date().getMonth() + 1
+            : "0" + (new Date().getMonth() + 1),
+          new Date().getFullYear(),
+        ].join(" "),
+        propertyToGet: null,
+      },
+      allDataTypes: {
+        infoQueries: "Инфозапросы",
+        activities: "Активности",
+        projects: "Проекты",
+      },
+      waitingForBackend: false,
     };
   },
   mounted() {
@@ -122,11 +191,69 @@ export default {
       this.sidenav.close();
       this.$router.push(route);
     },
+    openArchivingModal() {
+      this.archiveModalShow = true;
+    },
+    closeArchivingModal() {
+      this.archiveModalShow = false;
+    },
     openMe() {
       this.sidenav.open();
     },
     closeMe() {
       this.sidenav.close();
+    },
+    getArchived() {
+      this.waitingForBackend = true;
+      this.$store
+        .dispatch("getArchived", {
+          fdate: this.archive.fdate,
+          sdate: this.archive.sdate,
+          dataType: this.archive.propertyToGet,
+        })
+        .then(
+          () => {
+            this.$vs.notify({
+              title: "Архив загружен",
+              text: "Данные успешно добавлены",
+            });
+          },
+          (err) => {
+            this.$vs.notify({
+              title: "Ошибка",
+              text: `Данные не добавлены, ошибка [${err}]`,
+              color: "red",
+            });
+          }
+        )
+        .finally(() => {
+          this.waitingForBackend = false;
+        });
+    },
+  },
+  computed: {
+    path() {
+      return this.$route.path;
+    },
+    catGetArchive() {
+      let fdate = this.archive.fdate;
+      let sdate = this.archive.sdate;
+      if (!fdate || !sdate) return false;
+      let fdateSplitted = fdate.split(" ");
+      let sdateSplitted = sdate.split(" ");
+
+      return (
+        this.archive.propertyToGet &&
+        new Date(fdateSplitted[2], fdateSplitted[1] - 1, fdateSplitted[0]) <
+          new Date(sdateSplitted[2], sdateSplitted[1] - 1, sdateSplitted[0])
+      );
+    },
+  },
+  watch: {
+    path(n, o) {
+      if (n != "/") {
+        this.archiveModalShow = false;
+      }
     },
   },
 };

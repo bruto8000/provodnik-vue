@@ -299,9 +299,17 @@ const store = new Vuex.Store({
         return e.nid != deletableEmployee.nid;
       });
     },
-    insertItems(state, { items, insertTo }) {
-      console.log("adding", items, insertTo);
-      state[insertTo] = items.concat(state[insertTo]);
+    insertItems(state, { items, insertTo,filterForUnique }) {
+      console.log("adding", items, insertTo, filterForUnique);
+      debugger;
+      if(!filterForUnique){
+
+        state[insertTo] = items.concat(state[insertTo]);
+      }else{
+      
+        state[insertTo] = items.filter(item=>!state[insertTo].find(itemInState=>itemInState.id == item.id)).concat(state[insertTo]);
+
+      }
     },
     setEditingInfoQuery(state, infoQuery) {
       state.currentEditingInfoQuery = _.cloneDeep(infoQuery);
@@ -430,12 +438,12 @@ const store = new Vuex.Store({
           }
         });
     },
-    insertItems(context, { items, insertTo, parsingFunction }) {
+    insertItems(context, { items, insertTo, parsingFunction,filterForUnique }) {
       console.log("inserting", insertTo);
       parsingFunction &&  parsingFunctions[parsingFunction] &&
         (items = parsingFunctions[parsingFunction](items));
 
-      context.commit("insertItems", { items, insertTo });
+      context.commit("insertItems", { items, insertTo,filterForUnique });
     },
 
  //ACTIVITIES////
@@ -611,6 +619,33 @@ const store = new Vuex.Store({
         .catch((e) => {
           return Promise.reject(e);
         });
+    },
+
+        /// Archive ///
+    async getArchived ({ commit }, options){
+  
+    return new Promise((resolve,reject)=>{
+  
+      axios("./vendor/archived", {
+        method: "GET",
+        params: options
+      }).then(
+        (res) => {
+          debugger;
+          store.dispatch("insertItems", {
+            items: res.data.reverse(),
+            insertTo: options.dataType,
+            parsingFunction: options.dataType,
+            filterForUnique: true
+          });
+          resolve();
+        },
+        (err) => {
+          reject(err)
+      
+        }
+      )
+    }) 
     }
 
 
