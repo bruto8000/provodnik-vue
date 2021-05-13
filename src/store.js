@@ -101,11 +101,10 @@ const getInfoQueries = (store) => {
 const getProjects = (store) => {
   axios.get("/vendor/showProjects").then(
     (res) => {
-      console.log(res.data)
       store.dispatch("insertItems", {
         items: res.data.reverse(),
         insertTo: "projects",
-        parsingFunction: null
+        parsingFunction: null,
       });
     },
     (err) => {
@@ -130,7 +129,6 @@ const parsingFunctions = {
           ? htmlEl.innerText
           : htmlEl.innerText.slice(0, 50) + "...";
       activity.opisanieBodyHTML = htmlEl;
-
     });
     return activities;
   },
@@ -190,22 +188,21 @@ const store = new Vuex.Store({
       days: "",
     },
     currentEditingProject: {
-      
-        accompanying: "",
-        fdate: "",
-        sdate: "",
-        title: "",
-        description: "",
-        businessType: "",
-        workGroup: "",
-        status: "",
-        CA: "",
+      accompanying: "",
+      fdate: "",
+      sdate: "",
+      title: "",
+      description: "",
+      businessType: "",
+      workGroup: "",
+      status: "",
+      CA: "",
 
-        projectType: "",
-        efficiency: {
-          title: "",
-          rows: [],
-        }
+      projectType: "",
+      efficiency: {
+        title: "",
+        rows: [],
+      },
     },
     infoQueriesSelectOptions: {
       classificationOptions: [
@@ -250,34 +247,20 @@ const store = new Vuex.Store({
       ],
     },
     projectsSelectOptions: {
-       businessTypeOptions: [
-         "FMC",
-         "B2B",
-         "ПК",
-         "FTTB",
-         "FMC/FTTB",
-         "B2B/B2C",
-         "FMC/B2C",
-         "Не применимо"
-       ],
-       statusOptions: [   
-        "В работе",
-        "Выполнено",
-        "Отложено",
-        "Отменено"
- 
+      businessTypeOptions: [
+        "FMC",
+        "B2B",
+        "ПК",
+        "FTTB",
+        "FMC/FTTB",
+        "B2B/B2C",
+        "FMC/B2C",
+        "Не применимо",
       ],
-      CAOptions: [
-        "Группа сопровождения",
-        "ДОК",
-        "Клиенты",
-        "Обслуживание"
-      ],
-      projectTypeOptions: [
-        "Качественный",
-        "Количественный"
-      ]
-    }
+      statusOptions: ["В работе", "Выполнено", "Отложено", "Отменено"],
+      CAOptions: ["Группа сопровождения", "ДОК", "Клиенты", "Обслуживание"],
+      projectTypeOptions: ["Качественный", "Количественный"],
+    },
   },
   mutations: {
     setTabel(state, tabel) {
@@ -299,16 +282,16 @@ const store = new Vuex.Store({
         return e.nid != deletableEmployee.nid;
       });
     },
-    insertItems(state, { items, insertTo,filterForUnique }) {
-      console.log("adding", items, insertTo, filterForUnique);
-      debugger;
-      if(!filterForUnique){
-
+    insertItems(state, { items, insertTo, filterForUnique }) {
+      if (!filterForUnique) {
         state[insertTo] = items.concat(state[insertTo]);
-      }else{
-      
-        state[insertTo] = items.filter(item=>!state[insertTo].find(itemInState=>itemInState.id == item.id)).concat(state[insertTo]);
-
+      } else {
+        state[insertTo] = items
+          .filter(
+            (item) =>
+              !state[insertTo].find((itemInState) => itemInState.id == item.id)
+          )
+          .concat(state[insertTo]);
       }
     },
     setEditingInfoQuery(state, infoQuery) {
@@ -407,9 +390,6 @@ const store = new Vuex.Store({
           return Promise.resolve();
         })
         .catch((err) => {
-          console.log(err);
-          console.log(err.response);
-          console.log(err.response.data);
           if (err.response.data == "NID") {
             return Promise.reject("Уникальный ID уже существует");
           } else {
@@ -438,15 +418,18 @@ const store = new Vuex.Store({
           }
         });
     },
-    insertItems(context, { items, insertTo, parsingFunction,filterForUnique }) {
-      console.log("inserting", insertTo);
-      parsingFunction &&  parsingFunctions[parsingFunction] &&
+    insertItems(
+      context,
+      { items, insertTo, parsingFunction, filterForUnique }
+    ) {
+      parsingFunction &&
+        parsingFunctions[parsingFunction] &&
         (items = parsingFunctions[parsingFunction](items));
 
-      context.commit("insertItems", { items, insertTo,filterForUnique });
+      context.commit("insertItems", { items, insertTo, filterForUnique });
     },
 
- //ACTIVITIES////
+    //ACTIVITIES////
     async changeActivityOcenka(context, { id, ocenka }) {
       return new Promise((resolve, reject) => {
         axios
@@ -465,14 +448,14 @@ const store = new Vuex.Store({
             (err) => reject(err)
           );
       });
-    }, 
+    },
     async addActivity({ commit, dispatch }, activity) {
       return new Promise((resolve, reject) => {
         axios
           .post("../vendor/addActivity", activity)
           .then((res) => {
             let id = res.data;
-            let newActivity =  Object.assign(_.cloneDeep(activity), {id});
+            let newActivity = Object.assign(_.cloneDeep(activity), { id });
             dispatch("insertItems", {
               items: [newActivity],
               insertTo: "activities",
@@ -487,7 +470,6 @@ const store = new Vuex.Store({
       });
     },
     async editActivity({ commit }, activity) {
-      console.log("editing activity");
       await axios
         .post("../vendor/editActivity", activity)
         .then((r) => {
@@ -495,7 +477,6 @@ const store = new Vuex.Store({
           return Promise.resolve();
         })
         .catch((e) => {
-          console.log(e);
           return Promise.reject(e);
         });
     },
@@ -513,16 +494,15 @@ const store = new Vuex.Store({
         });
     },
 
- // INFO QUERIES ///
+    // INFO QUERIES ///
 
     async addInfoQuery({ commit, dispatch }, infoQuery) {
       return new Promise((resolve, reject) => {
-        console.log("adding");
         axios
           .post("../vendor/addInfoQuery", infoQuery)
           .then((res) => {
             let id = res.data;
-            let newInfoQuery =  Object.assign(_.cloneDeep(infoQuery), {id});
+            let newInfoQuery = Object.assign(_.cloneDeep(infoQuery), { id });
             dispatch("insertItems", {
               items: [newInfoQuery],
               insertTo: "infoQueries",
@@ -532,16 +512,12 @@ const store = new Vuex.Store({
             resolve();
           })
           .catch((err) => {
-            console.log(err);
-            console.log(err.responce);
-            console.log(err.data);
             reject(err);
           });
       });
     },
     async editInfoQuery({ commit, dispatch }, infoQuery) {
       return new Promise((resolve, reject) => {
-        console.log("adding");
         axios
           .post("../vendor/editInfoQuery", infoQuery)
           .then((res) => {
@@ -575,12 +551,11 @@ const store = new Vuex.Store({
     /// PROJECTS ////
     async addProject({ commit, dispatch }, project) {
       return new Promise((resolve, reject) => {
-        console.log("adding");
         axios
           .post("../vendor/addProject", project)
           .then((res) => {
             let id = res.data;
-            let newProject = Object.assign(_.cloneDeep(project), {id});
+            let newProject = Object.assign(_.cloneDeep(project), { id });
             dispatch("insertItems", {
               items: [newProject],
               insertTo: "projects",
@@ -613,49 +588,42 @@ const store = new Vuex.Store({
           id: project.id,
         })
         .then((responce) => {
-            commit("deleteProject", project);
-            return Promise.resolve();
+          commit("deleteProject", project);
+          return Promise.resolve();
         })
         .catch((e) => {
           return Promise.reject(e);
         });
     },
 
-        /// Archive ///
-    async getArchived ({ commit }, options){
-  
-    return new Promise((resolve,reject)=>{
-  
-      axios("./vendor/archived", {
-        method: "GET",
-        params: options
-      }).then(
-        (res) => {
-          debugger;
-          store.dispatch("insertItems", {
-            items: res.data.reverse(),
-            insertTo: options.dataType,
-            parsingFunction: options.dataType,
-            filterForUnique: true
-          });
-          resolve();
-        },
-        (err) => {
-          reject(err)
-      
-        }
-      )
-    }) 
-    }
-
-
-
+    /// Archive ///
+    async getArchived({ commit }, options) {
+      return new Promise((resolve, reject) => {
+        axios("./vendor/archived", {
+          method: "GET",
+          params: options,
+        }).then(
+          (res) => {
+            store.dispatch("insertItems", {
+              items: res.data.reverse(),
+              insertTo: options.dataType,
+              parsingFunction: options.dataType,
+              filterForUnique: true,
+            });
+            resolve();
+          },
+          (err) => {
+            reject(err);
+          }
+        );
+      });
+    },
   },
   getters: {
     trueNID: (state) => state.employees.map((em) => em.nid),
     employees: (state) => state.employees.map((em) => em.full_name),
   },
-  plugins: [getEmployees, getActivities, getInfoQueries, getProjects, getTabel]
+  plugins: [getEmployees, getActivities, getInfoQueries, getProjects, getTabel],
 });
 
 export default store;
