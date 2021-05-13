@@ -1,356 +1,376 @@
-<template> 
+<template>
+  <div class="eGrafiks">
+    <div class="box" v-if="!showOnly">
+      <div v-if="fileloadstatus != 'parsed'">
+        <h1 class="title is-4 has-text-centered">
+          Выберите файл для построения графика...
+        </h1>
 
+        <input
+          placeholder="Выберите файл"
+          class="input"
+          @change="loadFile"
+          type="file"
+          name="resume"
+        />
+      </div>
 
-<div class="eGrafiks">
-  <div class="box">
-    <div v-if="fileloadstatus != 'parsed'">
-      <h1 class="title is-4 has-text-centered">
-        Выберите файл для построения графика...
-      </h1>
+      <div class="" v-show="loading">
+        <h1 class="title is-1">Загрузка...</h1>
+      </div>
 
-      <input
-        placeholder="Выберите файл"
-        class="input"
-        @change="loadFile"
-        type="file"
-        name="resume"
-      />
-    </div>
-
-    <div class="" v-show="loading">
-      <h1 class="title is-1">Загрузка...</h1>
-    </div>
-
-    <div v-if="fileloadstatus=='parsed'">
-      <div class="columns">
-        <div class="column is-2">
-          <button class="is-primary button" @click="openGrafSelectModal">
-            Добавить график
-          </button>
-        </div>
-        <div class="column is-6 is-offset-1">
-          <h2 class="title is-2 has-text-centered">Графики по Excell</h2>
-          <h3 class="title is-3 has-text-centered">{{filename}}</h3>
+      <div v-if="fileloadstatus == 'parsed'">
+        <div class="columns">
+          <div class="column is-2">
+            <button class="is-primary button" @click="openGrafSelectModal">
+              Добавить график
+            </button>
+          </div>
+          <div class="column is-6 is-offset-1">
+            <h2 class="title is-2 has-text-centered">Графики по Excell</h2>
+            <h3 class="title is-3 has-text-centered">{{ filename }}</h3>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="box" v-for="(eGrafik,idx) in eGrafiks" :key="idx">
-    <div class="panel columns my-2 py-3">
-    <div class="mx-2">
+    <div class="box" v-for="(eGrafik, idx) in eGrafiks" :key="idx">
+      <div v-if='!showOnly' class="panel columns my-2 py-3">
+        <div class="mx-2">
+          <button
+            @click="copyImg(eGrafik)"
+            class="button is-primary"
+            :disabled="!(eGrafik[showOnly ? 'grafik' : 'grafikModal'])"
+          >
+            <span class="mdi mdi-content-copy"> </span>
+          </button>
+        </div>
+
+        <div class="mx-2">
+          <button @click="deleteEGrafik(eGrafik)" class="button is-danger">
+            <span class="mdi mdi-delete"> </span>
+          </button>
+        </div>
+        <div v-if="eGrafik.loadType == 'db'" class="mx-2">
+          <button
+            class="button is-primary"
+            @click="unlockGrafik(eGrafik)"
+            :disabled="fileloadstatus != 'parsed'"
+          >
+            Разблокировать график
+          </button>
+        </div>
+      </div>
+
+      <div v-if="eGrafik.type == 'zapusk'">
+        <h2 class="title is-2">График по запускам</h2>
+          <template v-if="!showOnly">
+        <h3 class="title is-3">Выберите активности:</h3>
+        <select
+          v-model="eGrafik.selectedIdx"
+          multiple
+          class="my-6"
+          :disabled="eGrafik.loadType == 'db'"
+        >
+          <option
+            v-for="(selectValue, idx) in selectValuesZapusk"
+            :value="selectValue.idx"
+            :key="idx"
+          >
+            {{ selectValue.label }}
+          </option>
+        </select>
+
+        <div class="nagruzkas">
+          <div class="is-flex">
+            <h4 class="title is-4 mx-2">Комментарии на графике:</h4>
+            <div class="mx-2">
+              <button
+                :disabled="eGrafik.loadType == 'db'"
+                @click="addNagruzka(eGrafik)"
+                class="button is-success"
+              >
+                <span class="mdi mdi-plus"></span>
+              </button>
+            </div>
+
+            <div class="mx-2">
+              <button
+                @click="deleteNagruzka(eGrafik)"
+                class="button is-danger"
+                :disabled="
+                  !eGrafik.nagruzkas.length || eGrafik.loadType == 'db'
+                "
+              >
+                <span class="mdi mdi-minus"></span>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <ul>
+              <li v-for="(nagruzka, idx) in eGrafik.nagruzkas" :key="idx">
+                <div class="columns">
+                  <div class="column is-4">
+                    <input
+                      type="text"
+                      class="input is-primary"
+                      placeholder="Информация"
+                      v-model="nagruzka.label"
+                      :disabled="eGrafik.loadType == 'db'"
+                    />
+                  </div>
+                  <div class="column is-4">
+                    <input
+                      type="text"
+                      class="input is-primary datepicker-nagruzka"
+                      placeholder="Дата"
+                      v-model.lazy="nagruzka.date"
+                      :disabled="eGrafik.loadType == 'db'"
+                    />
+                  </div>
+                  <div class="column is-4">
+                    <input
+                      type="text"
+                      class="input is-primary"
+                      placeholder="Колличество (высота)"
+                      v-model="nagruzka.value"
+                      :disabled="eGrafik.loadType == 'db'"
+                    />
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+           </template>
+        <div class="box">
+              <template v-if="!showOnly">
+          <h2 class="title is-2 has-text-centered">Даты</h2>
+          <div class="columns">
+           
 
    
-      <button
-        @click="copyImg(eGrafik)"
-        class="button is-primary"
-        :disabled="!eGrafik.grafik"
-      >
-        <span class="mdi mdi-content-copy"> </span>
-      </button>
-    </div>
-
-
-    <div class="mx-2">
-
-   
-    <button
-      @click="deleteEGrafik(eGrafik)"
-      class="button is-danger"
-     
-    >
-      <span class="mdi mdi-delete"> </span>
-    </button>
-  </div>
-      <div v-if="eGrafik.loadType=='db'" class="mx-2">
-        <button
-          class="button is-primary"
-          @click="unlockGrafik(eGrafik)"
-          :disabled="fileloadstatus!='parsed'"
-        >
-          Разблокировать график
-        </button>
-      </div>
-    </div>
-
-    <div v-if="eGrafik.type =='zapusk'">
-      <h2 class="title is-2">График по запускам</h2>
-      <h3 class="title is-3">Выберите активности:</h3>
-      <select
-        v-model="eGrafik.selectedIdx"
-        multiple
-        class="my-6"
-        :disabled="eGrafik.loadType == 'db'"
-      >
-        <option
-          v-for="(selectValue,idx) in selectValuesZapusk"
-          :value="selectValue.idx"
-          :key='idx'
-        >
-          {{selectValue.label}}
-        </option>
-      </select>
-
-      <div class="nagruzkas">
-        <div class="is-flex">
-          <h4 class="title is-4 mx-2">Комментарии на графике:</h4>
-          <div class="mx-2">
+            <div class="column is-6 has-text-centered">
+              <input
+                type="text"
+                v-model.lazy="eGrafik.fdate"
+                class="datepicker  datepickerEGrafik input"
+                :disabled="eGrafik.loadType == 'db'"
+              />
+            </div>
+            <div class="column is-6 has-text-centered">
+              <input
+                type="text"
+                v-model.lazy="eGrafik.sdate"
+                class="datepicker datepickerEGrafik  input"
+                :disabled="eGrafik.loadType == 'db'"
+              />
+            </div>
+          </div>
+          <div class="columns">
             <button
+              class="button is-danger column is-2 is-offset-5 is-size-4"
+              @click="initGrafik(eGrafik)"
               :disabled="eGrafik.loadType == 'db'"
-              @click="addNagruzka(eGrafik)"
-              class="button is-success"
             >
-              <span class="mdi mdi-plus"></span>
+              Создать график
             </button>
           </div>
-
-          <div class="mx-2">
-            <button
-              @click="deleteNagruzka(eGrafik)"
-              class="button is-danger"
-              :disabled="!eGrafik.nagruzkas.length || eGrafik.loadType == 'db'"
-            >
-              <span class="mdi mdi-minus"></span>
-            </button>
+                    </template>  
+          <div class="columns">
+            <div class="column is-12">
+               <canvas
+              v-if="!showOnly"
+              :id="'eGrafik' + idx" 
+                style="background-color: #fff"
+              ></canvas>
+                  <canvas
+              v-else
+                :id="'eGrafikModal' + idx"
+                style="background-color: #fff"
+              ></canvas>
+            </div>
           </div>
-        </div>
-
-        <div>
-          <ul>
-            <li v-for="(nagruzka,idx) in eGrafik.nagruzkas" :key='idx'>
-              <div class="columns">
-                <div class="column is-4">
-                  <input
-                    type="text"
-                    class="input is-primary"
-                    placeholder="Информация"
-                    v-model="nagruzka.label"
-                    :disabled="eGrafik.loadType == 'db'"
-                  />
-                </div>
-                <div class="column is-4">
-                  <input
-                    type="text"
-                    class="input is-primary datepicker-nagruzka"
-                    placeholder="Дата"
-                    v-model.lazy="nagruzka.date"
-                    :disabled="eGrafik.loadType == 'db'"
-                  />
-                </div>
-                <div class="column is-4">
-                  <input
-                    type="text"
-                    class="input is-primary"
-                    placeholder="Колличество (высота)"
-                    v-model="nagruzka.value"
-                    :disabled="eGrafik.loadType == 'db'"
-                  />
-                </div>
-              </div>
-            </li>
-          </ul>
         </div>
       </div>
-      <div class="box">
-        <h2 class="title is-2 has-text-centered">Даты</h2>
-        <div class="columns">
-          <div class="column is-6 has-text-centered">
-            <input
-              type="text"
-              v-model.lazy="eGrafik.fdate"
-              class="datepicker  datepickerEGrafik input"
-              :disabled="eGrafik.loadType == 'db'"
-            />
-          </div>
-          <div class="column is-6 has-text-centered">
-            <input
-              type="text"
-              v-model.lazy="eGrafik.sdate"
-              class="datepicker datepickerEGrafik  input"
-              :disabled="eGrafik.loadType == 'db'"
-            />
-          </div>
-        </div>
-        <div class="columns">
-          <button
-            class="button is-danger column is-2 is-offset-5 is-size-4"
-            @click="initGrafik(eGrafik)"
-            :disabled="eGrafik.loadType == 'db'"
+
+      <div v-if="eGrafik.type == 'planFact'">
+        <h2 class="title is-2">График по План/Факту</h2>
+              <template v-if="!showOnly">
+        <h3 class="title is-3">Выберите активность:</h3>
+        <select
+          v-model="eGrafik.selectedIdx"
+          class="my-6"
+          :disabled="eGrafik.loadType == 'db'"
+        >
+          <option value="" selected></option>
+          <option
+            v-for="selectValue in selectValuesPlanFact"
+            :value="selectValue.idx"
+            :key="selectValue.label"
           >
-            Создать график
-          </button>
-        </div>
-        <div class="columns">
-          <div class="column is-8 is-offset-2">
-            <canvas :id="'eGrafik'+idx" style="background-color: #fff"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
+            {{ selectValue.label }}
+          </option>
+        </select>
 
-    <div v-if="eGrafik.type =='planFact'">
-      <h2 class="title is-2">График по План/Факту</h2>
-      <h3 class="title is-3">Выберите активность:</h3>
-      <select
-        v-model="eGrafik.selectedIdx"
-        class="my-6"
-        :disabled="eGrafik.loadType == 'db'"
-      >
-        <option value="" selected></option>
-        <option
-          v-for="selectValue in selectValuesPlanFact"
-          :value="selectValue.idx"
-          :key='selectValue.label'
-        >
-          {{selectValue.label}}
-        </option>
-      </select>
-
-      <div class="center">
-        <label :for="'factCheck'+idx">
-          <input
-            type="checkbox"
-            v-model="eGrafik.fact"
-            :id="'factCheck'+idx"
-            :disabled="eGrafik.loadType == 'db'"
-          />
-          <span>Факт</span>
-        </label>
-      </div>
-
-      <div class="nagruzkas">
-        <div class="is-flex">
-          <h4 class="title is-4 mx-2">Комментарии на графике:</h4>
-          <div class="mx-2">
-            <button
-              :disabled="eGrafik.loadType == 'db'"
-              @click="addNagruzka(eGrafik)"
-              class="button is-success"
-            >
-              <span class="mdi mdi-plus"></span>
-            </button>
-          </div>
-
-          <div class="mx-2">
-            <button
-              @click="deleteNagruzka(eGrafik)"
-              class="button is-danger"
-              :disabled="!eGrafik.nagruzkas.length || eGrafik.loadType == 'db'"
-            >
-              <span class="mdi mdi-minus"></span>
-            </button>
-          </div>
-        </div>
-
-        <div>
-          <ul>
-            <li v-for="(nagruzka,idx) in eGrafik.nagruzkas" :key="idx">
-              <div class="columns">
-                <div class="column is-4">
-                  <input
-                    type="text"
-                    class="input is-primary"
-                    placeholder="Информация"
-                    v-model="nagruzka.label"
-                    :disabled="eGrafik.loadType == 'db'"
-                  />
-                </div>
-                <div class="column is-4">
-                  <input
-                    type="text"
-                    class="input is-primary datepicker-nagruzka"
-                    placeholder="Дата"
-                    v-model.lazy="nagruzka.date"
-                    :disabled="eGrafik.loadType == 'db'"
-                  />
-                </div>
-                <div class="column is-4">
-                  <input
-                    type="text"
-                    class="input is-primary"
-                    placeholder="Колличество (высота)"
-                    v-model="nagruzka.value"
-                    :disabled="eGrafik.loadType == 'db'"
-                  />
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="box">
-        <h2 class="title is-2 has-text-centered">Даты</h2>
-        <div class="columns">
-          <div class="column is-6 has-text-centered">
+        <div class="center">
+          <label :for="'factCheck' + idx">
             <input
-              type="text"
-              v-model.lazy="eGrafik.fdate"
-              class="datepicker datepickerEGrafik input"
+              type="checkbox"
+              v-model="eGrafik.fact"
+              :id="'factCheck' + idx"
               :disabled="eGrafik.loadType == 'db'"
             />
+            <span>Факт</span>
+          </label>
+        </div>
+
+        <div class="nagruzkas">
+          <div class="is-flex">
+            <h4 class="title is-4 mx-2">Комментарии на графике:</h4>
+            <div class="mx-2">
+              <button
+                :disabled="eGrafik.loadType == 'db'"
+                @click="addNagruzka(eGrafik)"
+                class="button is-success"
+              >
+                <span class="mdi mdi-plus"></span>
+              </button>
+            </div>
+
+            <div class="mx-2">
+              <button
+                @click="deleteNagruzka(eGrafik)"
+                class="button is-danger"
+                :disabled="
+                  !eGrafik.nagruzkas.length || eGrafik.loadType == 'db'
+                "
+              >
+                <span class="mdi mdi-minus"></span>
+              </button>
+            </div>
           </div>
-          <div class="column is-6 has-text-centered">
-            <input
-              type="text"
-              v-model.lazy="eGrafik.sdate"
-              class="datepicker datepickerEGrafik input"
+
+          <div>
+            <ul>
+              <li v-for="(nagruzka, idx) in eGrafik.nagruzkas" :key="idx">
+                <div class="columns">
+                  <div class="column is-4">
+                    <input
+                      type="text"
+                      class="input is-primary"
+                      placeholder="Информация"
+                      v-model="nagruzka.label"
+                      :disabled="eGrafik.loadType == 'db'"
+                    />
+                  </div>
+                  <div class="column is-4">
+                    <input
+                      type="text"
+                      class="input is-primary datepicker-nagruzka"
+                      placeholder="Дата"
+                      v-model.lazy="nagruzka.date"
+                      :disabled="eGrafik.loadType == 'db'"
+                    />
+                  </div>
+                  <div class="column is-4">
+                    <input
+                      type="text"
+                      class="input is-primary"
+                      placeholder="Колличество (высота)"
+                      v-model="nagruzka.value"
+                      :disabled="eGrafik.loadType == 'db'"
+                    />
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </template>
+      
+        <div class="box">
+          <h2 class="title is-2 has-text-centered">Даты</h2>
+          <div class="columns">
+            <div class="column is-6 has-text-centered">
+              <input
+                type="text"
+                v-model.lazy="eGrafik.fdate"
+                class="datepicker datepickerEGrafik input"
+                :disabled="eGrafik.loadType == 'db'"
+              />
+            </div>
+            <div class="column is-6 has-text-centered">
+              <input
+                type="text"
+                v-model.lazy="eGrafik.sdate"
+                class="datepicker datepickerEGrafik input"
+                :disabled="eGrafik.loadType == 'db'"
+              />
+            </div>
+          </div>
+          <div class="columns">
+            <button
+              class="button is-danger column is-2 is-offset-5 is-size-4"
+              @click="initGrafik(eGrafik)"
               :disabled="eGrafik.loadType == 'db'"
-            />
+            >
+              Создать график
+            </button>
+          </div>
+          <div class="columns">
+            <div class="column is-12">
+
+              <canvas
+              v-if="!showOnly"
+               :id="'eGrafik' + idx" 
+                               style="background-color: #fff"
+              ></canvas>
+                  <canvas
+              v-else
+                :id="'eGrafikModal' + idx"
+                style="background-color: #fff"
+              ></canvas>
+            </div>
           </div>
         </div>
-        <div class="columns">
-          <button
-            class="button is-danger column is-2 is-offset-5 is-size-4"
-            @click="initGrafik(eGrafik)"
-            :disabled="eGrafik.loadType == 'db'"
-          >
-            Создать график
-          </button>
+      </div>
+    </div>
+
+    <div class="modal" :id="showOnly ? 'selectGrafikModalModal' : 'selectGrafikModal'">
+      <div class="modal-content">
+        <div class="box is-clickable" @click="addGrafZapusk">
+          График для прогноза по запускам
         </div>
+        <div class="box is-clickable" @click="addGrafPlanFact">
+          График для План Факт 1 Линия
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a class="modal-close waves-effect waves-green btn-flat">Закрыть</a>
+      </div>
+    </div>
+
+    <div class="modal" :id="showOnly ? 'imageCopyModalModal' : 'imageCopyModal'">
+      <div class="modal-content">
+        <h2 class="title is-2 has-text-centered">Скопируйте картинку</h2>
         <div class="columns">
-          <div class="column is-8 is-offset-2">
-            <canvas :id="'eGrafik'+idx" style="background-color: #fff"></canvas>
+          <div class="column is-12 has-text-centered">
+            <img :src="eGrafikImg" alt="" />
           </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div class="modal" id="selectGrafikModal">
-    <div class="modal-content">
-      <div class="box is-clickable" @click="addGrafZapusk">
-        График для прогноза по запускам
-      </div>
-      <div class="box is-clickable" @click="addGrafPlanFact">
-        График для План Факт 1 Линия
+      <div class="modal-footer">
+        <a class="modal-close waves-effect waves-green btn-flat">Закрыть</a>
       </div>
     </div>
-    <div class="modal-footer">
-      <a class="modal-close waves-effect waves-green btn-flat">Закрыть</a>
-    </div>
   </div>
-
-  <div class="modal" id="imageCopyModal">
-    <div class="modal-content">
-      <h2 class="title is-2 has-text-centered">Скопируйте картинку</h2>
-      <div class="columns">
-        <div class="column is-12 has-text-centered">
-          <img :src="eGrafikImg" alt="" />
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <a class="modal-close waves-effect waves-green btn-flat">Закрыть</a>
-    </div>
-  </div>
-</div>
-
 </template>
 
 <script>
 export default {
-  props: ["eGrafiks"],
+  props: ["eGrafiks", 'showOnly'],
 
   data() {
     return {
@@ -386,6 +406,7 @@ export default {
           ctx.fillRect(0, 0, c.chart.width, c.chart.height);
         },
       },
+    
       // eGrafiks: [
       //   //   {type: "", //zapusk | planFact
       //   //   range : [dates],
@@ -402,17 +423,17 @@ export default {
     // console.log('mounted')
     this.initimageCopyModal();
 
-
-          this.$nextTick().then(() => {
+    this.$nextTick().then(() => {
+      this.eGrafiks &&
         this.eGrafiks.forEach((eGrafik) => {
           eGrafik.loadType = "db"; ///LOADED FROM DataBase
 
           this.initGrafik(eGrafik);
         });
 
-        this.initDates();
-        this.initSelect();
-      });
+      this.initDates();
+      this.initSelect();
+    });
   },
   methods: {
     loadFile(e) {
@@ -440,16 +461,21 @@ export default {
           xlfn: true,
         });
 
-        let oJS = this.$XLSX.utils.sheet_to_json(wb.Sheets["Прогноз По Запускам"], {
-          raw: false,
-        });
+        let oJS = this.$XLSX.utils.sheet_to_json(
+          wb.Sheets["Прогноз По Запускам"],
+          {
+            raw: false,
+          }
+        );
 
-        let oJS2 = this.$XLSX.utils.sheet_to_json(wb.Sheets["План Факт 1 Линия"], {
-          raw: false,
-          range: 0,
-        });
+        let oJS2 = this.$XLSX.utils.sheet_to_json(
+          wb.Sheets["План Факт 1 Линия"],
+          {
+            raw: false,
+            range: 0,
+          }
+        );
         wb = null;
-        
 
         let values = Object.values(oJS[0]);
         let keys = Object.keys(oJS[0]);
@@ -640,11 +666,11 @@ export default {
         this.addNagruzkasDataset(eGrafik);
       }
 
-      if (eGrafik.grafik) {
+      if ((eGrafik[this.showOnly ? 'grafik' : 'grafikModal'])) {
         this.updateGrafik(eGrafik);
         return;
       }
-
+      delete (eGrafik[this.showOnly ? 'grafik' : 'grafikModal']);
       this.createGrafik(eGrafik);
     },
     addNagruzkasDataset(eGrafik) {
@@ -693,67 +719,70 @@ export default {
     },
     createGrafik(eGrafik) {
       console.log("creating Egrafik", eGrafik);
-      let ctx = document.getElementById(
-        "eGrafik" + this.eGrafiks.indexOf(eGrafik)
-      );
-      eGrafik.grafik = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: eGrafik.range.slice(),
-          datasets: eGrafik.datasets.slice(),
-        },
-        options: {
-          onClick: this.eGrafikClickHandler,
-          legend: {
-            display: true,
-            position: "bottom",
-            labels: {
-              usePointStyle: true,
-            },
+      setTimeout(() => {
+        let ctx = document.getElementById(
+         (this.showOnly ?  "eGrafikModal" : 'eGrafik') + this.eGrafiks.indexOf(eGrafik)
+        );
+        (eGrafik[this.showOnly ? 'grafik' : 'grafikModal']) = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: eGrafik.range.slice(),
+            datasets: eGrafik.datasets.slice(),
           },
-
-          tooltips: {
-            callbacks: {
-              label: function(tooltipItem, data) {
-                if (
-                  data.datasets[tooltipItem.datasetIndex].pointStyle ==
-                  "triangle"
-                )
-                  return data.datasets[tooltipItem.datasetIndex].label;
-                let label = data.datasets[tooltipItem.datasetIndex].label || "";
-
-                if (label) {
-                  label += ": ";
-                }
-                label += Math.round(tooltipItem.yLabel * 100) / 100;
-                return label;
+          options: {
+            onClick: this.eGrafikClickHandler,
+            legend: {
+              display: true,
+              position: "bottom",
+              labels: {
+                usePointStyle: true,
               },
             },
-          },
-          scales: {
-            xAxes: [
-              {
-                gridLines: {
-                  display: false,
+
+            tooltips: {
+              callbacks: {
+                label: function(tooltipItem, data) {
+                  if (
+                    data.datasets[tooltipItem.datasetIndex].pointStyle ==
+                    "triangle"
+                  )
+                    return data.datasets[tooltipItem.datasetIndex].label;
+                  let label =
+                    data.datasets[tooltipItem.datasetIndex].label || "";
+
+                  if (label) {
+                    label += ": ";
+                  }
+                  label += Math.round(tooltipItem.yLabel * 100) / 100;
+                  return label;
                 },
               },
-            ],
-            yAxes: [
-              {
-                gridLines: {
-                  display: false,
+            },
+            scales: {
+              xAxes: [
+                {
+                  gridLines: {
+                    display: false,
+                  },
                 },
-              },
-            ],
+              ],
+              yAxes: [
+                {
+                  gridLines: {
+                    display: false,
+                  },
+                },
+              ],
+            },
           },
-        },
-        plugins: [this.whiteBackgroundPlugin],
-      });
+          plugins: [this.whiteBackgroundPlugin],
+        });
+      }, 1000);
     },
     updateGrafik(eGrafik) {
-      eGrafik.grafik.data.labels = eGrafik.range.slice();
-      eGrafik.grafik.data.datasets = eGrafik.datasets.slice();
-      eGrafik.grafik.update();
+      (eGrafik[this.showOnly ? 'grafik' : 'grafikModal']).data.labels = eGrafik.range.slice();
+      (eGrafik[this.showOnly ? 'grafik' : 'grafikModal']).data.datasets = eGrafik.datasets.slice();
+      (eGrafik[this.showOnly ? 'grafik' : 'grafikModal']).update();
     },
     async initDates(
       offMonth,
@@ -937,15 +966,17 @@ export default {
     },
     initselectGrafikModal() {
       this.selectGrafikModal = M.Modal.init(
-        document.getElementById("selectGrafikModal")
+        document.getElementById(  this.showOnly ?  'selectGrafikModalModal' :'selectGrafikModal' )
       );
+   
     },
     initimageCopyModal() {
       this.imageCopyModal = M.Modal.init(
-        document.getElementById("imageCopyModal")
+        document.getElementById(  this.showOnly ? "imageCopyModalModal" : "imageCopyModal")
       );
     },
     openGrafSelectModal() {
+     
       this.selectGrafikModal.open();
     },
     unlockGrafik(eGrafik) {
@@ -964,34 +995,33 @@ export default {
       eGrafik.nagruzkas.pop();
     },
     deleteEGrafik(eGrafik) {
-      if (eGrafik.grafik) {
-        eGrafik.grafik.destroy();
+      if ((eGrafik[this.showOnly ? 'grafik' : 'grafikModal'])) {
+        (eGrafik[this.showOnly ? 'grafik' : 'grafikModal']).destroy();
       }
       this.eGrafiks.splice(this.eGrafiks.indexOf(eGrafik), 1);
     },
     eGrafikClickHandler(e) {},
     copyImg(eGrafik) {
-      if (!eGrafik.grafik) return;
+      if (!(eGrafik[this.showOnly ? 'grafik' : 'grafikModal'])) return;
 
-      this.eGrafikImg = eGrafik.grafik.toBase64Image();
+      this.eGrafikImg = (eGrafik[this.showOnly ? 'grafik' : 'grafikModal']).toBase64Image();
       this.imageCopyModal.open();
     },
   },
   watch: {
     eGrafiks(n, o) {
-    
       if (!this.watcherNeed) {
         this.watcherNeed = true;
         return;
       }
       if (o && o.length) {
         o.forEach((eGrafik, idx) => {
-          if (!eGrafik.grafik) {
+          if (!(eGrafik[this.showOnly ? 'grafik' : 'grafikModal'])) {
             o.splice(idx, 1);
             return;
           }
-          eGrafik.grafik.destroy();
-          eGrafik.grafik = undefined;
+          (eGrafik[this.showOnly ? 'grafik' : 'grafikModal']).destroy();
+          (eGrafik[this.showOnly ? 'grafik' : 'grafikModal']) = undefined;
         });
       }
 
