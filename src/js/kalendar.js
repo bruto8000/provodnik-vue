@@ -4,8 +4,6 @@ let Kalendar = (() => {
       document.querySelectorAll(querySelector || ".datepicker"),
 
       {
-
-
         i18n: {
           months: [
             "Январь",
@@ -58,7 +56,6 @@ let Kalendar = (() => {
         ...properties,
       }
     );
-
   }
 
   return {
