@@ -780,7 +780,7 @@
                 <div class="column is-2 p-0">
                   <select class="bug-select" v-model="row.status">
                     <option value="Выполнено">Выполнено</option>
-                    <option value="В работае">В работае</option>
+                    <option value="В работе">В работе</option>
                     <option value="Отложено">Отложено</option>
                     <option value="Отменено">Отменено</option>
                   </select>
@@ -824,7 +824,10 @@
           </h3>
         </div>
         <div class="collapsible-body">
-          <e-grafiks :eGrafiks.sync="activity.eGrafiks"></e-grafiks>
+
+  <e-grafiks class="column px-6 mx-6 is-offset-1" :eGrafiks.sync="activity.eGrafiks"></e-grafiks>
+
+        
         </div>
       </li>
 
@@ -850,7 +853,7 @@
         Изменить активность
       </div>
     </div>
-   
+
     <div class="columns my-4">
       <div
         @click="openDeletingModal"
@@ -878,15 +881,13 @@
         <button class="button modal-close is-primary">Нет, закрыть</button>
       </div>
     </div>
-
- 
   </div>
 </template>
 
 <script>
-import tags from "./editActivity/tags.vue";
-import eGrafiks from "./editActivity/eGrafiks.vue";
-import zamenas from "./editActivity/zamenas.vue";
+import tags from "./global/tags.vue";
+import eGrafiks from "./global/eGrafiks.vue";
+import zamenas from "./global/zamenas.vue";
 export default {
   data() {
     return {
@@ -971,7 +972,6 @@ export default {
       buttonIsLoading: false,
       ABModal: {},
       deletingModal: null,
-  
     };
   },
   mounted: function() {
@@ -1034,11 +1034,8 @@ export default {
     this.ABModal = M.Modal.init(document.getElementById("ABModal"));
     this.initGrafikDates();
     this.initdeletingModal();
-
   },
-  created() {
-    this.loadactivity();
-  },
+  created() {},
   methods: {
     loadactivity() {
       if (!this.activity.id) {
@@ -1060,12 +1057,7 @@ export default {
           this.initStatusZapusk();
           this.initDates();
           this.activity.audits.forEach((v) => {
-      
-
-              
-          this.createDonut(v);
-  
-
+            this.createDonut(v);
           });
 
           this.activity.AB.forEach((table) => {
@@ -1081,7 +1073,6 @@ export default {
         document.getElementById("deletingModal")
       );
     },
- 
 
     openDeletingModal() {
       this.openModal(this.deletingModal);
@@ -1116,7 +1107,7 @@ export default {
         activityToSend.audits[idx] = {
           ...audit,
           donut: null,
-          donutactivityModal: null
+          donutactivityModal: null,
         };
         // if (audit.donut) {
         //   audit.donut.destroy();
@@ -1129,7 +1120,7 @@ export default {
         activityToSend.AB[idx] = {
           ...table,
           line: null,
-          lineactivityModal: null
+          lineactivityModal: null,
         };
 
         // if (table.type == "big") {
@@ -1142,20 +1133,25 @@ export default {
       activityToSend.eGrafiks = [];
 
       this.activity.eGrafiks.forEach((eGrafik, idx) => {
-        if (eGrafik.grafik) {
+        debugger;
+  
+          
           activityToSend.eGrafiks[idx] = {
+
             ...eGrafik,
             grafik: null,
-      datasets  : eGrafik.datasets.map(dataset=>({
-...dataset,
-_meta: null
-      }))
+            grafikModal: null,
+            datasets: eGrafik.datasets.map((dataset) => ({
+              ...dataset,
+              _meta: null,
+            })),
           };
-        }
+                  debugger;
+  
       });
 
-window.activityToSend = activityToSend
-console.log(activityToSend)
+      window.activityToSend = activityToSend;
+      console.log(activityToSend);
       this.$store
         .dispatch("editActivity", activityToSend)
         .then(() => {
@@ -1164,10 +1160,10 @@ console.log(activityToSend)
             title: "Активность успешно изменена",
           });
         })
-        .catch(() => {
+        .catch((err) => {
           this.$vs.notify({
             title: "Ошибка",
-            title: "Активность не изменена",
+            text: err,
             color: "red",
           });
         })
@@ -1264,27 +1260,35 @@ console.log(activityToSend)
       }
     },
     createDonut(audit) {
-    
-    
-      console.log('CREAINT SUGKA')
+
       if (!audit) {
         return;
       }
       if (audit.donut) {
-
         this.updateDonut(audit);
         return;
       }
+
+      let uid = this.activity.audits.indexOf(audit);
+      let doc = document.getElementById(
+        "DONUT" + this.activity.audits.indexOf(audit)
+      );
+
+      let doc2 = doc.getContext("2d");
+
       let ctx = document
         .getElementById("DONUT" + this.activity.audits.indexOf(audit))
         .getContext("2d");
       let data = [];
       let labels = [];
       let colors = [];
+
       audit.rows.forEach((row) => {
         data.push(row.propInt);
         labels.push(row.propName);
       });
+
+
       audit.donut = new Chart(ctx, {
         type: "doughnut",
         data: {
@@ -1311,7 +1315,7 @@ console.log(activityToSend)
         // These labels appear in the legend and in the tooltips when hovering different arcs
       });
 
-      console.log(audit.donut)
+
     },
     updateDonut(audit) {
       if (!audit.donut) {
@@ -1529,9 +1533,9 @@ console.log(activityToSend)
     },
     validateZamenas() {
       try {
-        this.activity.zamenas.forEach((risk, idx) => {
-          for (let prop in risk) {
-            if (!risk[prop])
+        this.activity.zamenas.forEach((zamena, idx) => {
+          for (let prop in zamena) {
+            if (!zamena[prop])
               throw new Error(
                 `Не введены данные в замещающих, в строке ${idx + 1}`
               );
@@ -1933,12 +1937,11 @@ console.log(activityToSend)
             color: "red",
           });
         });
-    }
- 
+    },
   },
   watch: {
     activity: function(n, o) {
-      this.loadactivity();
+      this.$nextTick();
     },
     employees() {
       M.FormSelect.init(document.querySelectorAll("select"));
@@ -1949,12 +1952,12 @@ console.log(activityToSend)
     this.destroyAB();
   },
   activated() {
-  this.$nextTick().then(()=>{
- this.activity.audits.forEach((v) => {
-  
-      // this.createDonut(v);
+    this.$nextTick().then(() => {
+      this.loadactivity();
+      this.activity.audits.forEach((v) => {
+        this.createDonut(v);
+      });
     });
-  }) 
 
     this.activity.AB.forEach((table) => {
       if (table.type == "big") {

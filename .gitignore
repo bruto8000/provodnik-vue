@@ -1,7 +1,8 @@
 .DS_Store
 node_modules
 /dist
-
+pravki.txt
+.gitignore
 
 # local env files
 .env.local

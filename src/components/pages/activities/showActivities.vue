@@ -85,7 +85,7 @@
         class="columns hover__bg"
         v-for="activity in activitiesFiltredPaginated"
         :key="activity.id"
-        @click="openactivity(activity)"
+        @click="openActivity(activity)"
       >
         <td class="">{{ activity.fdate }}</td>
         <td class="">{{ activity.sdate }}</td>
@@ -292,7 +292,7 @@
         class="columns hover__bg p-1"
         v-for="activity in activitiesFiltredPaginated"
         :key="activity.id"
-        @click="openactivity(activity)"
+        @click="openActivity(activity)"
       >
         <div class="column is-1 has-text-centered">{{ activity.fdate }}</div>
         <div class="column is-1 has-text-centered">{{ activity.sdate }}</div>
@@ -307,14 +307,14 @@
     </div>
 
     <activity-modal
-      :admin="true"
+      :role="'moderator'"
       :show.sync="needActivityModal"
     ></activity-modal>
   </div>
 </template>
 
 <script>
-import Tags from './editActivity/tags.vue';
+import Tags from './global/tags.vue';
 import activityModal from "./global/activityModal";
 export default {
   data() {
@@ -402,7 +402,7 @@ export default {
         this.sort.r = 1;
       }
     },
-    openactivity(activity) {
+    openActivity(activity) {
       this.$store.commit("setDisplayingActivity", activity);
       this.needActivityModal = true;
     },

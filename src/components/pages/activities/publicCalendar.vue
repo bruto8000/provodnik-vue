@@ -154,23 +154,22 @@ export default {
       // Here Is magic, and please, dount touch. Please. Dont Fu#$@ng touch this.
       this.$nextTick(() => {
         for (let i = 0; i < 12; i++) {
-          console.log(document.getElementById("monthSpan" + i));
-          console.log(document.getElementById("monthWrapper" + i));
+        
           this.monthSpans.push(document.getElementById("monthSpan" + i));
           this.monthWrappers.push(document.getElementById("monthWrapper" + i));
         }
         this.monthWrappers.forEach((e, idx) => {
+          if(!e)return;
           e.onclick = () => {
             this.monthCheck(idx);
           };
         });
 
         this.monthSpans.forEach((e, idx) => {
-          console.log(idx);
-          console.log(this.monthsWithUnsetDate);
+    if(!e)return;
           if (this.monthsWithUnsetDate.includes(idx)) {
-            e.classList.add("mdi");
-            e.classList.add("mdi-message-alert");
+          e.classList.add("mdi");
+          e.classList.add("mdi-message-alert");
 
             this.monthWrappers[idx].dataset.position = "bottom";
             this.monthWrappers[idx].classList.add("tooltipped");
@@ -183,7 +182,7 @@ export default {
       });
     },
     monthCheck(idx) {
-      console.log(idx);
+      
       if (
         (this.currentActivities = this.unsetDateActivities.filter((v) => {
           return v.month == idx;
@@ -228,7 +227,7 @@ export default {
     },
     stopSelect(ms) {
       if (!ms) ms = 3000;
-      console.log(ms);
+ 
       this.canReWriteSelected = false;
       this.selected = true;
       setTimeout(() => {
