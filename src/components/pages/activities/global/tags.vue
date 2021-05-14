@@ -150,7 +150,6 @@ this.destroyTooltips();
       inDuration: 0,
       outDuration: 0,
     });
-    console.log(this.tagBodyModal);
   },
   methods: {
     selectTag(tag) {

@@ -341,7 +341,6 @@
               v-model="currentOcenkaType"
             >
               <vs-select-item
-                @click="console.log('sik')"
                 value=""
                 text="Без оценки"
               />

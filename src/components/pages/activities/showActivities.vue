@@ -490,7 +490,6 @@ return {
       })
 
 ;
-console.log(ws_data)
         let ws = this.$XLSX.utils.json_to_sheet(ws_data);
         wb.Sheets["Активности"] = ws;
         let wbout = this.$XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});

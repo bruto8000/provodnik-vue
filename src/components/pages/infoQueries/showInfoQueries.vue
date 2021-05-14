@@ -36,7 +36,7 @@
         </div>
       </div>
     </div>
-    <div class="columns center" >
+    <div class="columns center">
       <div
         class="column center sort__button  "
         :class="'is-' + infoQueryName.columns"
@@ -59,7 +59,7 @@
     </div>
     <div class="columns">
       <div
-              class="center mx-0"
+        class="center mx-0"
         :class="[
           'column is-' + infoQueryName.columns,
           { 'p-0': infoQueryName.type == 'select' },
@@ -89,7 +89,7 @@
         class="columns hover__bg "
         v-for="infoQuery in infoQueriesFiltredPaginated"
         :key="infoQuery.id"
-        @click='openInfoQuery(infoQuery)'
+        @click="openInfoQuery(infoQuery)"
       >
         <div
           class="center column "
@@ -101,17 +101,17 @@
         </div>
       </div>
     </div>
-<infoQueryModal  :infoQuery='currentDisplayingInfoQuery'      :show.sync="needInfoQueryModal"></infoQueryModal>
+    <infoQueryModal
+      :infoQuery="currentDisplayingInfoQuery"
+      :show.sync="needInfoQueryModal"
+    ></infoQueryModal>
   </div>
 </template>
 
 <script>
-import infoQueryModal from './infoQueryModal.vue'
+import infoQueryModal from "./infoQueryModal.vue";
 export default {
   mounted: function() {
-    console.log(this.$route);
-    console.log(this.$router);
-
     this.readQueryParams();
     M.FormSelect.init(
       document.querySelectorAll("select", {
@@ -123,7 +123,7 @@ export default {
   },
   data() {
     return {
-        needInfoQueryModal: false,
+      needInfoQueryModal: false,
       filters: ["filterSelect", "filterInput", "sort"],
       paginationCount: 30,
       kalendar: "",
@@ -234,32 +234,24 @@ export default {
         }
       });
     },
-    openInfoQuery(infoQuery){
-    
-    this.needInfoQueryModal = true;
-    this.currentDisplayingInfoQuery = infoQuery;
-    }
+    openInfoQuery(infoQuery) {
+      this.needInfoQueryModal = true;
+      this.currentDisplayingInfoQuery = infoQuery;
+    },
   },
 
   computed: {
     infoQueriesFiltred() {
       return this.infoQueries
         .filter((v, i, arr) => {
-            console.log('1')
-            console.log(this.filterSelect)
           for (let prop in this.filterSelect) {
             if (this.filterSelect[prop]) {
-                       
-                    console.log(this.filterSelect[prop],v[prop] )
-         
               if (v[prop] != this.filterSelect[prop]) return false;
             }
-  
           }
-               console.log('3')
+
           for (let prop in this.filterInput) {
             if (this.filterInput[prop]) {
-                      console.log('4')
               if (
                 !v[prop]
                   .toUpperCase()
@@ -267,10 +259,9 @@ export default {
               )
                 return false;
             }
-     
           }
 
-                 return true
+          return true;
         })
         .sort((a, b) => {
           if (!this.sort.column) return 1;
@@ -325,8 +316,8 @@ export default {
     },
   },
   components: {
-      infoQueryModal
-  }
+    infoQueryModal,
+  },
 };
 </script>
 

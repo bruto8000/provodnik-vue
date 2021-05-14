@@ -36,7 +36,7 @@
         </div>
       </div>
     </div>
-    <div class="columns center m-0" >
+    <div class="columns center m-0">
       <div
         class="column center sort__button  "
         :class="'is-' + projectName.columns"
@@ -59,7 +59,7 @@
     </div>
     <div class="columns m-0">
       <div
-              class="center mx-0"
+        class="center mx-0"
         :class="[
           'column is-' + projectName.columns,
           { 'p-0': projectName.type == 'select' },
@@ -89,7 +89,7 @@
         class="columns hover__bg "
         v-for="project in projectsFiltredPaginated"
         :key="project.id"
-        @click='openproject(project)'
+        @click="openproject(project)"
       >
         <div
           class="center column "
@@ -101,15 +101,18 @@
         </div>
       </div>
     </div>
-<projectModal  :project='currentDisplayingproject'      :show.sync="needprojectModal"></projectModal>
+    <projectModal
+      :project="currentDisplayingproject"
+      :show.sync="needprojectModal"
+    ></projectModal>
   </div>
 </template>
 
 <script>
-import projectModal from './projectModal.vue'
+import projectModal from "./projectModal.vue";
 export default {
-   components: {
-      projectModal
+  components: {
+    projectModal,
   },
   mounted: function() {
     this.readQueryParams();
@@ -123,7 +126,7 @@ export default {
   },
   data() {
     return {
-        needprojectModal: false,
+      needprojectModal: false,
       filters: ["filterSelect", "filterInput", "sort"],
       paginationCount: 30,
       kalendar: "",
@@ -142,7 +145,7 @@ export default {
           name: "Тип проекта",
           columns: 2,
           type: "select",
-        }
+        },
       },
       filterSelect: {
         fdate: "",
@@ -155,7 +158,7 @@ export default {
       },
       filterInput: {
         title: "",
-        description: ""
+        description: "",
       },
 
       sort: {
@@ -224,32 +227,24 @@ export default {
         }
       });
     },
-    openproject(project){
-    
-    this.needprojectModal = true;
-    this.currentDisplayingproject = project;
-    }
+    openproject(project) {
+      this.needprojectModal = true;
+      this.currentDisplayingproject = project;
+    },
   },
 
   computed: {
     projectsFiltred() {
       return this.projects
         .filter((v, i, arr) => {
-            console.log('1')
-            console.log(this.filterSelect)
           for (let prop in this.filterSelect) {
             if (this.filterSelect[prop]) {
-                       
-                    console.log(this.filterSelect[prop],v[prop] )
-         
               if (v[prop] != this.filterSelect[prop]) return false;
             }
-  
           }
-               console.log('3')
+
           for (let prop in this.filterInput) {
             if (this.filterInput[prop]) {
-                      console.log('4')
               if (
                 !v[prop]
                   .toUpperCase()
@@ -257,10 +252,9 @@ export default {
               )
                 return false;
             }
-     
           }
 
-                 return true
+          return true;
         })
         .sort((a, b) => {
           if (!this.sort.column) return 1;
@@ -315,12 +309,11 @@ export default {
         CAOptions: this.CAOptions,
         businessTypeOptions: this.businessTypeOptions,
         accompanyingOptions: this.employees,
-       statusOptions: this.statusOptions,
-      projectTypeOptions: this.projectTypeOptions,
-    }
-    }
-  }
- 
+        statusOptions: this.statusOptions,
+        projectTypeOptions: this.projectTypeOptions,
+      };
+    },
+  },
 };
 </script>
 

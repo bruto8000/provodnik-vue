@@ -76,7 +76,7 @@ export default {
       this.initedTooltips = M.Tooltip.init(
         document.querySelectorAll(`.${this.tooltipsRandomClass}`)
       );
-      console.log(   document.querySelectorAll(`.${this.tooltipsRandomClass}`))
+
     },
     destroyTooltips() {
       this.initedTooltips.forEach((tooltip) => tooltip.destroy());
