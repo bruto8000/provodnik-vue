@@ -364,6 +364,9 @@ export default {
     );
   },
   activated() {},
+  deactivated(){
+this.needActivityModal = false;
+  },
   methods: {
     resetFilter: function() {
       for (let prop in this.filterSelect) {
