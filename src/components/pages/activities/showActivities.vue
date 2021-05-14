@@ -316,6 +316,7 @@
 <script>
 import Tags from './global/tags.vue';
 import activityModal from "./global/activityModal";
+import { saveAs } from 'file-saver';
 export default {
   data() {
     return {
@@ -409,34 +410,34 @@ this.needActivityModal = false;
       this.$store.commit("setDisplayingActivity", activity);
       this.needActivityModal = true;
     },
-    exportToExcel: function() {
-      var tableToExcel = (function() {
-        var uri = "data:application/vnd.ms-excel;base64,",
-          template =
-            '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
-          base64 = function(s) {
-            return window.btoa(unescape(encodeURIComponent(s)));
-          },
-          format = function(s, c) {
-            return s.replace(/{(\w+)}/g, function(m, p) {
-              return c[p];
-            });
-          };
-        return function(table, name) {
-          if (!table.nodeType) table = document.getElementById(table);
-          var ctx = {
-            worksheet: name || "Worksheet",
-            table: table.innerHTML,
-          };
-          window.location.href = uri + base64(format(template, ctx));
-        };
-      })();
-      this.table.created = true;
-      this.$nextTick(() => {
-        tableToExcel(document.getElementById("allTable"), "Активности");
-        this.table.created = false;
-      });
-    },
+    // exportToExcel: function() {
+    //   var tableToExcel = (function() {
+    //     var uri = "data:application/vnd.ms-excel;base64,",
+    //       template =
+    //         '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
+    //       base64 = function(s) {
+    //         return window.btoa(unescape(encodeURIComponent(s)));
+    //       },
+    //       format = function(s, c) {
+    //         return s.replace(/{(\w+)}/g, function(m, p) {
+    //           return c[p];
+    //         });
+    //       };
+    //     return function(table, name) {
+    //       if (!table.nodeType) table = document.getElementById(table);
+    //       var ctx = {
+    //         worksheet: name || "Worksheet",
+    //         table: table.innerHTML,
+    //       };
+    //       window.location.href = uri + base64(format(template, ctx));
+    //     };
+    //   })();
+    //   this.table.created = true;
+    //   this.$nextTick(() => {
+    //     tableToExcel(document.getElementById("allTable"), "Активности");
+    //     this.table.created = false;
+    //   });
+    // },
     setQueryParams() {
       let urls = window.location.href.split("?");
       if (urls.length > 2) return;
@@ -460,6 +461,51 @@ this.needActivityModal = false;
         }
       });
     },
+    exportToExcel(){
+     
+      let wb = this.$XLSX.utils.book_new();
+        wb.Props = {
+                Title: "Экспорт активностей",
+                Subject: "Проект МИ",
+                Author: "Проект МИ",
+                CreatedDate: new Date()
+        };
+        
+        wb.SheetNames.push('Активности');
+        let ws_data =  this.activitiesFiltredPaginated.map(activity=>{
+return {
+  
+
+         "Дата спуска": activity.fdate,
+         "Дата запуска": activity.sdate,
+         "Название": activity.nazvanie,
+         "Вид бизнеса": activity.bizness,
+         "Тип запуска": activity.zapusk,
+         "Сопровождающий": activity.soprovod,
+         "Статус": activity.status,
+         "Заказчик": activity.zakazchik,
+         "Сложность": activity.difficulty,
+
+}
+      })
+
+;
+console.log(ws_data)
+        let ws = this.$XLSX.utils.json_to_sheet(ws_data);
+        wb.Sheets["Активности"] = ws;
+        let wbout = this.$XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
+        function s2ab(s) {
+  
+                var buf = new ArrayBuffer(s.length);
+                var view = new Uint8Array(buf);
+                for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+                return buf;
+                
+        }
+      
+                saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'ЭкспортАктивностей.xlsx');
+
+            }
   },
   watch: {
     filterSelect: {

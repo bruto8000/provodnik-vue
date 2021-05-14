@@ -7,6 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "file-saver": "^2.0.5",
     "lodash": "^4.17.21",
     "material-design-icons-iconfont": "^6.1.0",
     "nanoid": "^3.1.23",
