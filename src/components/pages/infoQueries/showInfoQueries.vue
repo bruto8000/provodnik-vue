@@ -22,6 +22,7 @@
             СБРОС
           </div>
           <div
+            @click="exportToExcel"
             class="button z-depth-3"
             mx-2
             style="width: 40px; padding: 0; border-radius: 50%;"
@@ -132,17 +133,17 @@ export default {
         inicatior: { name: "Инициатор", columns: 1, type: "text" },
         fdate: { name: "Дата получения", columns: 1, type: "date" },
         sdate: { name: "Дата отработки", columns: 1, type: "date" },
-        nazvanie: { name: "Название запроса", columns: 1, type: "text" },
+        nazvanie: { name: "Название запроса", columns: 2, type: "text" },
         otvetstveniy: { name: "Ответственный", columns: 1, type: "select" },
         otchot: { name: "Отчет о выполнении", columns: 2, type: "text" },
         classification: { name: "Классификация", columns: 1, type: "select" },
         problem: { name: "Проблема", columns: 1, type: "select" },
-        produkt: { name: "Продукт", columns: 1, type: "text" },
-        otvetfrom: {
-          name: "Кто от маркетинга предоставил ответ",
-          columns: 2,
-          type: "text",
-        },
+        produkt: { name: "Продукт", columns: 2, type: "text" },
+        // otvetfrom: {
+        //   name: "Кто от маркетинга предоставил ответ",
+        //   columns: 2,
+        //   type: "text",
+        // },
         // statuses: "Статус",
         // days: "Время обработки дни",
       },
@@ -161,7 +162,6 @@ export default {
         nazvanie: "",
         otchot: "",
         produkt: "",
-        otvetfrom: "",
       },
 
       sort: {
@@ -212,6 +212,7 @@ export default {
     //   this.needinfoQueryModal = true;
     // },
     setQueryParams() {
+      console.log("ss");
       let urls = window.location.href.split("?");
       if (urls.length > 2) return;
 
@@ -238,8 +239,49 @@ export default {
       this.needInfoQueryModal = true;
       this.currentDisplayingInfoQuery = infoQuery;
     },
-  },
+    exportToExcel() {
+      let wb = this.$XLSX.utils.book_new();
+      wb.Props = {
+        Title: "Экспорт инфозапросов",
+        Subject: "Проект МИ",
+        Author: "Проект МИ",
+        CreatedDate: new Date(),
+      };
 
+      wb.SheetNames.push("Инфозапросы");
+      let ws_data = this.infoQueriesFiltredPaginated.map((infoQuery) => {
+        return {
+          Инициатор: infoQuery.inicatior,
+          "Дата получения": infoQuery.fdate,
+          "Дата отработки": infoQuery.sdate,
+          "Название запроса": infoQuery.nazvanie,
+          Ответственный: infoQuery.otvetstveniy,
+          "Отчет о выполнении": infoQuery.otchot,
+          Класификация: infoQuery.classification,
+          Проблема: infoQuery.problem,
+          Продукт: infoQuery.produkt,
+        };
+      });
+
+      let ws = this.$XLSX.utils.json_to_sheet(ws_data);
+      wb.Sheets["Инфозапросы"] = ws;
+      let wbout = this.$XLSX.write(wb, { bookType: "xlsx", type: "binary" });
+      function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+        return buf;
+      }
+
+      saveAs(
+        new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
+        "ЭкспортИнфозапросов.xlsx"
+      );
+    },
+  },
+  deactivated() {
+    this.needInfoQueryModal = false;
+  },
   computed: {
     infoQueriesFiltred() {
       return this.infoQueries
@@ -289,6 +331,13 @@ export default {
           }
         });
     },
+    allFilters() {
+      return {
+        filterSelect: this.filterSelect,
+        filterInput: this.filterInput,
+        sort: this.sort,
+      };
+    },
     infoQueriesFiltredPaginated() {
       return this.infoQueriesFiltred.slice(0, this.paginationCount || 30);
     },
@@ -317,6 +366,14 @@ export default {
   },
   components: {
     infoQueryModal,
+  },
+  watch: {
+    allFilters: {
+      deep: true,
+      handler: function() {
+        this.setQueryParams();
+      },
+    },
   },
 };
 </script>

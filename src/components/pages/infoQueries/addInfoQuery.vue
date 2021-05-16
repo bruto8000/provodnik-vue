@@ -130,6 +130,7 @@
 </template>
 
 <script>
+import convertStringDateToNormalDate from '../../../js/utils/convertStringDateToNormalDate'
 export default {
   data() {
     return {
@@ -226,23 +227,43 @@ export default {
       }
       return true;
     },
-    validateStatuses() {
+   validateStatuses() {
       try {
-        this.infoQuery.statuses.forEach((status, idx, arr) => {
+        this.infoQuery.statuses.forEach((status, idxOfStatuses, statuses) => {
           if (
             !status.fdate ||
             !status.type ||
-            (idx != arr.length - 1 && !status.sdate)
+            (idxOfStatuses != statuses.length - 1 && !status.sdate)
           ) {
             throw new Error(
-              `Не заполнено поле в статусах. Поле номер ${idx + 1}`
+              `Не заполнено поле в статусах. Поле номер ${idxOfStatuses + 1}`
+            );
+          }
+
+          if (
+            status.sdate &&
+            convertStringDateToNormalDate(status.fdate) >
+              convertStringDateToNormalDate(status.sdate)
+          ) {
+            throw new Error(
+              `Некорректно заполнены даты в статусах. Поле номер ${idxOfStatuses +
+                1}`
+            );
+          }
+          if (
+            statuses[idxOfStatuses - 1] &&
+            convertStringDateToNormalDate(status.fdate) <
+              convertStringDateToNormalDate(statuses[idxOfStatuses - 1].fdate)
+          ) {
+            throw new Error(
+              `Некорректно заполнены даты в статусах. Поле номер ${idxOfStatuses} и поле номер ${idxOfStatuses+1}.`
             );
           }
         });
       } catch (err) {
         this.$vs.notify({
-          title: "Ошибка",
-          text: err,
+          title: "Ошиба",
+          text: err.message,
           color: "red",
           time: 5000,
         });
