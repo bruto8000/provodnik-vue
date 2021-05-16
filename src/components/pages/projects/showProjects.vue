@@ -22,6 +22,7 @@
             СБРОС
           </div>
           <div
+          @click="exportToExcel"
             class="button z-depth-3"
             mx-2
             style="width: 40px; padding: 0; border-radius: 50%;"
@@ -77,7 +78,10 @@
           ></input-select>
         </div>
         <div v-else>
-          <input-date :value.sync="filterSelect[name]"> </input-date>
+          <input-date :value.sync="filterSelect[name]" 
+          :showMonthBtn='projectName.propsForDate.showMonthBtn'
+          :showKvartalBtn='projectName.propsForDate.showKvartalBtn'
+          > </input-date>
         </div>
       </div>
     </div>
@@ -133,12 +137,15 @@ export default {
       currentDisplayingproject: {},
       projectNames: {
         accompanying: { name: "Сопровождающий", columns: 2, type: "select" },
-        fdate: { name: "Дата старта", columns: 1, type: "date" },
-        sdate: { name: "Дата завершения", columns: 1, type: "date" },
-        title: { name: "Название", columns: 1, type: "text" },
+        fdate: { name: "Дата старта", columns: 1, type: "date" , propsForDate:{}},
+        sdate: { name: "Дата конца", columns: 1, type: "date", propsForDate:{
+          showMonthBtn: true,
+          showKvartalBtn:true
+        } },
+        title: { name: "Название", columns: 2, type: "text" },
         description: { name: "Описание", columns: 1, type: "text" },
         businessType: { name: "Вид бизнеса", columns: 1, type: "select" },
-        workGroup: { name: "Рабочая группа", columns: 1, type: "text" },
+        // workGroup: { name: "Рабочая группа", columns: 1, type: "text" },
         status: { name: "Статус", columns: 1, type: "select" },
         CA: { name: "ЦА", columns: 1, type: "select" },
         projectType: {
@@ -155,6 +162,7 @@ export default {
         status: "",
         CA: "",
         projectType: "",
+        accompanying: ""
       },
       filterInput: {
         title: "",
@@ -230,6 +238,46 @@ export default {
     openproject(project) {
       this.needprojectModal = true;
       this.currentDisplayingproject = project;
+    },
+    exportToExcel() {
+      let wb = this.$XLSX.utils.book_new();
+      wb.Props = {
+        Title: "Экспорт Проектов",
+        Subject: "Проект МИ",
+        Author: "Проект МИ",
+        CreatedDate: new Date(),
+      };
+
+      wb.SheetNames.push("Проекты");
+      let ws_data = this.projectsFiltredPaginated.map((project) => {
+        return {
+          Сопровождающий: project.accompanying,
+          "Дата старта": project.fdate,
+          "Дата конца": project.sdate,
+          Название: project.title,
+          Описание: project.description,
+          "Вид бизнеса": project.businessType,
+          Статус: project.status,
+          CA: project.CA,
+          "Тип проекта": project.projectType,
+         'Рабочяя Группа': project.workGroup.join(',')
+        };
+      });
+
+      let ws = this.$XLSX.utils.json_to_sheet(ws_data);
+      wb.Sheets["Проекты"] = ws;
+      let wbout = this.$XLSX.write(wb, { bookType: "xlsx", type: "binary" });
+      function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+        return buf;
+      }
+
+      saveAs(
+        new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
+        "ЭкспортПроектов.xlsx"
+      );
     },
   },
 
@@ -313,6 +361,22 @@ export default {
         projectTypeOptions: this.projectTypeOptions,
       };
     },
+    allFilters(){
+      
+      return {
+        ...this.filters.map(filter=>this[filter])
+      }
+    },
+     
+  },
+  watch: {
+    allFilters: {
+      deep: true,
+      handler: function(){ this.setQueryParams() }
+    }
+  },
+   deactivated() {
+    this.needprojectModal = false;
   },
 };
 </script>
