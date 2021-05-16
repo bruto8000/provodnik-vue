@@ -351,6 +351,11 @@ const store = new Vuex.Store({
         return infoQuery.id != infoQueryForDelete.id;
       });
     },
+    deleteProject(state, projectForDelete) {
+      state.projects = state.projects.filter((project) => {
+        return project.id != projectForDelete.id;
+      });
+    },
   },
   actions: {
     async editEmployee(context, editedEmployee) {
