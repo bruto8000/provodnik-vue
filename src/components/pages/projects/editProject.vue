@@ -49,12 +49,56 @@
         </input-select>
       </div>
     </div>
-
-    <div class="columns">
-      <div class="column is-4 ">
-        <input-text :value.sync="project.workGroup" header="Рабочая группа">
+   <div class="columns">
+      <div class="column is-6">
+        <input-text :value.sync="project.title" header="Название проекта">
         </input-text>
       </div>
+
+      <div class="column is-6">
+        <input-text :value.sync="project.description" header="Описание проекта">
+        </input-text>
+      </div>
+
+    
+    </div>
+<div class="columns">
+
+ <div class="column is-12 my-2">
+   <h4 class="title is-4 center my-1">Рабочая группа 
+     <button class="button is-danger" @click="deleteWorkGroupItem(-1)" :disabled='!project.workGroup.length'>-</button> 
+     <button class="button is-primary" @click='addWorkGroupItem'>+</button>
+     </h4>
+        <input-text v-model="workGroupInput" @keyup.enter.native="addWorkGroupItem" placeholder=" (Нажмите Enter или + сверху)">
+        </input-text>
+
+  <div class="field is-grouped is-grouped-multiline">
+      <div v-for="(workGroupItem,idx) in project.workGroup" :key='idx' class="tags has-addons m-2">
+        <span
+         
+          class="tag is-clickable is-medium is-info"
+   
+
+        
+          > {{workGroupItem}}</span
+        >
+        <a class="tag is-delete is-medium" @click="deleteWorkGroupItem(idx)"></a>
+      </div>
+    </div>
+
+      </div>
+</div>
+
+    <div class="columns">
+        <div class="column is-4 p-0">
+        <input-select
+          :options="businessTypeOptions"
+          :value.sync="project.businessType"
+          header="Вид бизнеса"
+        >
+        </input-select>
+      </div>
+     
 
       <div class="column is-4 p-0">
         <input-select
@@ -70,42 +114,7 @@
         </input-select>
       </div>
     </div>
-
-    <div
-      class=""
-      :class="[project.projectType == 'Количественный' ? 'columns' : '']"
-    >
-      <div
-        class="my-6"
-        :class="[
-          project.projectType == 'Количественный' ? 'column is-6 p-0' : 'is-12',
-        ]"
-      >
-        <input-select
-          :value.sync="project.projectType"
-          header="Тип проекта"
-          :options="projectTypeOptions"
-          required
-        >
-        </input-select>
-      </div>
-      <div
-        class="my-6"
-        :class="[
-          project.projectType == 'Количественный' ? 'is-6 column' : 'is-12',
-        ]"
-      >
-        <input-text
-          v-model="project.efficiency.title"
-          header="Эффективность"
-          required
-        >
-        </input-text>
-      </div>
-
-    </div>
-
-<div v-if="project.projectType == 'Количественный'">
+<div   v-if="project.projectType == 'Количественный'">
       <div class="my-5 is-flex is-justify-align-center">
         <vs-dropdown>
           <button class="button is-primary" href="#">
@@ -216,7 +225,8 @@ export default {
 
   data() {
     return {
-
+      workGroupInput: '',
+needDeletingModal: false,
       projectNameErrors: {
         accompanying: "Сопровождающий",
         fdate: "Дата старта проекта",
@@ -252,7 +262,20 @@ export default {
     }
   },
   methods: {
-     openDeletingModal() {
+    
+     addWorkGroupItem(){
+      console.log(this.workGroupInput)
+if(!this.workGroupInput.length){
+  this.$vs.notify({text:'Пусто.', title:'Ошибка', color:'red'});
+  return;
+}
+this.project.workGroup.push(this.workGroupInput);
+this.workGroupInput = '';
+    },
+    deleteWorkGroupItem(idx){
+this.project.workGroup.splice(idx,1)
+    },
+    openDeletingModal() {
       this.needDeletingModal = true;
     },
     hideDeletingModal() {
@@ -337,7 +360,7 @@ export default {
       return true;
     },
     validateEfficiency() {
-      if (!this.project.efficiency.title) {
+      if (!this.project.efficiency.title && this.project.projectType == 'Качественный') {
         M.toast({
           html: `Не заполнено поле ${this.projectNameErrors.efficiency}`,
         });
