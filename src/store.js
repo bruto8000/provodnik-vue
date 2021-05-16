@@ -402,21 +402,20 @@ const store = new Vuex.Store({
     async saveTabel(context, newTabel) {
       axios
         .post(
-          Vue.prototype.$URL + "/vendor/saveTabel",
-          JSON.stringify(newTabel)
+           "/vendor/saveTabel",
+         newTabel
         )
         .then((res) => {
-          if (res.data == "OK") {
-            M.toast({
-              html: "Данные сохранены.",
-            });
+          M.toast({
+            html: "Данные сохранены.",
+          });
             context.commit("setTabel", JSON.parse(JSON.stringify(newTabel)));
-          } else {
+          } ,(err)=>{
             M.toast({
-              html: "Синхронизация не удалась" + res.data,
+              html: "Синхронизация не удалась" + err.message,
             });
-          }
-        });
+          });
+      
     },
     insertItems(
       context,
