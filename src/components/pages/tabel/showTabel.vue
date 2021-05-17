@@ -282,9 +282,9 @@ this.employees = this.$store.state.employees
             if (em.nid == nid) {
               if (v.body[nid].trim().toUpperCase() == "З") {  
                 em.fact += 8.25;
-              } else if (!isNaN(Number(v.body[nid].trim().replace(",", ".")))) {
-                em.fact += Number(v.body[nid].trim().replace(",", "."));
-                em.factWithoutZ += Number(v.body[nid].trim().replace(",", "."));
+              } else if (!isNaN(Number(v.body[nid].trim().replace(/\,/g, ".")))) {
+                em.fact += Number(v.body[nid].trim().replace(/\,/g, "."));
+                em.factWithoutZ += Number(v.body[nid].trim().replace(/\,/g, "."));
               }
             }
           }
