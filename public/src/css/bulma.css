@@ -9196,11 +9196,11 @@ print {
     margin-top: -.75rem
 }
 
-.columns:last-child {
+/* .columns:last-child {
     margin-bottom: -.75rem
-}
+} */
 
-.columns:not(:last-child) {
+.columns {
     margin-bottom: calc(1.5rem - .75rem)
 }
 
