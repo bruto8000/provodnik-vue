@@ -634,7 +634,7 @@
                   <select class="selectColor" v-model="audit.type">
                     <option value="public">Публичный</option>
                     <option value="private">Приватный</option>
-                    <option value="secret">Секретный</option>
+
                   </select>
                 </div>
               </div>
@@ -955,7 +955,7 @@ export default {
         //         propInt: 25,
         //         propColor: ""
         //     }],
-        //     type: 'public | private | secret'
+        //     type: 'public | private |'
         // }
       ],
       activityNameErrors: {

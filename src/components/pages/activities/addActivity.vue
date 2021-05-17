@@ -232,20 +232,7 @@ export default {
     };
   },
   mounted: function() {
-      // this.activity = {
-      //           fdate: "123",
-      //   sdate: "123",
-      //   nazvanie: "12",
-      //   bizness: "123",
-
-      //   zapusk: "123",
-      //   soprovod: "12",
-      //   status: "123",
-      //   zakazchik: "123",
-      //   flags: [],
-      //   difficulty: "123",
-      // }
-      // this.$forceUpdate();
+ 
 
 this.initSelects()
     this.editor = new FroalaEditor("#pbody", {
@@ -303,14 +290,14 @@ this.activity.sdate = ''
 
           for (let prop in this.activity) {
             if (prop == "flags") {
-              this.activity[prop] = [];
+             this.activity[prop] = [];
               continue;
             }
 
-            this.activity[prop] = "";
+         this.activity[prop] = "";
           }
 
-          this.editor.html.set(" ");
+         this.editor.html.set(" ");
           delete this.activity["opisanieBody"];
         })
         .catch((e) => {
@@ -347,6 +334,7 @@ this.activity.sdate = ''
     validateMainRows() {
       try {
         for (let prop in this.activity) {
+          if(prop == 'sdate')continue;
           if (!this.activity[prop]) {
             throw new Error(
               `Пусто,  не хватает: [ ${this.activityNameErrors[prop]} ]`
