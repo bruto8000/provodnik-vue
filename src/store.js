@@ -2,7 +2,8 @@ import Vuex from "vuex";
 import Vue from "vue";
 import axios from "axios";
 
-Vue.prototype.$URL = "";
+import config from './config.js';
+let APIUrl = config.APIUrl
 Vue.use(Vuex);
 
 const showReceivingError = function(err) {
@@ -12,7 +13,7 @@ const showReceivingError = function(err) {
 };
 
 const getEmployees = (store) => {
-  axios.get(Vue.prototype.$URL + "/vendor/showEmployees").then(
+  axios.get( APIUrl + "/vendor/showEmployees").then(
     (result) => {
       store.dispatch("insertItems", {
         items: result.data.reverse(),
@@ -29,9 +30,10 @@ const getTabel = (store) => {
   setTimeout(() => {
     axios
       .all([
-        axios.get(Vue.prototype.$URL + "/vendor/showTabel"),
+        axios.get( APIUrl + "/vendor/showTabel"),
         axios.get(
-          "https://isdayoff.ru/api/getdata?year=2021&pre=0&delimeter=DAY"
+          APIUrl + "/vendor/showHolidays"
+         
         ),
       ])
       .then(
@@ -71,7 +73,7 @@ const getTabel = (store) => {
   }, 2000);
 };
 const getActivities = (store) => {
-  axios.get("./vendor/showActivities").then(
+  axios.get(APIUrl + "/vendor/showActivities").then(
     (res) => {
       store.dispatch("insertItems", {
         items: res.data.reverse(),
@@ -85,7 +87,7 @@ const getActivities = (store) => {
   );
 };
 const getInfoQueries = (store) => {
-  axios.get("./vendor/showInfoQueries").then(
+  axios.get(APIUrl + "/vendor/showInfoQueries").then(
     (res) => {
       store.dispatch("insertItems", {
         items: res.data.reverse(),
@@ -99,7 +101,7 @@ const getInfoQueries = (store) => {
   );
 };
 const getProjects = (store) => {
-  axios.get("/vendor/showProjects").then(
+  axios.get(APIUrl + "/vendor/showProjects").then(
     (res) => {
       store.dispatch("insertItems", {
         items: res.data.reverse(),
@@ -359,7 +361,7 @@ const store = new Vuex.Store({
   },
   actions: {
     async editEmployee(context, editedEmployee) {
-      axios.post("/vendor/editEmployee", editedEmployee).then(
+      axios.post(APIUrl + "/vendor/editEmployee", editedEmployee).then(
         (result) => {
           M.toast({ html: "Сотрудник изменен" });
 
@@ -372,7 +374,7 @@ const store = new Vuex.Store({
     },
     async deleteEmployee(context, deletableEmployee) {
       axios
-        .post(Vue.prototype.$URL + "/vendor/deleteEmployee", deletableEmployee)
+        .post( APIUrl + "/vendor/deleteEmployee", deletableEmployee)
         .then(
           (result) => {
             M.toast({ html: "Сотрудник удален" });
@@ -385,7 +387,7 @@ const store = new Vuex.Store({
     },
     addEmployee(context, newEmployee) {
       return axios
-        .post("/vendor/addEmployee", newEmployee)
+        .post(APIUrl + "/vendor/addEmployee", newEmployee)
         .then((res) => {
           context.commit("insertItems", {
             items: [newEmployee],
@@ -407,7 +409,7 @@ const store = new Vuex.Store({
     async saveTabel(context, newTabel) {
       axios
         .post(
-           "/vendor/saveTabel",
+           APIUrl + "/vendor/saveTabel",
          newTabel
         )
         .then((res) => {
@@ -437,7 +439,7 @@ const store = new Vuex.Store({
     async changeActivityOcenka(context, { id, ocenka }) {
       return new Promise((resolve, reject) => {
         axios
-          .post("./vendor/changeOcenka", {
+          .post(APIUrl + "/vendor/changeOcenka", {
             id: id,
             ocenka: ocenka,
           })
@@ -456,7 +458,7 @@ const store = new Vuex.Store({
     async addActivity({ commit, dispatch }, activity) {
       return new Promise((resolve, reject) => {
         axios
-          .post("../vendor/addActivity", activity)
+          .post(APIUrl + "/vendor/addActivity", activity)
           .then((res) => {
             let id = res.data;
             let newActivity = Object.assign(_.cloneDeep(activity), { id });
@@ -475,7 +477,7 @@ const store = new Vuex.Store({
     },
     async editActivity({ commit }, activity) {
       await axios
-        .post("../vendor/editActivity", activity)
+        .post(APIUrl + "/vendor/editActivity", activity)
         .then((r) => {
           commit("updateActivity", activity);
           return Promise.resolve();
@@ -486,7 +488,7 @@ const store = new Vuex.Store({
     },
     async deleteActivity({ commit }, activity) {
       await axios
-        .post("/vendor/deleteActivity", {
+        .post(APIUrl + "/vendor/deleteActivity", {
           id: activity.id,
         })
         .then((responce) => {
@@ -503,7 +505,7 @@ const store = new Vuex.Store({
     async addInfoQuery({ commit, dispatch }, infoQuery) {
       return new Promise((resolve, reject) => {
         axios
-          .post("../vendor/addInfoQuery", infoQuery)
+          .post(APIUrl + "/vendor/addInfoQuery", infoQuery)
           .then((res) => {
             let id = res.data;
             let newInfoQuery = Object.assign(_.cloneDeep(infoQuery), { id });
@@ -523,7 +525,7 @@ const store = new Vuex.Store({
     async editInfoQuery({ commit, dispatch }, infoQuery) {
       return new Promise((resolve, reject) => {
         axios
-          .post("../vendor/editInfoQuery", infoQuery)
+          .post(APIUrl + "/vendor/editInfoQuery", infoQuery)
           .then((res) => {
             commit("updateInfoQuery", _.cloneDeep(infoQuery));
 
@@ -536,7 +538,7 @@ const store = new Vuex.Store({
     },
     async deleteInfoQuery({ commit }, infoQuery) {
       await axios
-        .post("/vendor/deleteInfoQuery", {
+        .post(APIUrl + "/vendor/deleteInfoQuery", {
           id: infoQuery.id,
         })
         .then((responce) => {
@@ -556,7 +558,7 @@ const store = new Vuex.Store({
     async addProject({ commit, dispatch }, project) {
       return new Promise((resolve, reject) => {
         axios
-          .post("../vendor/addProject", project)
+          .post(APIUrl + "/vendor/addProject", project)
           .then((res) => {
             let id = res.data;
             let newProject = Object.assign(_.cloneDeep(project), { id });
@@ -575,7 +577,7 @@ const store = new Vuex.Store({
     async editProject({ commit, dispatch }, project) {
       return new Promise((resolve, reject) => {
         axios
-          .post("/vendor/editProject", project)
+          .post(APIUrl + "/vendor/editProject", project)
           .then((res) => {
             commit("updateProject", _.cloneDeep(project));
 
@@ -588,7 +590,7 @@ const store = new Vuex.Store({
     },
     async deleteProject({ commit }, project) {
       await axios
-        .post("/vendor/deleteProject", {
+        .post(APIUrl + "/vendor/deleteProject", {
           id: project.id,
         })
         .then((responce) => {
@@ -603,7 +605,7 @@ const store = new Vuex.Store({
     /// Archive ///
     async getArchived({ commit }, options) {
       return new Promise((resolve, reject) => {
-        axios("./vendor/archived", {
+        axios(APIUrl + "/vendor/archived", {
           method: "GET",
           params: options,
         }).then(

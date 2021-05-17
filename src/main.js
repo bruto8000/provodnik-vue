@@ -31,7 +31,8 @@ import Vuesax from 'vuesax'
 import 'vuesax/dist/vuesax.css' 
 import 'material-design-icons-iconfont'
 Vue.use(Vuesax)
-
+import VueDragscroll from 'vue-dragscroll'
+Vue.use(VueDragscroll)
 
 import XLSX from 'xlsx'
 Vue.prototype.$XLSX = XLSX
