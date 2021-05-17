@@ -304,7 +304,7 @@
     </div>
 
     <activity-modal
-      :role="'moderator'"
+      :role="'admin'"
       :show.sync="needActivityModal"
     ></activity-modal>
   </div>

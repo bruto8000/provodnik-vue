@@ -22,17 +22,17 @@
               Тип запуска : {{ activity.zapusk }}
             </li>
             <li class="is-size-4">Сопровождающий : {{ activity.soprovod }}</li>
-            <li class="is-size-4" v-if="isGuest">
+            <li class="is-size-4" v-if="!isGuest">
               Статус : {{ activity.status }}
             </li>
-            <li class="is-size-4" v-if="isGuest">
+            <li class="is-size-4" v-if="!isGuest">
               Заказчик : {{ activity.zakazchik }}
             </li>
-            <li class="is-size-4" v-if="isGuest">
+            <li class="is-size-4" v-if="!isGuest">
               Сложность : {{ activity.difficulty }}
             </li>
             <template
-              v-if="role != 'guest' && activity.flags && activity.flags.length"
+              v-if="!isGuest && activity.flags && activity.flags.length"
             >
               <li>
                 <span class="is-size-4">Флаги:</span>
@@ -53,6 +53,9 @@
               {{ role != "guest" ? "Замещающие" : "Замещающий" }}
             </div>
             <div class="collapsible-body">
+              <template v-if='activity.zamenas && activity.zamenas.length'>
+
+            
               <template v-if="isGuest">
                 <div
                   :key="idx"
@@ -64,7 +67,7 @@
                   <div class="column is-2">{{ zamena.sdate }}</div>
                 </div>
               </template>
-              <template v-else-if="activity.zamenas && activity.zamenas.length">
+              <template>
                 <div class="columns">
                   <div class="column is-8">
                     {{ activity.zamenas[activity.zamenas.length - 1].employee }}
@@ -76,6 +79,7 @@
                     {{ activity.zamenas[activity.zamenas.length - 1].sdate }}
                   </div>
                 </div>
+              </template>
               </template>
             </div>
           </li>
