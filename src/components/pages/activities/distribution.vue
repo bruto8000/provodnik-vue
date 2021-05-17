@@ -516,7 +516,7 @@ export default {
   },
   computed: {
     employees() {
-      return this.$store.state.employees;
+      return [...this.$store.state.employees,{full_name:"Итого"} ];
     },
     activities() {
       return this.$store.state.activities;
@@ -524,7 +524,7 @@ export default {
     filtredActivitiesPerEmployeesAndDate() {
       return this.employees.map((employee) => {
         let employeeActivities = this.activities.filter(
-          (activity) => activity.soprovod == employee.full_name
+          (activity) => activity.soprovod == employee.full_name || employee.full_name == "Итого"
         );
         let doneActivities = employeeActivities
           .filter((activity) => activity.status.trim() == "Выполнено")
