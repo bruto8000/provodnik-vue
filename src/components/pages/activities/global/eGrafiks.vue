@@ -1005,7 +1005,7 @@ export default {
       }
 
       this.$nextTick().then(() => {
-        this.eGrafiks.forEach((eGrafik) => {
+  this.eGrafiks &&   this.eGrafiks.forEach((eGrafik) => {
           eGrafik.loadType = "db"; ///LOADED FROM DataBase
 
           this.initGrafik(eGrafik);

@@ -549,7 +549,7 @@ export default {
         });
         let replacementActivities = [];
         this.activities.forEach((activity) =>
-          activity.zamenas.forEach((replacement) => {
+     activity.zamenas &&  activity.zamenas.forEach((replacement) => {
             if (
               replacement.employee == employee.full_name &&
               this.getYear(replacement.fdate) == this.currentYear &&
