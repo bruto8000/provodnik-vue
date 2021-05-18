@@ -29,26 +29,7 @@
       </div>
     </div>
 
-    <div class="columns">
-      <div class="column is-4">
-        <input-text :value.sync="project.title" header="Название проекта">
-        </input-text>
-      </div>
-
-      <div class="column is-4">
-        <input-text :value.sync="project.description" header="Описание проекта">
-        </input-text>
-      </div>
-
-      <div class="column is-4 p-0">
-        <input-select
-          :options="businessTypeOptions"
-          :value.sync="project.businessType"
-          header="Вид бизнеса"
-        >
-        </input-select>
-      </div>
-    </div>
+   
    <div class="columns">
       <div class="column is-6">
         <input-text :value.sync="project.title" header="Название проекта">
