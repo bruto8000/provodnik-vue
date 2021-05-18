@@ -49,8 +49,10 @@
      <button class="button is-danger" @click="deleteWorkGroupItem(-1)" :disabled='!project.workGroup.length'>-</button> 
      <button class="button is-primary" @click='addWorkGroupItem'>+</button>
      </h4>
-        <input-text v-model="workGroupInput" @keyup.enter.native="addWorkGroupItem" placeholder=" (Нажмите Enter или + сверху)">
-        </input-text>
+
+     <input-employee  v-model="workGroupInput" @keyup.enter.native="addWorkGroupItem" placeholder=" (Нажмите Enter или + сверху)" >
+     </input-employee>
+     
 
   <div class="field is-grouped is-grouped-multiline">
       <div v-for="(workGroupItem,idx) in project.workGroup" :key='idx' class="tags has-addons m-2">
@@ -200,9 +202,11 @@
 </template>
 
 <script>
+import inputEmployee from '../../globalComponents/inputEmployee.vue';
 
 
 export default {
+  components: { inputEmployee },
  
 
   data() {

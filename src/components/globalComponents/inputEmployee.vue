@@ -1,16 +1,17 @@
 <template>
-  <div class="columns">
-    <div class="center " :id="'tltp' + rnd_id">
+  <div>
+    <div class="center">
       {{ header }}
     </div>
-    <div class="input-field   column is-12">
+    <div class="input-field m-0 p-0">
       <input
+   autocomplete="off"
         @input="debouncedGetOutlookEmployees"
         v-model="innerEmployee"
         :id="'inp' + rnd_id"
         type="text"
         class="autocomplete center input"
-        placeholder="Введите имя сотрудника"
+        :placeholder="placeholder || 'Введите имя сотрудника'"
       />
     </div>
   </div>
@@ -19,7 +20,7 @@
 <script>
 import axios from "axios";
 export default {
-  props: ["value", "header"],
+  props: ["value", "header",'placeholder'],
   data() {
     return {
       rnd_id: "",
@@ -57,7 +58,10 @@ export default {
 
   watch: {
     innerEmployee(n) {
-      if (this.value != n) this.$emit("update:value", n);
+      if (this.value != n) {
+        this.$emit("update:value", n)
+           this.$emit("input", n)
+      };
     },
     value(n) {
       this.innerEmployee = n;
@@ -91,8 +95,11 @@ export default {
           document.getElementById(`inp${this.rnd_id}`),
           {
             data,
+            onAutocomplete: this.autocompleteHandler
           }
         );
+
+     
       });
     },
     updateData(data){
@@ -100,6 +107,9 @@ export default {
         this.me.updateData(data);
         this.me.open();
       })
+    },
+    autocompleteHandler(inputText){
+    this.innerEmployee = inputText;
     }
  
   },

@@ -95,14 +95,19 @@
       </div>
 
       <div class="column is-3 center ">
-        <div class="  ">Заказчик</div>
-        <input
+ 
+        <input-employee
+            v-model="activity.zakazchik"
+                    placeholder="Введите заказчика"
+                 header='Заказчик'   >
+        </input-employee>
+        <!-- <input
           placeholder="Введите заказчика"
           v-model="activity.zakazchik"
           id="zakazchik"
           type="text"
           class="validate input"
-        />
+        /> -->
       </div>
     </div>
     <div class="columns">

@@ -3,8 +3,9 @@
     <h1 class="center title is-1 my-5">Добавление Инфозапроса</h1>
     <div class="columns my-5">
       <div class="column is-4">
-        <input-text :value.sync="infoQuery.inicatior" header="Инициатор">
-        </input-text>
+        <input-employee v-model="infoQuery.inicatior" header="Инициатор">
+        </input-employee>
+    
       </div>
       <div class="column is-4 ">
         <input-date
