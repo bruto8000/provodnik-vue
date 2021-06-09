@@ -2,35 +2,28 @@
   <div>
     <div class="block">
       <div class="columns">
-        <div class="is-absolute m-5">
-          <span class="m-0 p-0">Колличество</span>
-          <input
-            type="number"
-            class="input "
-            v-model="paginationCount"
-            placeholder="Колличество показываемого"
-          />
-        </div>
         <div
-          class="center column is-12 is-justify-content-center is-flex is-align-items-center"
+          class="
+            center
+            column
+            is-12 is-justify-content-center is-flex is-align-items-center
+          "
         >
-          <h1 class="title is-1 mx-2">
-            Проекты {{ $store.state.projects.length }}
-          </h1>
+          <h1 class="title is-1 mx-2">Проекты</h1>
 
           <div class="button is-small is-primary mx-2" @click="resetFilter">
             СБРОС
           </div>
           <div
-          @click="exportToExcel"
+            @click="exportToExcel"
             class="button z-depth-3"
             mx-2
-            style="width: 40px; padding: 0; border-radius: 50%;"
+            style="width: 40px; padding: 0; border-radius: 50%"
           >
             <img
               src="../../../assets/EX.png"
               width="100%"
-              style="border-radius: 50%;"
+              style="border-radius: 50%"
               alt=""
             />
           </div>
@@ -39,7 +32,7 @@
     </div>
     <div class="columns center m-0">
       <div
-        class="column center sort__button  "
+        class="column center sort__button"
         :class="'is-' + projectName.columns"
         :key="name"
         v-for="(projectName, name) in projectNames"
@@ -78,25 +71,27 @@
           ></input-select>
         </div>
         <div v-else>
-          <input-date :value.sync="filterSelect[name]" 
-          :showMonthBtn='projectName.propsForDate.showMonthBtn'
-          :showKvartalBtn='projectName.propsForDate.showKvartalBtn'
-          > </input-date>
+          <input-date
+            :value.sync="filterSelect[name]"
+            :showMonthBtn="projectName.propsForDate.showMonthBtn"
+            :showKvartalBtn="projectName.propsForDate.showKvartalBtn"
+          >
+          </input-date>
         </div>
       </div>
     </div>
     <div
       class="center"
-      style="max-height: 75vh; overflow-y: auto; overflow-x: hidden;"
+      style="max-height: 75vh; overflow-y: auto; overflow-x: hidden"
     >
       <div
-        class="columns hover__bg "
-        v-for="project in projectsFiltredPaginated"
+        class="columns hover__bg"
+        v-for="project in projectsFiltred"
         :key="project.id"
         @click="openproject(project)"
       >
         <div
-          class="center column "
+          class="center column"
           :class="'is-' + projectName.columns"
           v-for="(projectName, name) in projectNames"
           :key="name"
@@ -118,7 +113,7 @@ export default {
   components: {
     projectModal,
   },
-  mounted: function() {
+  mounted: function () {
     this.readQueryParams();
     M.FormSelect.init(
       document.querySelectorAll("select", {
@@ -132,16 +127,25 @@ export default {
     return {
       needprojectModal: false,
       filters: ["filterSelect", "filterInput", "sort"],
-      paginationCount: 30,
       kalendar: "",
       currentDisplayingproject: {},
       projectNames: {
         accompanying: { name: "Сопровождающий", columns: 2, type: "select" },
-        fdate: { name: "Дата старта", columns: 1, type: "date" , propsForDate:{}},
-        sdate: { name: "Дата конца", columns: 1, type: "date", propsForDate:{
-          showMonthBtn: true,
-          showKvartalBtn:true
-        } },
+        fdate: {
+          name: "Дата старта",
+          columns: 1,
+          type: "date",
+          propsForDate: {},
+        },
+        sdate: {
+          name: "Дата конца",
+          columns: 1,
+          type: "date",
+          propsForDate: {
+            showMonthBtn: true,
+            showKvartalBtn: true,
+          },
+        },
         title: { name: "Название", columns: 2, type: "text" },
         description: { name: "Описание", columns: 1, type: "text" },
         businessType: { name: "Вид бизнеса", columns: 1, type: "select" },
@@ -162,7 +166,7 @@ export default {
         status: "",
         CA: "",
         projectType: "",
-        accompanying: ""
+        accompanying: "",
       },
       filterInput: {
         title: "",
@@ -176,7 +180,7 @@ export default {
     };
   },
   methods: {
-    resetFilter: function() {
+    resetFilter: function () {
       for (let prop in this.filterSelect) {
         this.filterSelect[prop] = "";
       }
@@ -187,7 +191,7 @@ export default {
       this.sort.r = 1;
       this.sort.column = "";
 
-      this.$nextTick(function() {
+      this.$nextTick(function () {
         M.FormSelect.init(
           document.querySelectorAll("select", {
             dropdownOptions: {
@@ -249,7 +253,7 @@ export default {
       };
 
       wb.SheetNames.push("Проекты");
-      let ws_data = this.projectsFiltredPaginated.map((project) => {
+      let ws_data = this.projectsFiltred.map((project) => {
         return {
           Сопровождающий: project.accompanying,
           "Дата старта": project.fdate,
@@ -260,7 +264,7 @@ export default {
           Статус: project.status,
           CA: project.CA,
           "Тип проекта": project.projectType,
-         'Рабочяя Группа': project.workGroup.join(',')
+          "Рабочяя Группа": project.workGroup.join(","),
         };
       });
 
@@ -309,14 +313,8 @@ export default {
           if (this.sort.column == "sdate" || this.sort.column == "fdate") {
             let fakeA = a[this.sort.column];
             let fakeB = b[this.sort.column];
-            fakeA = fakeA
-              .split(" ")
-              .reverse()
-              .join(" ");
-            fakeB = fakeB
-              .split(" ")
-              .reverse()
-              .join(" ");
+            fakeA = fakeA.split(" ").reverse().join(" ");
+            fakeB = fakeB.split(" ").reverse().join(" ");
             fakeA = fakeA.replace(/\s/g, "");
             fakeB = fakeB.replace(/\s/g, "");
             if (fakeA > fakeB) return 1 * this.sort.r;
@@ -329,9 +327,6 @@ export default {
             }
           }
         });
-    },
-    projectsFiltredPaginated() {
-      return this.projectsFiltred.slice(0, this.paginationCount || 30);
     },
     projects() {
       return this.$store.state.projects;
@@ -361,21 +356,21 @@ export default {
         projectTypeOptions: this.projectTypeOptions,
       };
     },
-    allFilters(){
-      
+    allFilters() {
       return {
-        ...this.filters.map(filter=>this[filter])
-      }
+        ...this.filters.map((filter) => this[filter]),
+      };
     },
-     
   },
   watch: {
     allFilters: {
       deep: true,
-      handler: function(){ this.setQueryParams() }
-    }
+      handler: function () {
+        this.setQueryParams();
+      },
+    },
   },
-   deactivated() {
+  deactivated() {
     this.needprojectModal = false;
   },
 };

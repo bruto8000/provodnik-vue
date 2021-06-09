@@ -1,24 +1,15 @@
 <template>
   <div>
-
- 
     <div class="block">
       <div
-        class="center is-flex is-justify-content-space-between is-align-items-center"
+        class="
+          center
+          is-flex is-justify-content-space-between is-align-items-center
+        "
       >
-        <div>
-          <span class="m-0 p-0">Колличество</span>
-          <input
-            type="number"
-            class="input "
-            v-model="paginationCount"
-            placeholder="Колличество показываемого"
-          />
-        </div>
+        <div style="width: 100px"></div>
         <div class="is-flex is-align-items-center">
-          <h1 class="title is-1 mx-2">
-            Активности {{ $store.state.activities.length }}
-          </h1>
+          <h1 class="title is-1 mx-2">Активности</h1>
 
           <div class="button is-small is-primary mx-2" @click="resetFilter">
             СБРОС
@@ -26,40 +17,37 @@
           <div
             class="button z-depth-3"
             mx-2
-            style="width: 40px; padding: 0; border-radius: 50%;"
+            style="width: 40px; padding: 0; border-radius: 50%"
             @click="exportToExcel"
           >
             <img
               src="../../../assets/EX.png"
               width="100%"
-              style="border-radius: 50%;"
+              style="border-radius: 50%"
               alt=""
             />
           </div>
         </div>
 
         <div>
-      
           <h5 class="is title is-5 m-0">Оценка:</h5>
           <select v-model="filterOcenka">
             <option value="all" selected>Все</option>
             <option value="">Без оценки</option>
             <option value="Успешно">Успешно</option>
-            <option value="С ошибкой">С ошбкой</option>
+            <option value="С ошибкой">С ошибкой</option>
           </select>
 
-<div>
-
-  <label>
-        <input type="checkbox" v-model='needTagsFilter' />
-        <span>Поиск по тегам</span>
-      </label>
-</div>
-         
+          <div>
+            <label>
+              <input type="checkbox" v-model="needTagsFilter" />
+              <span>Поиск по тегам</span>
+            </label>
+          </div>
         </div>
       </div>
-  
-          <tags v-if='needTagsFilter' class="box" :tags='tagsFilter'></tags>
+
+      <tags v-if="needTagsFilter" class="box" :tags="tagsFilter"></tags>
     </div>
 
     <table id="allTable" v-show="false" v-if="table.created">
@@ -68,13 +56,7 @@
         <th class="" @click="sortChange('sdate')">Дата запуска</th>
         <th class="" @click="sortChange('bizness')">Вид бизнеса</th>
         <th class="" @click="sortChange('zapusk')">Тип запуска</th>
-        <th
-          class=""
-         
-          @click="sortChange('nazvanie')"
-        >
-          Название 
-        </th>
+        <th class="" @click="sortChange('nazvanie')">Название</th>
         <th class="" @click="sortChange('opisanie')">Описание</th>
         <th class="" @click="sortChange('soprovod')">Сопровождающий</th>
         <th class="" @click="sortChange('zakazchik')">Заказчик</th>
@@ -83,7 +65,7 @@
 
       <tr
         class="columns hover__bg"
-        v-for="activity in activitiesFiltredPaginated"
+        v-for="activity in activitiesFiltred"
         :key="activity.id"
         @click="openActivity(activity)"
       >
@@ -99,10 +81,10 @@
       </tr>
     </table>
 
-    <div class="columns center" style="padding-right:16px">
-      <div class="column is-1 sort__button " @click="sortChange('fdate')">
+    <div class="columns center" style="padding-right: 16px">
+      <div class="column is-1 sort__button" @click="sortChange('fdate')">
         <button
-          class="button is-small is-primary "
+          class="button is-small is-primary"
           :class="{
             'is-danger': sort.column == 'fdate' && sort.r == 1,
             'is-info': sort.column == 'fdate' && sort.r == -1,
@@ -111,7 +93,7 @@
           Дата спуска
         </button>
       </div>
-      <div class="column is-1 sort__button  " @click="sortChange('sdate')">
+      <div class="column is-1 sort__button" @click="sortChange('sdate')">
         <button
           class="button is-small is-primary"
           :class="{
@@ -122,7 +104,7 @@
           Дата запуска
         </button>
       </div>
-      <div class="column is-1 sort__button  " @click="sortChange('bizness')">
+      <div class="column is-1 sort__button" @click="sortChange('bizness')">
         <button
           class="button is-small is-primary"
           :class="{
@@ -133,7 +115,7 @@
           Вид бизнеса
         </button>
       </div>
-      <div class="column is-1 sort__button  " @click="sortChange('zapusk')">
+      <div class="column is-1 sort__button" @click="sortChange('zapusk')">
         <button
           class="button is-small is-primary"
           :class="{
@@ -144,7 +126,7 @@
           Тип запуска
         </button>
       </div>
-      <div class="column is-1 sort__button  " @click="sortChange('nazvanie')">
+      <div class="column is-1 sort__button" @click="sortChange('nazvanie')">
         <button
           class="button is-small is-primary"
           :class="{
@@ -155,7 +137,7 @@
           Название
         </button>
       </div>
-      <div class="column is-2 sort__button  " @click="sortChange('opisanie')">
+      <div class="column is-2 sort__button" @click="sortChange('opisanie')">
         <button
           class="button is-small is-primary"
           :class="{
@@ -166,7 +148,7 @@
           Описание
         </button>
       </div>
-      <div class="column is-2 sort__button  " @click="sortChange('soprovod')">
+      <div class="column is-2 sort__button" @click="sortChange('soprovod')">
         <button
           class="button is-small is-primary"
           :class="{
@@ -177,7 +159,7 @@
           Сопровождающий
         </button>
       </div>
-      <div class="column is-2 sort__button  " @click="sortChange('zakazchik')">
+      <div class="column is-2 sort__button" @click="sortChange('zakazchik')">
         <button
           class="button is-small is-primary"
           :class="{
@@ -188,7 +170,7 @@
           Заказчик
         </button>
       </div>
-      <div class="column is-1 sort__button  " @click="sortChange('status')">
+      <div class="column is-1 sort__button" @click="sortChange('status')">
         <button
           class="button is-small is-primary"
           :class="{
@@ -203,15 +185,18 @@
 
     <div
       class="columns"
-      style="padding-right:16px; border-bottom: 2px solid #26a69a; padding-bottom: 10px; margin-bottom: 5px;"
+      style="
+        padding-right: 16px;
+        border-bottom: 2px solid #26a69a;
+        padding-bottom: 10px;
+        margin-bottom: 5px;
+      "
     >
       <div class="column is-1">
-        <input-date :value.sync="filterSelect.fdate"
-        ></input-date>
+        <input-date :value.sync="filterSelect.fdate"></input-date>
       </div>
       <div class="column is-1">
-        <input-date :value.sync="filterSelect.sdate"
-        ></input-date>
+        <input-date :value.sync="filterSelect.sdate"></input-date>
       </div>
       <div class="column is-1 p-1">
         <select v-model="filterSelect.bizness" id="bizness">
@@ -233,26 +218,28 @@
           <option value="Перезапуск ТП">Перезапуск ТП</option>
           <option value="Закрытие ТП">Закрытие ТП</option>
           <option value="Офсет">Офсет</option>
-          <option value="Симплификация/Репайсинг"
-            >Симплификация/Репайсинг</option
-          >
+          <option value="Симплификация/Репайсинг">
+            Симплификация/Репайсинг
+          </option>
           <option value="Запуск Услуги">Запуск Услуги</option>
-          <option value="Изменение условий услиги"
-            >Изменение условий услиги</option
-          >
-          <option value="Закрытие условий">Закрытие условий</option>
+          <option value="Изменение условий услуги">
+            Изменение условий услуги
+          </option>
+          <option value="Изменение условий акции">
+            Изменение условий акции
+          </option>
+          <option value="Закрытие услуги">Закрытие услуги</option>
           <option value="Запуск акции">Запуск акции</option>
           <option value="Закрытие акции">Закрытие акции</option>
-          <option value="SMS/push/email рассылка"
-            >SMS/push/email рассылка</option
-          >
+          <option value="SMS/push/email рассылка">
+            SMS/push/email рассылка
+          </option>
           <option value="Запуск Города">Запуск Города</option>
           <option value="Оборудование">Оборудование</option>
         </select>
       </div>
       <div class="column is-1">
-        <input type="text"  
-       class="input" v-model="filterInput.nazvanie" />
+        <input type="text" class="input" v-model="filterInput.nazvanie" />
       </div>
       <div class="column is-2">
         <input type="text" class="input" v-model="filterHTML.opisanie" />
@@ -264,7 +251,8 @@
             v-for="employee in employees"
             :key="employee.nid"
             :value="employee['full_name']"
-            >{{ employee["full_name"] }}
+          >
+            {{ employee["full_name"] }}
           </option>
         </select>
       </div>
@@ -274,9 +262,9 @@
 
       <div class="column is-1 p-1">
         <select v-model="filterSelect.status" id="status">
-          <option value="" selected>Статус </option>
-          <option value="В работе">В работе </option>
-          <option value="Выполнено">Выполнено </option>
+          <option value="" selected>Статус</option>
+          <option value="В работе">В работе</option>
+          <option value="Выполнено">Выполнено</option>
           <option value="Отложено">Отложено</option>
           <option value="Отменено">Отменено</option>
           <option value="ДПП пассив">ДПП пассив</option>
@@ -284,10 +272,10 @@
         </select>
       </div>
     </div>
-    <div style="max-height: 75vh; overflow-y: auto; overflow-x: hidden;">
+    <div style="max-height: 75vh; overflow-y: auto; overflow-x: hidden">
       <div
         class="columns hover__bg p-1"
-        v-for="activity in activitiesFiltredPaginated"
+        v-for="activity in activitiesFiltred"
         :key="activity.id"
         @click="openActivity(activity)"
       >
@@ -295,10 +283,25 @@
         <div class="column is-1 has-text-centered">{{ activity.sdate }}</div>
         <div class="column is-1 has-text-centered">{{ activity.bizness }}</div>
         <div class="column is-1 has-text-centered">{{ activity.zapusk }}</div>
-        <div class="column is-1 has-text-centered">{{ activity.nazvanie }}</div>
-        <div class="column is-2 has-text-centered">{{ activity.opisanieBodyCuted }}</div>
+        <div
+          class="column is-1 has-text-centered"
+          style="word-break: break-all"
+        >
+          {{ activity.nazvanie }}
+        </div>
+        <div
+          class="column is-2 has-text-centered"
+          style="word-break: break-all"
+        >
+          {{ activity.opisanieBodyCuted }}
+        </div>
         <div class="column is-2 has-text-centered">{{ activity.soprovod }}</div>
-        <div class="column is-2 has-text-centered">{{ activity.zakazchik }}</div>
+        <div
+          class="column is-2 has-text-centered"
+          style="word-break: break-all"
+        >
+          {{ activity.zakazchik }}
+        </div>
         <div class="column is-1 has-text-centered">{{ activity.status }}</div>
       </div>
     </div>
@@ -311,9 +314,9 @@
 </template>
 
 <script>
-import Tags from './global/tags.vue';
+import Tags from "./global/tags.vue";
 import activityModal from "./global/activityModal";
-import { saveAs } from 'file-saver';
+import { saveAs } from "file-saver";
 export default {
   data() {
     return {
@@ -351,7 +354,7 @@ export default {
       needActivityModal: false,
     };
   },
-  mounted: function() {
+  mounted: function () {
     this.readQueryParams();
     M.FormSelect.init(
       document.querySelectorAll("select", {
@@ -362,23 +365,23 @@ export default {
     );
   },
   activated() {},
-  deactivated(){
-this.needActivityModal = false;
+  deactivated() {
+    this.needActivityModal = false;
   },
   methods: {
-    resetFilter: function() {
+    resetFilter: function () {
       for (let prop in this.filterSelect) {
         this.filterSelect[prop] = "";
       }
       for (let prop in this.filterInput) {
         this.filterInput[prop] = "";
       }
-      this.needTagsFilter = false
+      this.needTagsFilter = false;
       this.filterHTML.opisanie = "";
       this.sort.r = 1;
       this.sort.column = "";
       this.filterOcenka = "all";
-      this.$nextTick(function() {
+      this.$nextTick(function () {
         M.FormSelect.init(
           document.querySelectorAll("select", {
             dropdownOptions: {
@@ -430,73 +433,68 @@ this.needActivityModal = false;
         }
       });
     },
-    exportToExcel(){
-     
+    exportToExcel() {
       let wb = this.$XLSX.utils.book_new();
-        wb.Props = {
-                Title: "Экспорт активностей",
-                Subject: "Проект МИ",
-                Author: "Проект МИ",
-                CreatedDate: new Date()
+      wb.Props = {
+        Title: "Экспорт активностей",
+        Subject: "Проект МИ",
+        Author: "Проект МИ",
+        CreatedDate: new Date(),
+      };
+
+      wb.SheetNames.push("Активности");
+      let ws_data = this.activitiesFiltred.map((activity) => {
+        return {
+          "Дата спуска": activity.fdate,
+          "Дата запуска": activity.sdate,
+          Название: activity.nazvanie,
+          "Вид бизнеса": activity.bizness,
+          "Тип запуска": activity.zapusk,
+          Сопровождающий: activity.soprovod,
+          Статус: activity.status,
+          Заказчик: activity.zakazchik,
+          Сложность: activity.difficulty,
         };
-        
-        wb.SheetNames.push('Активности');
-        let ws_data =  this.activitiesFiltredPaginated.map(activity=>{
-return {
-  
+      });
 
-         "Дата спуска": activity.fdate,
-         "Дата запуска": activity.sdate,
-         "Название": activity.nazvanie,
-         "Вид бизнеса": activity.bizness,
-         "Тип запуска": activity.zapusk,
-         "Сопровождающий": activity.soprovod,
-         "Статус": activity.status,
-         "Заказчик": activity.zakazchik,
-         "Сложность": activity.difficulty,
+      let ws = this.$XLSX.utils.json_to_sheet(ws_data);
+      wb.Sheets["Активности"] = ws;
+      let wbout = this.$XLSX.write(wb, { bookType: "xlsx", type: "binary" });
+      function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+        return buf;
+      }
 
-}
-      })
-
-;
-        let ws = this.$XLSX.utils.json_to_sheet(ws_data);
-        wb.Sheets["Активности"] = ws;
-        let wbout = this.$XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
-        function s2ab(s) {
-  
-                var buf = new ArrayBuffer(s.length);
-                var view = new Uint8Array(buf);
-                for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
-                return buf;
-                
-        }
-      
-                saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'ЭкспортАктивностей.xlsx');
-
-            }
+      saveAs(
+        new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
+        "ЭкспортАктивностей.xlsx"
+      );
+    },
   },
   watch: {
     filterSelect: {
       deep: true,
-      handler: function(params) {
+      handler: function (params) {
         this.setQueryParams();
       },
     },
     filterInput: {
       deep: true,
-      handler: function(params) {
+      handler: function (params) {
         this.setQueryParams();
       },
     },
     filterHTML: {
       deep: true,
-      handler: function(params) {
+      handler: function (params) {
         this.setQueryParams();
       },
     },
     sort: {
       deep: true,
-      handler: function(params) {
+      handler: function (params) {
         this.setQueryParams();
       },
     },
@@ -541,10 +539,16 @@ return {
             }
             return v.ocenka.type === this.filterOcenka;
           }
-          if(this.needTagsFilter && this.tagsFilter.length){
-             if(! this.tagsFilter.map(tag=>tag.label).find(tagLabel=>v.tags.map(tag=>tag.label).includes(tagLabel))){
-               return false;
-             }
+          if (this.needTagsFilter && this.tagsFilter.length) {
+            if (
+              !this.tagsFilter
+                .map((tag) => tag.label)
+                .find((tagLabel) =>
+                  v.tags.map((tag) => tag.label).includes(tagLabel)
+                )
+            ) {
+              return false;
+            }
           }
           return true;
         })
@@ -553,14 +557,8 @@ return {
           if (this.sort.column == "sdate" || this.sort.column == "fdate") {
             let fakeA = a[this.sort.column];
             let fakeB = b[this.sort.column];
-            fakeA = fakeA
-              .split(" ")
-              .reverse()
-              .join(" ");
-            fakeB = fakeB
-              .split(" ")
-              .reverse()
-              .join(" ");
+            fakeA = fakeA.split(" ").reverse().join(" ");
+            fakeB = fakeB.split(" ").reverse().join(" ");
             fakeA = fakeA.replace(/\s/g, "");
             fakeB = fakeB.replace(/\s/g, "");
             if (fakeA > fakeB) return 1 * this.sort.r;
@@ -574,9 +572,7 @@ return {
           }
         });
     },
-    activitiesFiltredPaginated() {
-      return this.activitiesFiltred.slice(0, this.paginationCount || 30);
-    },
+
     activities() {
       return this.$store.state.activities;
     },

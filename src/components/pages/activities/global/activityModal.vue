@@ -1,10 +1,14 @@
 <template>
-  <vs-popup :active.sync="active" class="holamundo" :title="activity.nazvanie">
+  <vs-popup
+    class="date-show-popup holamundo"
+    :active.sync="active"
+    :title="activity.nazvanie"
+  >
     <div class="p-4">
       <div>
         <h1 class="title is-1">{{ activity.nazvanie }}</h1>
 
-        <div class="dates  is-flex  box is-justify-content-space-around">
+        <div class="dates is-flex box is-justify-content-space-around">
           <div class="" v-if="activity.fdate">
             <div class="is-size-4">Дата спуска</div>
             <div class="is-size-4">{{ activity.fdate }}</div>
@@ -44,7 +48,11 @@
 
         <div class="box description">
           <p class="is-size-4">Описание:</p>
-          <div class="is-size-5 " v-html="activity.opisanieBody"></div>
+          <div
+            class="is-size-5"
+            style="word-break: break-all"
+            v-html="activity.opisanieBody"
+          ></div>
         </div>
 
         <ul class="collapsible p-0 popout" :id="collapsibleRandomId">
@@ -53,33 +61,33 @@
               {{ role != "guest" ? "Замещающие" : "Замещающий" }}
             </div>
             <div class="collapsible-body">
-              <template v-if='activity.zamenas && activity.zamenas.length'>
-
-            
-              <template v-if="isGuest">
-                <div
-                  :key="idx"
-                  v-for="(zamena, idx) in activity.zamenas"
-                  class="columns"
-                >
-                  <div class="column is-8">{{ zamena.employee }}</div>
-                  <div class="column is-2">{{ zamena.fdate }}</div>
-                  <div class="column is-2">{{ zamena.sdate }}</div>
-                </div>
-              </template>
-              <template>
-                <div class="columns">
-                  <div class="column is-8">
-                    {{ activity.zamenas[activity.zamenas.length - 1].employee }}
+              <template v-if="activity.zamenas && activity.zamenas.length">
+                <template v-if="isGuest">
+                  <div
+                    :key="idx"
+                    v-for="(zamena, idx) in activity.zamenas"
+                    class="columns is-size-4"
+                  >
+                    <div class="column is-8">{{ zamena.employee }}</div>
+                    <div class="column is-2">{{ zamena.fdate }}</div>
+                    <div class="column is-2">{{ zamena.sdate }}</div>
                   </div>
-                  <div class="column is-2">
-                    {{ activity.zamenas[activity.zamenas.length - 1].fdate }}
+                </template>
+                <template>
+                  <div class="columns is-size-4">
+                    <div class="column is-8">
+                      {{
+                        activity.zamenas[activity.zamenas.length - 1].employee
+                      }}
+                    </div>
+                    <div class="column is-2">
+                      {{ activity.zamenas[activity.zamenas.length - 1].fdate }}
+                    </div>
+                    <div class="column is-2">
+                      {{ activity.zamenas[activity.zamenas.length - 1].sdate }}
+                    </div>
                   </div>
-                  <div class="column is-2">
-                    {{ activity.zamenas[activity.zamenas.length - 1].sdate }}
-                  </div>
-                </div>
-              </template>
+                </template>
               </template>
             </div>
           </li>
@@ -122,10 +130,10 @@
             <div class="collapsible-header is-size-4">Статус по запуску</div>
             <div class="collapsible-body">
               <div class="columns">
-                <div class="column is-8">
+                <div class="column is-8 is-size-4">
                   <div>Описание</div>
                 </div>
-                <div class="column is-4">
+                <div class="column is-4 is-size-4">
                   <div>Срок</div>
                 </div>
               </div>
@@ -135,12 +143,12 @@
                 v-for="(statusZapusk, idx) in activity.statusZapusk"
                 :key="idx"
               >
-                <div class="column is-8">
+                <div class="column is-8 is-size-4">
                   <div>
                     {{ statusZapusk.opisanie }}
                   </div>
                 </div>
-                <div class="column is-4">
+                <div class="column is-4 is-size-4">
                   <div>
                     {{ statusZapusk.srok }}
                   </div>
@@ -153,13 +161,13 @@
 
             <div class="collapsible-body">
               <div class="columns">
-                <div class="column is-4">
+                <div class="column is-4 is-size-4">
                   <div>Описание</div>
                 </div>
-                <div class="column is-4">
+                <div class="column is-4 is-size-4">
                   <div>Прогноз</div>
                 </div>
-                <div class="column is-4">
+                <div class="column is-4 is-size-4">
                   <div>Вероятность реализации риска</div>
                 </div>
               </div>
@@ -169,17 +177,17 @@
                 v-for="(risk, idx) in activity.risks"
                 :key="idx"
               >
-                <div class="column is-4">
+                <div class="column is-4 is-size-4">
                   <div>
                     {{ risk.opisanie }}
                   </div>
                 </div>
-                <div class="column is-4">
+                <div class="column is-4 is-size-4">
                   <div>
                     {{ risk.prognoz }}
                   </div>
                 </div>
-                <div class="column is-4">
+                <div class="column is-4 is-size-4">
                   <div>
                     {{ risk.status }}
                   </div>
@@ -193,7 +201,7 @@
               Доп.информация (Аудит)
             </div>
             <div class="collapsible-body">
-              <div class="audits ">
+              <div class="audits">
                 <div
                   :class="{ box: !isGuest }"
                   v-for="(audit, idx) in activity.audits"
@@ -206,7 +214,12 @@
                     <div class="columns">
                       <div
                         v-if="!isGuest"
-                        class="column is-6 is-offset-3 title-is-5 has-text-centered"
+                        class="
+                          column
+                          is-6 is-offset-3
+                          title-is-5
+                          has-text-centered
+                        "
                       >
                         Тип: {{ activityTypes[audit.type] }}
                       </div>
@@ -214,9 +227,7 @@
 
                     <div class="columns">
                       <div class="column is-6">
-                        <table
-                          class="table  centered is-hoverable is-fullwidth"
-                        >
+                        <table class="table centered is-hoverable is-fullwidth">
                           <thead>
                             <tr>
                               <th class="cut-to-20-ch">{{ audit.subname }}</th>
@@ -253,7 +264,7 @@
           <li v-show="activity.bugs && activity.bugs.length">
             <div class="collapsible-header is-size-4">Баги</div>
             <div class="collapsible-body">
-              <div class="columns">
+              <div class="columns is-size-5">
                 <div class="column is-2">
                   <div>Описание</div>
                 </div>
@@ -273,7 +284,7 @@
                 </div>
               </div>
               <div
-                class="columns"
+                class="columns is-size-5"
                 v-for="(bug, idx) in activity.bugs"
                 :key="idx"
               >
@@ -309,14 +320,17 @@
           </li>
           <li v-show="activity.dopinfo">
             <div class="collapsible-header is-size-4">Доп. информация</div>
-            <div class="collapsible-body" v-html="activity.dopinfo"></div>
+            <div
+              class="collapsible-body is-size-4"
+              v-html="activity.dopinfo"
+            ></div>
           </li>
           <li v-show="activity.eGrafiks && activity.eGrafiks.length">
             <div class="collapsible-header is-size-4">
               Прогноз по запускам/План Факт
             </div>
             <div class="collapsible-body p-0">
-              <div class=" p-0 m-0 has-text-centered">
+              <div class="p-0 m-0 has-text-centered">
                 <eGrafiks
                   class="p-0 m-0"
                   :showOnly="true"
@@ -344,25 +358,20 @@
               label="Оценка"
               v-model="currentOcenkaType"
             >
-              <vs-select-item
-                value=""
-                text="Без оценки"
-              />
+              <vs-select-item value="" text="Без оценки" />
               <vs-select-item value="Успешно" text="Успешно" />
               <vs-select-item value="С ошибкой" text="С ошибкой" />
             </vs-select>
 
             <div v-else>
-              <h4 class="title is-4 m-0">
-                Оценка :
-              </h4>
+              <h4 class="title is-4 m-0">Оценка :</h4>
               <p class="mx-2">{{ currentOcenkaType || "Не оценена" }}</p>
             </div>
             <div
               v-if="
                 currentOcenkaType == 'С ошибкой' && currentOcenkaReason != ''
               "
-              class="ocenkaReason  has-text-centered"
+              class="ocenkaReason has-text-centered"
             >
               <vs-tooltip position="bottom" :text="currentOcenkaReason"
                 >Причина<span>
@@ -538,3 +547,8 @@ export default {
   },
 };
 </script>
+<style>
+.date-show-popup .vs-popup {
+  width: 60%;
+}
+</style>

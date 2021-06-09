@@ -1,38 +1,26 @@
 <template>
   <div>
     <div id="sidenav" class="sidenav">
-      <vs-collapse accordion>
-        <div class="is-clickable p-1 " @click="routeTo('/')">
+      <vs-collapse accordion open-hover>
+        <div class="is-clickable p-1" @click="routeTo('/')">
           <span class="is-size-3">Главная</span>
         </div>
-        <vs-collapse-item>
-          <div slot="header">
-            <span class="is-size-3">Табель</span>
-          </div>
-          <ul>
-            <li @click="routeTo('show-tabel')" class="is-clickable p-1 ">
-              Просмотр
-            </li>
-            <li @click="routeTo('edit-tabel')" class="is-clickable p-1 ">
-              Редактирование
-            </li>
-          </ul>
-        </vs-collapse-item>
+
         <vs-collapse-item>
           <div slot="header">
             <span class="is-size-3">Активности</span>
           </div>
           <ul>
-            <li class="is-clickable " @click="routeTo('show-activities')">
+            <li class="is-clickable" @click="routeTo('show-activities')">
               Просмотр
             </li>
-            <li class="is-clickable " @click="routeTo('add-activity')">
+            <li class="is-clickable" @click="routeTo('add-activity')">
               Добавление
             </li>
-            <li class="is-clickable " @click="routeTo('public-calendar')">
+            <li class="is-clickable" @click="routeTo('public-calendar')">
               Календарь
             </li>
-            <li class="is-clickable " @click="routeTo('distribution')">
+            <li class="is-clickable" @click="routeTo('distribution')">
               Распределение
             </li>
           </ul>
@@ -43,10 +31,23 @@
             <span class="is-size-3">Инфозапросы</span>
           </div>
           <ul>
-            <li class="is-clickable " @click="routeTo('show-info-queries')">
+            <li class="is-clickable" @click="routeTo('show-info-queries')">
               Просмотр
             </li>
-            <li class="is-clickable " @click="routeTo('add-info-query')">
+            <li class="is-clickable" @click="routeTo('add-info-query')">
+              Добавление
+            </li>
+          </ul>
+        </vs-collapse-item>
+        <vs-collapse-item>
+          <div slot="header">
+            <span class="is-size-3">Проекты</span>
+          </div>
+          <ul>
+            <li class="is-clickable" @click="routeTo('show-projects')">
+              Просмотр
+            </li>
+            <li class="is-clickable" @click="routeTo('add-project')">
               Добавление
             </li>
           </ul>
@@ -57,7 +58,7 @@
             <span class="is-size-3">Сотрудники</span>
           </div>
           <ul>
-            <li class="is-clickable " @click="routeTo('employees')">
+            <li class="is-clickable" @click="routeTo('employees')">
               Управление
             </li>
           </ul>
@@ -65,14 +66,14 @@
 
         <vs-collapse-item>
           <div slot="header">
-            <span class="is-size-3">Проекты</span>
+            <span class="is-size-3">Табель</span>
           </div>
           <ul>
-            <li class="is-clickable " @click="routeTo('show-projects')">
+            <li @click="routeTo('show-tabel')" class="is-clickable p-1">
               Просмотр
             </li>
-            <li class="is-clickable " @click="routeTo('add-project')">
-              Добавление
+            <li @click="routeTo('edit-tabel')" class="is-clickable p-1">
+              Редактирование
             </li>
           </ul>
         </vs-collapse-item>
@@ -81,25 +82,29 @@
 
     <div
       v-if="$route.path == '/'"
-      style="height:100vh"
-      class="is-flex is-flex-direction-column  is-justify-content-center is-align-items-center is-align-content-center"
+      style="height: 100vh"
+      class="
+        is-flex
+        is-flex-direction-column
+        is-justify-content-center
+        is-align-items-center
+        is-align-content-center
+      "
     >
-      <div class="box p-6">
-        <h1 class="is-2  title">ПРОЕКТ МИ</h1>
+      <div class="p-6">
+        <h1 class="is-2 title">ПРОЕКТ МИ</h1>
       </div>
-      <div>
+      <div class="is-flex is-align-items-center">
         <button
           @click="openMe"
-          class="title  p-6 my-1 is-1 has-text-centered is-info button"
+          class="title mx-2 my-1 is-3 has-text-centered is-info button"
         >
           Открыть меню
         </button>
-      </div>
 
-      <div class="">
         <button
           @click="openArchivingModal"
-          class="title p-6 is-3 has-text-centered is-primary button"
+          class="title mx-2 is-3 has-text-centered is-primary button"
         >
           Загрузить архив
         </button>
@@ -111,12 +116,8 @@
       title="Выберите даты для загрузки архива"
       :active.sync="archiveModalShow"
     >
-      <p class="is-size-4">
-        Загруженные данные заменят текущие
-      </p>
-      <p class="is-size-4">
-        Загружаем:
-      </p>
+      <p class="is-size-4">Загруженные данные заменят текущие</p>
+      <p class="is-size-4">Загружаем:</p>
       <input-select
         class=""
         :value.sync="archive.propertyToGet"
@@ -143,6 +144,15 @@
         </div>
       </div>
     </vs-popup>
+
+    <div class="fixed-button">
+      <vs-button
+        @click="openMe"
+        color="#00d1b2"
+        type="border"
+        icon="menu"
+      ></vs-button>
+    </div>
   </div>
 </template>
 
@@ -178,7 +188,7 @@ export default {
 
     document.addEventListener(
       "keydown",
-      function(key) {
+      function (key) {
         if (key.code == "Escape") {
           if (!this.sidenav.isOpen) this.openMe();
           else this.closeMe();
@@ -188,7 +198,7 @@ export default {
   },
   methods: {
     routeTo(route) {
-      this.sidenav.close();
+      this.closeMe();
       this.$router.push(route);
     },
     openArchivingModal() {
@@ -259,4 +269,14 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.fixed-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+}
+
+ul + .dropdown-content {
+  z-index: 100001;
+}
+</style>

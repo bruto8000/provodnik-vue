@@ -2,7 +2,7 @@
   <div class="container">
     <h1 class="center title is-1">Добавление активности</h1>
     <div class="columns">
-      <div class="column is-3 ">
+      <div class="column is-3">
         <div class="center">Дата спуска</div>
         <input
           v-model.lazy="activity.fdate"
@@ -25,8 +25,8 @@
           placeholder="Выберите дату"
         />
       </div>
-      <div class="column is-6 center ">
-        <div class="  ">Название</div>
+      <div class="column is-6 center">
+        <div class="">Название</div>
         <input
           placeholder="Введите Название"
           v-model="activity.nazvanie"
@@ -37,8 +37,8 @@
       </div>
     </div>
     <div class="columns">
-      <div class="column is-3 p-1 center ">
-        <div class="  ">Вид бизнеса</div>
+      <div class="column is-3 p-1 center">
+        <div class="">Вид бизнеса</div>
         <div class="">
           <select v-model="activity.bizness" id="bizness">
             <option value="" disabled selected>Вид бизнеса</option>
@@ -53,8 +53,8 @@
           </select>
         </div>
       </div>
-      <div class="column is-3  p-1 center">
-        <div class="  ">Тип запуска</div>
+      <div class="column is-3 p-1 center">
+        <div class="">Тип запуска</div>
         <div class="">
           <select v-model="activity.zapusk" id="zapusk">
             <option value="" disabled selected>Тип запуска</option>
@@ -62,19 +62,22 @@
             <option value="Перезапуск ТП">Перезапуск ТП</option>
             <option value="Закрытие ТП">Закрытие ТП</option>
             <option value="Офсет">Офсет</option>
-            <option value="Симплификация/Репайсинг"
-              >Симплификация/Репайсинг</option
-            >
+            <option value="Симплификация/Репайсинг">
+              Симплификация/Репайсинг
+            </option>
             <option value="Запуск Услуги">Запуск Услуги</option>
-            <option value="Изменение условий услиги"
-              >Изменение условий услиги</option
-            >
-            <option value="Закрытие условий">Закрытие условий</option>
+            <option value="Изменение условий услуги">
+              Изменение условий услуги
+            </option>
+            <option value="Изменение условий акции">
+              Изменение условий акции
+            </option>
+            <option value="Закрытие услуги">Закрытие услуги</option>
             <option value="Запуск акции">Запуск акции</option>
             <option value="Закрытие акции">Закрытие акции</option>
-            <option value="SMS/push/email рассылка"
-              >SMS/push/email рассылка</option
-            >
+            <option value="SMS/push/email рассылка">
+              SMS/push/email рассылка
+            </option>
             <option value="Запуск Города">Запуск Города</option>
             <option value="Оборудование">Оборудование</option>
           </select>
@@ -82,7 +85,7 @@
       </div>
 
       <div class="column is-3 center p-1">
-        <div class="  ">Сложность</div>
+        <div class="">Сложность</div>
         <select v-model="activity.difficulty" id="difficulty">
           <option value="1">1</option>
           <option value="1.5">1.5</option>
@@ -94,12 +97,12 @@
         </select>
       </div>
 
-      <div class="column is-3 center ">
- 
+      <div class="column is-3 center">
         <input-employee
-            v-model="activity.zakazchik"
-                    placeholder="Введите заказчика"
-                 header='Заказчик'   >
+          v-model="activity.zakazchik"
+          placeholder="Введите заказчика"
+          header="Заказчик"
+        >
         </input-employee>
         <!-- <input
           placeholder="Введите заказчика"
@@ -112,7 +115,7 @@
     </div>
     <div class="columns">
       <div class="column is-6 p-1">
-        <div class="   center">Сопровождающий</div>
+        <div class="center">Сопровождающий</div>
         <div class="">
           <select v-model="activity.soprovod" id="soprovod">
             <option value="" selected>Сопровождающий</option>
@@ -120,19 +123,20 @@
               v-for="employee in employees"
               :key="employee.id"
               :value="employee['full_name']"
-              >{{ employee["full_name"] }}
+            >
+              {{ employee["full_name"] }}
             </option>
           </select>
         </div>
       </div>
 
-      <div class="column is-3  p-1 center ">
+      <div class="column is-3 p-1 center">
         <div class="">Статус</div>
         <div class="">
           <select v-model="activity.status" id="status">
             <option value="" disabled selected>Статус</option>
-            <option value="В работе">В работе </option>
-            <option value="Выполнено">Выполнено </option>
+            <option value="В работе">В работе</option>
+            <option value="Выполнено">Выполнено</option>
             <option value="Отложено">Отложено</option>
             <option value="Отменено">Отменено</option>
             <option value="ДПП актив">ДПП актив</option>
@@ -141,8 +145,8 @@
         </div>
       </div>
 
-      <div class="column is-3 center  p-1 ">
-        <div class="  ">Флаги</div>
+      <div class="column is-3 center p-1">
+        <div class="">Флаги</div>
         <select
           placeholder="Флаги"
           v-model="activity.flags"
@@ -176,7 +180,16 @@
     <div class="columns">
       <div
         @click="addActivity"
-        class="button has-text-white is-large is-primary column is-12 black-text title is-3"
+        class="
+          button
+          has-text-white
+          is-large is-primary
+          column
+          is-12
+          black-text
+          title
+          is-3
+        "
       >
         Добавить активность
       </div>
@@ -203,7 +216,6 @@ export default {
         //  opisanieBody: "", Will added Automaticly
         //   opisanie: "", OLD
       },
-
 
       editor: "",
       undate: false,
@@ -236,10 +248,8 @@ export default {
       },
     };
   },
-  mounted: function() {
- 
-
-this.initSelects()
+  mounted: function () {
+    this.initSelects();
     this.editor = new FroalaEditor("#pbody", {
       // Set the file upload URL.
 
@@ -270,11 +280,10 @@ this.initSelects()
       },
       language: "ru",
     });
-this.initDateSelects();
-
+    this.initDateSelects();
   },
   methods: {
-    addActivity: function(event) {
+    addActivity: function (event) {
       event.target.classList.toggle("is-loading");
       if (!this.validateMainRows()) {
         setTimeout(() => {
@@ -282,10 +291,9 @@ this.initDateSelects();
         }, 400);
         return;
       }
-      this.activity.opisanieBody =  this.editor.html.get().replace(/'/gi, '"');
+      this.activity.opisanieBody = this.editor.html.get().replace(/'/gi, '"');
 
-if(this.activity.sdate == "Не определена")
-this.activity.sdate = ''
+      if (this.activity.sdate == "Не определена") this.activity.sdate = "";
 
       this.$store
         .dispatch("addActivity", _.cloneDeep(this.activity))
@@ -295,14 +303,14 @@ this.activity.sdate = ''
 
           for (let prop in this.activity) {
             if (prop == "flags") {
-             this.activity[prop] = [];
+              this.activity[prop] = [];
               continue;
             }
 
-         this.activity[prop] = "";
+            this.activity[prop] = "";
           }
 
-         this.editor.html.set(" ");
+          this.editor.html.set(" ");
           delete this.activity["opisanieBody"];
         })
         .catch((e) => {
@@ -317,29 +325,29 @@ this.activity.sdate = ''
           }, 400);
         });
     },
-    initDateSelects(){
-    let dateNow = new Date();
-    this.kalendar[0] = this.$Kalendar.set(
-      {
-        showMonthBtn: true,
-        events: [dateNow.toDateString()],
-      },
-      "#sdate"
-    );
-    this.kalendar[1] = this.$Kalendar.set({}, "#fdate");
+    initDateSelects() {
+      let dateNow = new Date();
+      this.kalendar[0] = this.$Kalendar.set(
+        {
+          showMonthBtn: true,
+          events: [dateNow.toDateString()],
+        },
+        "#sdate"
+      );
+      this.kalendar[1] = this.$Kalendar.set({}, "#fdate");
 
-    this.$refs.sdate.dataset.tooltip = "Нажмите чтобы сделать неопределенной";
-    this.$refs.sdate.dataset.position = "top";
-    M.Tooltip.init(this.$refs.sdate);
+      this.$refs.sdate.dataset.tooltip = "Нажмите чтобы сделать неопределенной";
+      this.$refs.sdate.dataset.position = "top";
+      M.Tooltip.init(this.$refs.sdate);
     },
-    undateZapusk: function() {
+    undateZapusk: function () {
       this.undate = !this.undate;
       this.activity.sdate = this.undate ? "Не определена" : "";
     },
     validateMainRows() {
       try {
         for (let prop in this.activity) {
-          if(prop == 'sdate')continue;
+          if (prop == "sdate") continue;
           if (!this.activity[prop]) {
             throw new Error(
               `Пусто,  не хватает: [ ${this.activityNameErrors[prop]} ]`
@@ -359,16 +367,16 @@ this.activity.sdate = ''
         return false;
       }
     },
-    initSelects(){
-    this.$nextTick(function() {
-      M.FormSelect.init(document.querySelectorAll("select"));
-    });
-    }
+    initSelects() {
+      this.$nextTick(function () {
+        M.FormSelect.init(document.querySelectorAll("select"));
+      });
+    },
   },
 
   watch: {
     employees() {
-    this.initSelects()
+      this.initSelects();
     },
   },
   computed: {

@@ -2,21 +2,14 @@
   <div>
     <div class="block">
       <div class="columns">
-        <div class="is-absolute m-5">
-          <span class="m-0 p-0">Колличество</span>
-          <input
-            type="number"
-            class="input "
-            v-model="paginationCount"
-            placeholder="Колличество показываемого"
-          />
-        </div>
         <div
-          class="center column is-12 is-justify-content-center is-flex is-align-items-center"
+          class="
+            center
+            column
+            is-12 is-justify-content-center is-flex is-align-items-center
+          "
         >
-          <h1 class="title is-1 mx-2">
-            Инфозапросы {{ $store.state.infoQueries.length }}
-          </h1>
+          <h1 class="title is-1 mx-2">Инфозапросы</h1>
 
           <div class="button is-small is-primary mx-2" @click="resetFilter">
             СБРОС
@@ -25,12 +18,12 @@
             @click="exportToExcel"
             class="button z-depth-3"
             mx-2
-            style="width: 40px; padding: 0; border-radius: 50%;"
+            style="width: 40px; padding: 0; border-radius: 50%"
           >
             <img
               src="../../../assets/EX.png"
               width="100%"
-              style="border-radius: 50%;"
+              style="border-radius: 50%"
               alt=""
             />
           </div>
@@ -39,7 +32,7 @@
     </div>
     <div class="columns center">
       <div
-        class="column center sort__button  "
+        class="column center sort__button"
         :class="'is-' + infoQueryName.columns"
         :key="name"
         v-for="(infoQueryName, name) in infoQueryNames"
@@ -84,16 +77,16 @@
     </div>
     <div
       class="center"
-      style="max-height: 75vh; overflow-y: auto; overflow-x: hidden;"
+      style="max-height: 75vh; overflow-y: auto; overflow-x: hidden"
     >
       <div
-        class="columns hover__bg "
-        v-for="infoQuery in infoQueriesFiltredPaginated"
+        class="columns hover__bg"
+        v-for="infoQuery in infoQueriesFiltred"
         :key="infoQuery.id"
         @click="openInfoQuery(infoQuery)"
       >
         <div
-          class="center column "
+          class="center column"
           :class="'is-' + infoQueryName.columns"
           v-for="(infoQueryName, name) in infoQueryNames"
           :key="name"
@@ -112,7 +105,7 @@
 <script>
 import infoQueryModal from "./infoQueryModal.vue";
 export default {
-  mounted: function() {
+  mounted: function () {
     this.readQueryParams();
     M.FormSelect.init(
       document.querySelectorAll("select", {
@@ -126,7 +119,7 @@ export default {
     return {
       needInfoQueryModal: false,
       filters: ["filterSelect", "filterInput", "sort"],
-      paginationCount: 30,
+
       kalendar: "",
       currentDisplayingInfoQuery: {},
       infoQueryNames: {
@@ -171,7 +164,7 @@ export default {
     };
   },
   methods: {
-    resetFilter: function() {
+    resetFilter: function () {
       for (let prop in this.filterSelect) {
         this.filterSelect[prop] = "";
       }
@@ -182,7 +175,7 @@ export default {
       this.sort.r = 1;
       this.sort.column = "";
 
-      this.$nextTick(function() {
+      this.$nextTick(function () {
         M.FormSelect.init(
           document.querySelectorAll("select", {
             dropdownOptions: {
@@ -249,7 +242,7 @@ export default {
       };
 
       wb.SheetNames.push("Инфозапросы");
-      let ws_data = this.infoQueriesFiltredPaginated.map((infoQuery) => {
+      let ws_data = this.infoQueriesFiltred.map((infoQuery) => {
         return {
           Инициатор: infoQuery.inicatior,
           "Дата получения": infoQuery.fdate,
@@ -310,14 +303,8 @@ export default {
           if (this.sort.column == "sdate" || this.sort.column == "fdate") {
             let fakeA = a[this.sort.column];
             let fakeB = b[this.sort.column];
-            fakeA = fakeA
-              .split(" ")
-              .reverse()
-              .join(" ");
-            fakeB = fakeB
-              .split(" ")
-              .reverse()
-              .join(" ");
+            fakeA = fakeA.split(" ").reverse().join(" ");
+            fakeB = fakeB.split(" ").reverse().join(" ");
             fakeA = fakeA.replace(/\s/g, "");
             fakeB = fakeB.replace(/\s/g, "");
             if (fakeA > fakeB) return 1 * this.sort.r;
@@ -337,9 +324,6 @@ export default {
         filterInput: this.filterInput,
         sort: this.sort,
       };
-    },
-    infoQueriesFiltredPaginated() {
-      return this.infoQueriesFiltred.slice(0, this.paginationCount || 30);
     },
     infoQueries() {
       return this.$store.state.infoQueries;
@@ -370,7 +354,7 @@ export default {
   watch: {
     allFilters: {
       deep: true,
-      handler: function() {
+      handler: function () {
         this.setQueryParams();
       },
     },
