@@ -3,7 +3,7 @@
     <div class="columns">
       <div class="column is-6 is-offset-3">
         <div class="columns center data-nachalo-konec">
-          <div class="column is-6  ">
+          <div class="column is-6">
             <p>Дата начала:</p>
             <input
               type="text"
@@ -25,9 +25,9 @@
         </div>
 
         <div class="columns">
-          <div class="column ">
+          <div class="column">
             <div class="toolbar center block buttons-edit">
-              <div class="block ">
+              <div class="block">
                 <button
                   class="button is-success block"
                   @click="changeOnServer"
@@ -89,14 +89,11 @@
         </div>
       </div>
 
-
-<description-table></description-table>
- 
-
+      <description-table></description-table>
     </div>
 
-    <div class="table-container">
-      <table class="table is-striped is-hoverable ">
+    <div class="table-container" v-dragscroll>
+      <table class="table is-striped is-hoverable">
         <thead>
           <tr>
             <th></th>
@@ -104,7 +101,7 @@
               v-for="day in tabelFiltred"
               :key="day.id"
               class="center"
-              style="min-width: 40px;"
+              style="min-width: 40px"
             >
               {{ day.date | cutYear }}
             </th>
@@ -119,14 +116,16 @@
         <tbody>
           <tr v-for="employee in employees" :key="employee.nid">
             <td
-              style="width: 1%;
-                white-space: nowrap; text-align: left;
-                
+              style="
+                width: 1%;
+                white-space: nowrap;
+                text-align: left;
+
                 position: sticky;
-    left:0;
-    z-index: 2;
-    background: white;
-                "
+                left: 0;
+                z-index: 2;
+                background: white;
+              "
             >
               {{ employee["full_name"] }}
             </td>
@@ -141,7 +140,7 @@
               @mouseover="preEnterSome(day, employee.nid)"
             >
               <input
-                class=" input  p-0 center min-w-36"
+                class="input p-0 center min-w-36"
                 :class="classObjForTd(day, employee)"
                 @mousedown="setSomeClicked(day, employee.nid)"
                 type="text"
@@ -157,7 +156,7 @@
 </template>
 
 <script>
-import DescriptionTable from './descriptionTable.vue';
+import DescriptionTable from "./descriptionTable.vue";
 export default {
   data() {
     return {
@@ -229,7 +228,7 @@ export default {
       },
     };
   },
-  mounted: function() {
+  mounted: function () {
     let year = new Date().getFullYear();
     let month = new Date().getMonth();
     let kvartal = "";
@@ -258,7 +257,7 @@ export default {
     }, 200);
   },
   methods: {
-    dateRange: function() {
+    dateRange: function () {
       let date1 = this.date1;
       let date2 = this.date2;
 
@@ -355,7 +354,7 @@ export default {
       this.range = dates;
       return dates;
     },
-    createTable: function() {
+    createTable: function () {
       //THIS IS FOR BACKEND
       //             let range = this.dateRange();
       // range.forEach((element,idx) => {
@@ -367,7 +366,7 @@ export default {
       //     }, idx * 100);
       // });
     },
-    preEnterSome: function(day, nid, clear) {
+    preEnterSome: function (day, nid, clear) {
       if (this.some.OFF) return;
       this.some.OFF = true; //OPTIMIZATION
       setTimeout(() => {
@@ -443,14 +442,15 @@ export default {
         this.clearSome(true);
         this.some.step = 3;
         this.modifSome();
-       this.$nextTick((e) => {
+        this.$nextTick((e) => {
           let i = 0;
 
           this.some.somes.forEach((element) => {
             element.somes.forEach((v, idx, arr) => {
-              element.body[v] = this.history.arrOfHistory[
-                this.history.arrOfHistory.length - 1
-              ][i];
+              element.body[v] =
+                this.history.arrOfHistory[this.history.arrOfHistory.length - 1][
+                  i
+                ];
 
               element.presomes = [];
               i++;
@@ -458,7 +458,7 @@ export default {
           });
 
           // this.some.input = oldinput;
-         this.$nextTick(() => {
+          this.$nextTick(() => {
             this.history.write = true;
           });
         });
@@ -501,7 +501,7 @@ export default {
       this.some.step = 3;
       this.modifSome();
     },
-    moveSome: function(day, who) {
+    moveSome: function (day, who) {
       if (this.some.step == 4) {
         M.toast({
           html: "Выберите новое начаало",
@@ -520,7 +520,7 @@ export default {
         html: "Выберите новое начало",
       });
     },
-    modifSome: function() {
+    modifSome: function () {
       // slice(this.some.F.X, this.some.L.X)
 
       this.tabelFiltred.forEach((element, idx) => {
@@ -535,7 +535,7 @@ export default {
         this.$forceUpdate();
       });
     },
-    clearSome: function(keepHistory, clearXY) {
+    clearSome: function (keepHistory, clearXY) {
       if (clearXY) {
         this.some.F.Y = -1;
         this.some.F.X = -1;
@@ -565,13 +565,13 @@ export default {
       this.some.somes = [];
       this.$forceUpdate();
     },
-    changeOnServer: async function(event) {
+    changeOnServer: async function (event) {
       event.target.classList.toggle("is-loading");
       await this.$store.dispatch("saveTabel", this.tabel);
       event.target.classList.toggle("is-loading");
     },
-    exportToExcel: function(id) {},
-    moveHistory: function(direction) {
+    exportToExcel: function (id) {},
+    moveHistory: function (direction) {
       if (this.some.step != 3) {
         M.toast({ html: "История работает только для множества" });
         return;
@@ -588,15 +588,16 @@ export default {
 
         this.some.somes.forEach((element) => {
           element.somes.forEach((v, idx, arr) => {
-            element.body[v] = this.history.arrOfHistory[
-              this.history.arrOfHistory.length - 1 - this.history.diff
-            ][i];
+            element.body[v] =
+              this.history.arrOfHistory[
+                this.history.arrOfHistory.length - 1 - this.history.diff
+              ][i];
             i++;
           });
         });
 
         // this.some.input = oldinput;
-       this.$nextTick(() => {
+        this.$nextTick(() => {
           this.history.write = true;
         });
       } else {
@@ -610,19 +611,20 @@ export default {
 
         this.some.somes.forEach((element) => {
           element.somes.forEach((v, idx, arr) => {
-            element.body[v] = this.history.arrOfHistory[
-              this.history.arrOfHistory.length - 1 - this.history.diff
-            ][i];
+            element.body[v] =
+              this.history.arrOfHistory[
+                this.history.arrOfHistory.length - 1 - this.history.diff
+              ][i];
             i++;
           });
         });
 
-       this.$nextTick(() => {
+        this.$nextTick(() => {
           this.history.write = true;
         });
       }
     },
-    filterInput: function(day, emp) {
+    filterInput: function (day, emp) {
       day.body[emp] = day.body[emp].toUpperCase().trim();
     },
     planFactCalculate() {
@@ -684,7 +686,7 @@ export default {
     },
   },
   watch: {
-    someInput: function(n, o) {
+    someInput: function (n, o) {
       if (this.some.step === 3) {
         this.some.somes.forEach((element) => {
           element.somes.forEach((v) => {
@@ -693,7 +695,7 @@ export default {
         });
       }
     },
-    date1: function(n, o) {
+    date1: function (n, o) {
       if (n.split(" ").length == 3 && this.date2.split(" ").length == 3) {
         this.dateRange();
         return;
@@ -706,7 +708,7 @@ export default {
       }
       return;
     },
-    date2: function(n, o) {
+    date2: function (n, o) {
       if (n.split(" ").length == 3 && this.date1.split(" ").length == 3) {
         this.dateRange();
         return;
@@ -720,7 +722,7 @@ export default {
       }
       return;
     },
-    someArrInput: function(n, o) {
+    someArrInput: function (n, o) {
       if (!this.history.write || !n.length) return;
 
       if (!this.history.isLast) {
@@ -739,15 +741,15 @@ export default {
         this.history.isFirst = false;
       }
     },
-    tabelFiltred: function(n) {
+    tabelFiltred: function (n) {
       this.planFactCalculate();
     },
   },
   computed: {
-    someInput: function() {
+    someInput: function () {
       return this.some.input;
     },
-    tabelFiltred: function() {
+    tabelFiltred: function () {
       if (!this.range.length) return [];
 
       try {
@@ -759,7 +761,7 @@ export default {
         return [];
       }
     },
-    someArrInput: function() {
+    someArrInput: function () {
       let arr = [];
       this.some.somes.forEach((e) => {
         e.somes.forEach((ie) => {
@@ -775,16 +777,16 @@ export default {
       return this.$store.getters.trueNID;
     },
     tabel: {
-      get: function() {
+      get: function () {
         return this.$store.state.editableTabel;
       },
-      set: function(newV) {
+      set: function (newV) {
         console.log(newV);
       },
     },
   },
   filters: {
-    dayOfWeek: function(val) {
+    dayOfWeek: function (val) {
       let parts = val.split(" ");
 
       let filtredDate = new Date(parts[2], parts[1] - 1, parts[0]);
@@ -812,13 +814,10 @@ export default {
       return val.toFixed(2);
     },
     cutYear(val) {
-      return val
-        .split(" ")
-        .slice(0, -1)
-        .join(" ");
+      return val.split(" ").slice(0, -1).join(" ");
     },
   },
-  components: {DescriptionTable},
+  components: { DescriptionTable },
 };
 </script>
 

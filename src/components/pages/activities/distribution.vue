@@ -1,354 +1,365 @@
 <template>
   <div>
-
-     <vs-tabs v-model="currentTabIdx">
+    <vs-tabs v-model="currentTabIdx">
       <vs-tab label="Таблица по кварталам">
-          <div class="table columns">
-      <div class="column is-2 px-5 has-text-centered ">
+        <div class="table columns">
+          <div class="column is-2 px-5 has-text-centered">
             <label>
-        <input type="checkbox" v-model='showOnlyInWorkActivities' />
-        <span>Показывать только в работе</span>
-      </label>
-        <ul v-for="year in years" class="box" :key="year">
-          <li>
-            <span class="title is-3">{{ year }}</span>
-          </li>
-          <li
-            class="m-1 is-clickable"
-            :class="{ 'is-size-3': currentYear == year && currentQuarter == i }"
-            @click="setCurrentDate(i, year)"
-            v-for="i in 4"
-            :key="i"
-          >
-            <a
-              class="is-primary button"
-              :class="{
-                'is-large is-danger':
-                  currentYear == year && currentQuarter == i,
-              }"
-              >{{ i }}Q</a
-            >
-          </li>
-        </ul>
-
-     
-      </div>
-      <div class="column is-10 box my-4 p-4">
-        <h1 class="title is-1 has-text-centered">
-          Распределение за {{ currentYear }}
-          {{
-            currentQuarter == "4"
-              ? "IV"
-              : new Array(currentQuarter).fill("I").join("")
-          }}
-        </h1>
-        <div style="overflow-x:scroll; overflow-y:hidden" v-dragscroll>
-          <div class="columns py-3">
-            <div class="columns column mx-0  is-3">
-              <div
-                class=""
-                style="position:absolute; background: white; width:22%"
+              <input type="checkbox" v-model="showOnlyInWorkActivities" />
+              <span>Показывать только в работе</span>
+            </label>
+            <ul v-for="year in years" class="box" :key="year">
+              <li>
+                <span class="title is-3">{{ year }}</span>
+              </li>
+              <li
+                class="m-1 is-clickable"
+                :class="{
+                  'is-size-3': currentYear == year && currentQuarter == i,
+                }"
+                @click="setCurrentDate(i, year)"
+                v-for="i in 4"
+                :key="i"
               >
-                <h3 class="is-3 title p-1">
-                  ФИО
-                </h3>
-              </div>
-            </div>
-            <div v-if="!showOnlyInWorkActivities" class="columns column mx-0  is-8 is-justify-content-center">
-              <div class="">
-                <h3 class="title is-3  has-text-centered">
-                  Поступило
-                </h3>
-              </div>
-            </div>
-            <div  class="columns column mx-0  is-8 is-justify-content-center">
-              <div class="">
-                <h3 class="title is-3 has-text-centered">
-                  В работе
-                </h3>
-              </div>
-            </div>
-            <div v-if="!showOnlyInWorkActivities" class="columns column mx-0  is-8 is-justify-content-center">
-              <div class="">
-                <h3 class="title is-3 has-text-centered">
-                  Выполнено
-                </h3>
-              </div>
-            </div>
-            <div  v-if="!showOnlyInWorkActivities" class="columns column mx-0  is-8 is-justify-content-center">
-              <div  class="">
-                <h3 class="title is-3 has-text-centered">
-                  Замещения
-                </h3>
-              </div>
-            </div>
-              <div  v-if="!showOnlyInWorkActivities" class="columns column mx-0  is-3 is-justify-content-center">
-              <div class="">
-                <h3 class="title is-3 has-text-centered">
-                  Итого
-                </h3>
-              </div>
-            </div>
+                <a
+                  class="is-primary button"
+                  :class="{
+                    'is-large is-danger':
+                      currentYear == year && currentQuarter == i,
+                  }"
+                  >{{ i }}Q</a
+                >
+              </li>
+            </ul>
           </div>
-
-          <div class="columns ">
-            <div class="columns column py-1 mx-0 is-3">
-              <div 
-                      
-                class=""
-                style="position:absolute; background: white; width:22%; height:22%"
-              ></div>
-            </div>
-            <div 
-             v-if="!showOnlyInWorkActivities"
-              class="columns column py-0 mx-0  is-8 is-justify-content-center"
-            >
-              <div class="has-text-centered" :style="getStyleForCell()">
-                1-1.5
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                2-2,5
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                3-3.5
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                ДПП
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                Итого
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                Доля поступивших
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                Доля поступивших с учетом отработки
-              </div>
-            </div>
-            <div
-         
-              class="columns column py-0 mx-0 is-8 is-justify-content-center"
-            >
-              <div class="has-text-centered" :style="getStyleForCell()">
-                1
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                1.5
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                2
-              </div>
-
-              <div class="has-text-centered" :style="getStyleForCell()">
-                2,5
-              </div>
-
-              <div class="has-text-centered" :style="getStyleForCell()">
-                3
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                3.5
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                ДПП Актив
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                ДПП Пассив
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                Итого
-              </div>
-            </div>
-            <div
-             v-if="!showOnlyInWorkActivities"
-              class="columns column py-0 mx-0 is-8 is-justify-content-center"
-            >
-              <div class="has-text-centered" :style="getStyleForCell()">
-                1
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                1.5
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                2
-              </div>
-
-              <div class="has-text-centered" :style="getStyleForCell()">
-                2,5
-              </div>
-
-              <div class="has-text-centered" :style="getStyleForCell()">
-                3
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                3.5
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                ДПП
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                Итого
-              </div>
-            </div>
-
-            <div
-             v-if="!showOnlyInWorkActivities"
-              class="columns column py-0 mx-0 is-8 is-justify-content-center"
-            >
-              <div class="has-text-centered" :style="getStyleForCell()">
-                <div>Завершено</div>
-                <div>1-1.5</div>
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                <div>В работе</div>
-                <div>      1-1.5</div>
-           
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                <div>
-                  Завершено
+          <div class="column is-10 box my-4 p-4">
+            <h1 class="title is-1 has-text-centered">
+              Распределение за {{ currentYear }}
+              {{
+                currentQuarter == "4"
+                  ? "IV"
+                  : new Array(currentQuarter).fill("I").join("")
+              }}
+            </h1>
+            <div style="overflow-x: scroll; overflow-y: hidden" v-dragscroll>
+              <div class="columns py-3">
+                <div class="columns column mx-0 is-3">
+                  <div
+                    class=""
+                    style="position: absolute; background: white; width: 22%"
+                  >
+                    <h3 class="is-3 title p-1">ФИО</h3>
+                  </div>
                 </div>
-                <div>
-                  2-2.5
+                <div
+                  v-if="!showOnlyInWorkActivities"
+                  class="columns column mx-0 is-8 is-justify-content-center"
+                >
+                  <div class="">
+                    <h3 class="title is-3 has-text-centered">Поступило</h3>
+                  </div>
+                </div>
+                <div class="columns column mx-0 is-8 is-justify-content-center">
+                  <div class="">
+                    <h3 class="title is-3 has-text-centered">В работе</h3>
+                  </div>
+                </div>
+                <div
+                  v-if="!showOnlyInWorkActivities"
+                  class="columns column mx-0 is-8 is-justify-content-center"
+                >
+                  <div class="">
+                    <h3 class="title is-3 has-text-centered">Выполнено</h3>
+                  </div>
+                </div>
+                <div
+                  v-if="!showOnlyInWorkActivities"
+                  class="columns column mx-0 is-8 is-justify-content-center"
+                >
+                  <div class="">
+                    <h3 class="title is-3 has-text-centered">Замещения</h3>
+                  </div>
+                </div>
+                <div
+                  v-if="!showOnlyInWorkActivities"
+                  class="columns column mx-0 is-3 is-justify-content-center"
+                >
+                  <div class="">
+                    <h3 class="title is-3 has-text-centered">Итого</h3>
+                  </div>
                 </div>
               </div>
 
-              <div class="has-text-centered" :style="getStyleForCell()">
-                <div>
-                  В работе
+              <div class="columns">
+                <div class="columns column py-1 mx-0 is-3">
+                  <div
+                    class=""
+                    style="
+                      position: absolute;
+                      background: white;
+                      width: 22%;
+                      height: 22%;
+                    "
+                  ></div>
                 </div>
-                <div>
-                  2-2.5
+                <div
+                  v-if="!showOnlyInWorkActivities"
+                  class="
+                    columns
+                    column
+                    py-0
+                    mx-0
+                    is-8 is-justify-content-center
+                  "
+                >
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    1-1.5
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    2-2,5
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    3-3.5
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    ДПП
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    Итого
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    Доля поступивших
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    Доля поступивших с учетом отработки
+                  </div>
                 </div>
-              </div>
+                <div
+                  class="
+                    columns
+                    column
+                    py-0
+                    mx-0
+                    is-8 is-justify-content-center
+                  "
+                >
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    1
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    1.5
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    2
+                  </div>
 
-              <div class="has-text-centered" :style="getStyleForCell()">
-                <div>
-                  Завершено
-                </div>
-                <div>
-                  3-3.5
-                </div>
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                <div>
-                  В работе
-                </div>
-                <div>
-                  3-3.5
-                </div>
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                ДПП
-              </div>
-              <div class="has-text-centered" :style="getStyleForCell()">
-                Итого
-              </div>
-            </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    2,5
+                  </div>
 
-             <div
-    
-              class="columns column py-0 mx-0 is-3 is-justify-content-center"
-            >
-           
-              <div class="has-text-centered" :style="getStyleForCell()">
-                Итого
-              </div>
-            </div>
-          </div>
-          <div
-            v-for="(row, idx) in tableRows"
-            class="columns"
-            
-            :key="idx"
-          >
-            <div
-              v-for="(difficultTypes, prop) in row"
-              :key="prop"
-              class=" columns column  py-0 mx-0"
-              :class="[
-                { 'is-justify-content-center': prop != 'full_name' },
-                [ ['full_name','all'].includes(prop) ? 'is-3' : 'is-8'],
-              ]"
-            >
-              <div
-                v-if="prop == 'full_name'"
-                style="position:absolute; background: white; width:22%"
-                class="py-3"
-              >
-                {{ difficultTypes }}
-              </div>
-              <div
-                v-else
-              
-                class="has-text-centered py-3"
-                v-for="(activities, idx) in difficultTypes"
-                :key="idx"
-                :style="{
-                  ...getColorForCell(prop, Object.keys(difficultTypes).indexOf(idx)),
-                  ...getStyleForCell(),
-                }"
-              >
-              <span   
-              class="is-clickable"
-              @click="openActivitiesTab(activities,{
-                  employee: row['full_name'],
-                  type: prop,
-                  difficult :idx
-                  }
-                  )">
-         {{ activities.length }}
-              </span>
-       
-              </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    3
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    3.5
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    ДПП Актив
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    ДПП Пассив
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    Итого
+                  </div>
+                </div>
+                <div
+                  v-if="!showOnlyInWorkActivities"
+                  class="
+                    columns
+                    column
+                    py-0
+                    mx-0
+                    is-8 is-justify-content-center
+                  "
+                >
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    1
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    1.5
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    2
+                  </div>
 
-              <div
-                :style="{
-                  ...getStyleForCell(),
-                }"
-                v-if="prop == 'receivedActivities'"
-                class="has-text-centered py-3"
-              >
-                <!-- Доля поступивших -->
-                {{
-                  Math.round(
-                    difficultTypes["Все"].length /
-                      (receivedActivitiesPerPercent / 100 || 1)
-                  )
-                }}%
-              </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    2,5
+                  </div>
 
-              <div
-                :style="{
-                  ...getStyleForCell(),
-                }"
-                v-if="prop == 'receivedActivities'"
-                class="has-text-centered py-3"
-              >
-                <!-- Доля поступивших с учетом план/факта -->
-                {{
-                  Math.round(
-                    difficultTypes["Все"].length /
-                      (receivedActivitiesPerPercent / 100 || 1)
-                  ) +
-                    Math.round(
-                      difficultTypes["Все"].length /
-                        (receivedActivitiesPerPercent / 100 || 1)
-                    ) *
-                      (coefficientPerEmployee[idx].coefficient / 100).toFixed(
-                        1
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    3
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    3.5
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    ДПП
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    Итого
+                  </div>
+                </div>
+
+                <div
+                  v-if="!showOnlyInWorkActivities"
+                  class="
+                    columns
+                    column
+                    py-0
+                    mx-0
+                    is-8 is-justify-content-center
+                  "
+                >
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    <div>Завершено</div>
+                    <div>1-1.5</div>
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    <div>В работе</div>
+                    <div>1-1.5</div>
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    <div>Завершено</div>
+                    <div>2-2.5</div>
+                  </div>
+
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    <div>В работе</div>
+                    <div>2-2.5</div>
+                  </div>
+
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    <div>Завершено</div>
+                    <div>3-3.5</div>
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    <div>В работе</div>
+                    <div>3-3.5</div>
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    ДПП
+                  </div>
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    Итого
+                  </div>
+                </div>
+
+                <div
+                  class="
+                    columns
+                    column
+                    py-0
+                    mx-0
+                    is-3 is-justify-content-center
+                  "
+                >
+                  <div class="has-text-centered" :style="getStyleForCell()">
+                    Итого
+                  </div>
+                </div>
+              </div>
+              <div v-for="(row, idx) in tableRows" class="columns" :key="idx">
+                <div
+                  v-for="(difficultTypes, prop) in row"
+                  :key="prop"
+                  class="columns column py-0 mx-0"
+                  :class="[
+                    { 'is-justify-content-center': prop != 'full_name' },
+                    [['full_name', 'all'].includes(prop) ? 'is-3' : 'is-8'],
+                  ]"
+                >
+                  <div
+                    v-if="prop == 'full_name'"
+                    style="position: absolute; background: white; width: 22%"
+                    class="py-3"
+                  >
+                    {{ difficultTypes }}
+                  </div>
+                  <div
+                    v-else
+                    class="has-text-centered py-3"
+                    v-for="(activities, idx) in difficultTypes"
+                    :key="idx"
+                    :style="{
+                      ...getColorForCell(
+                        prop,
+                        Object.keys(difficultTypes).indexOf(idx)
+                      ),
+                      ...getStyleForCell(),
+                    }"
+                  >
+                    <span
+                      class="is-clickable"
+                      @click="
+                        openActivitiesTab(activities, {
+                          employee: row['full_name'],
+                          type: prop,
+                          difficult: idx,
+                        })
+                      "
+                    >
+                      {{ activities.length }}
+                    </span>
+                  </div>
+
+                  <div
+                    :style="{
+                      ...getStyleForCell(),
+                    }"
+                    v-if="prop == 'receivedActivities'"
+                    class="has-text-centered py-3"
+                  >
+                    <!-- Доля поступивших -->
+                    {{
+                      Math.round(
+                        difficultTypes["Все"].length /
+                          (receivedActivitiesPerPercent / 100 || 1)
                       )
-                }}%
+                    }}%
+                  </div>
+
+                  <div
+                    :style="{
+                      ...getStyleForCell(),
+                    }"
+                    v-if="prop == 'receivedActivities'"
+                    class="has-text-centered py-3"
+                  >
+                    <!-- Доля поступивших с учетом план/факта -->
+                    {{
+                      Math.round(
+                        difficultTypes["Все"].length /
+                          (receivedActivitiesPerPercent / 100 || 1)
+                      ) +
+                      Math.round(
+                        difficultTypes["Все"].length /
+                          (receivedActivitiesPerPercent / 100 || 1)
+                      ) *
+                        (coefficientPerEmployee[idx].coefficient / 100).toFixed(
+                          1
+                        )
+                    }}%
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
       </vs-tab>
 
       <vs-tab label="Список Активностей">
-        <div style="overflow: auto; ">
+        <div style="overflow: auto">
           <h3 class="title is-3">
             {{ textHeader }}
           </h3>
@@ -368,7 +379,7 @@
             </tr>
 
             <tr
-              class=" hover__bg"
+              class="hover__bg"
               v-for="activity in currentActivities"
               :key="activity.id"
               @click="openActivity(activity)"
@@ -387,12 +398,8 @@
         </div>
       </vs-tab>
     </vs-tabs>
- 
 
- <activityModal
-  :show.sync="needActivityModal"
-     role="admin"
-  ></activityModal>
+    <activityModal :show.sync="needActivityModal" role="admin"></activityModal>
   </div>
 </template>
 
@@ -402,20 +409,19 @@ export default {
   data() {
     return {
       activityTypes: [
-        
-,"receivedActivities"
-,"inWorkActivities"
-,"doneActivities"
-,"replacementActivities"
-,"all"
-
+        ,
+        "receivedActivities",
+        "inWorkActivities",
+        "doneActivities",
+        "replacementActivities",
+        "all",
       ],
-      textHeader: '',
+      textHeader: "",
       needActivityModal: false,
       currentActivities: [],
       currentTabIdx: 0,
-   showOnlyInWorkActivities: true
-,      years: [2021, 2022, 2023],
+      showOnlyInWorkActivities: true,
+      years: [2021, 2022, 2023],
       currentQuarter: "",
       currentYear: "",
       colors: {
@@ -448,17 +454,15 @@ export default {
           "#F9393E",
           "#F9393E",
         ],
-        all: [
-          '#ED7D31'
-        ]
+        all: ["#ED7D31"],
       },
-      columnNames:{
+      columnNames: {
         receivedActivities: "Получено",
         inWorkActivities: "В работе",
         doneActivities: "Выполнено",
         replacementActivities: "Замещения",
         all: "Все",
-      }
+      },
     };
   },
   created() {
@@ -471,17 +475,18 @@ export default {
       this.currentQuarter = quarter;
       this.currentYear = year;
     },
-     openActivitiesTab(activitiesArray,activitiesProperty) {
-       this.textHeader  = `${activitiesProperty.employee}, Активности [${this.columnNames[activitiesProperty.type]}]  сложность [${activitiesProperty.difficult}]`;
-     this.currentActivities = activitiesArray;
-     this.currentTabIdx =1;
+    openActivitiesTab(activitiesArray, activitiesProperty) {
+      this.textHeader = `${activitiesProperty.employee}, Активности [${
+        this.columnNames[activitiesProperty.type]
+      }]  сложность [${activitiesProperty.difficult}]`;
+      this.currentActivities = activitiesArray;
+      this.currentTabIdx = 1;
+    },
+    openActivity(activity) {
+      this.$store.commit("setDisplayingActivity", activity);
+      this.needActivityModal = true;
+    },
 
-    },
-    openActivity(activity){
-     this.$store.commit("setDisplayingActivity", activity);
-   this.needActivityModal = true;
-    },
-    
     getColorForCell(prop, idx) {
       return {
         backgroundColor: this.colors[prop] ? this.colors[prop][idx] : "purple",
@@ -516,7 +521,7 @@ export default {
   },
   computed: {
     employees() {
-      return [...this.$store.state.employees,{full_name:"Итого"} ];
+      return [...this.$store.state.employees, { full_name: "Итого" }];
     },
     activities() {
       return this.$store.state.activities;
@@ -524,7 +529,9 @@ export default {
     filtredActivitiesPerEmployeesAndDate() {
       return this.employees.map((employee) => {
         let employeeActivities = this.activities.filter(
-          (activity) => activity.soprovod == employee.full_name || employee.full_name == "Итого"
+          (activity) =>
+            activity.soprovod == employee.full_name ||
+            employee.full_name == "Итого"
         );
         let doneActivities = employeeActivities
           .filter((activity) => activity.status.trim() == "Выполнено")
@@ -548,29 +555,40 @@ export default {
           );
         });
         let replacementActivities = [];
-        this.activities.forEach((activity) =>
-     activity.zamenas &&  activity.zamenas.forEach((replacement) => {
-            if (
-              replacement.employee == employee.full_name &&
-              this.getYear(replacement.fdate) == this.currentYear &&
-              this.getQuarter(replacement.fdate) == this.currentQuarter
-            ) {
-              replacementActivities.push(activity);
-            }
-          })
+        this.activities.forEach(
+          (activity) =>
+            activity.zamenas &&
+            activity.zamenas.forEach((replacement) => {
+              if (
+                replacement.employee == employee.full_name &&
+                this.getYear(replacement.fdate) == this.currentYear &&
+                this.getQuarter(replacement.fdate) == this.currentQuarter
+              ) {
+                replacementActivities.push(activity);
+              }
+            })
         );
 
-let all = [doneActivities, receivedActivities, inWorkActivities,replacementActivities].reduce((accumulator,currentValue)=>currentValue.concat (accumulator),[])
-.filter((value, index, self) =>{
-  return self.indexOf(value) === index;
-})  ; 
-   return {
+        let all = [
+          doneActivities,
+          receivedActivities,
+          inWorkActivities,
+          replacementActivities,
+        ]
+          .reduce(
+            (accumulator, currentValue) => currentValue.concat(accumulator),
+            []
+          )
+          .filter((value, index, self) => {
+            return self.indexOf(value) === index;
+          });
+        return {
           full_name: employee.full_name,
           receivedActivities,
           inWorkActivities,
           doneActivities,
           replacementActivities,
-          all
+          all,
         };
       });
     },
@@ -607,7 +625,7 @@ let all = [doneActivities, receivedActivities, inWorkActivities,replacementActiv
                   "2-2.5": ["2", "2.5"],
                   "3-3.5": ["3", "3.5"],
                   ДПП: ["ДПП"],
-                  Все: ["1", "1.5", "2", "2.5", "3", "3.5",'ДПП'],
+                  Все: ["1", "1.5", "2", "2.5", "3", "3.5", "ДПП"],
                 }
               ),
             },
@@ -615,25 +633,25 @@ let all = [doneActivities, receivedActivities, inWorkActivities,replacementActiv
               ...filterByDifficultAndStatus(
                 employeeActivities.inWorkActivities,
                 {
-                  "1": ["1"],
-                  "1.5": ["1.5"],
-                  "2": ["2"],
-                  "2.5": ["2.5"],
-                  "3": ["3"],
-                  "3.5": ["3.5"],
+                  1: ["1"],
+                  1.5: ["1.5"],
+                  2: ["2"],
+                  2.5: ["2.5"],
+                  3: ["3"],
+                  3.5: ["3.5"],
                 }
               ),
               ...filterByDifficultAndStatus(
                 employeeActivities.inWorkActivities,
                 {
-                  "ДПП актив": [ "ДПП"],
+                  "ДПП актив": ["ДПП"],
                 },
                 ["ДПП актив"]
               ),
               ...filterByDifficultAndStatus(
                 employeeActivities.inWorkActivities,
                 {
-                  "ДПП пассив": [ "ДПП"],
+                  "ДПП пассив": ["ДПП"],
                 },
                 ["ДПП пассив"]
               ),
@@ -641,19 +659,19 @@ let all = [doneActivities, receivedActivities, inWorkActivities,replacementActiv
               ...filterByDifficultAndStatus(
                 employeeActivities.inWorkActivities,
                 {
-                  Все: ["1", "1.5", "2", "2.5", "3", "3.5",'ДПП'],
+                  Все: ["1", "1.5", "2", "2.5", "3", "3.5", "ДПП"],
                 }
               ),
             },
             doneActivities: filterByDifficultAndStatus(
               employeeActivities.doneActivities,
               {
-                "1": ["1"],
-                "1.5": ["1.5"],
-                "2": ["2"],
-                "2.5": ["2.5"],
-                "3": ["3"],
-                "3.5": ["3.5"],
+                1: ["1"],
+                1.5: ["1.5"],
+                2: ["2"],
+                2.5: ["2.5"],
+                3: ["3"],
+                3.5: ["3.5"],
                 ДПП: ["ДПП"],
                 Все: ["1", "1.5", "2", "2.5", "3", "3.5"],
               }
@@ -716,35 +734,34 @@ let all = [doneActivities, receivedActivities, inWorkActivities,replacementActiv
               ),
             },
             all: {
-           Все:   employeeActivities.all
-              } 
-              
+              Все: employeeActivities.all,
+            },
           };
           return normalizedForTableView;
         }
       );
     },
-    tableRows(){
-      if(this.showOnlyInWorkActivities){
-        return this.filtredActivitiesForTableView.map(employee=>{
+    tableRows() {
+      if (this.showOnlyInWorkActivities) {
+        return this.filtredActivitiesForTableView.map((employee) => {
           return {
-            full_name:employee.full_name,
-  inWorkActivities: employee.inWorkActivities,
-  all: employee.all,
-          }
-        })
-      }else{
-        return this.filtredActivitiesForTableView
+            full_name: employee.full_name,
+            inWorkActivities: employee.inWorkActivities,
+            all: employee.all,
+          };
+        });
+      } else {
+        return this.filtredActivitiesForTableView;
       }
     },
-    currentActivityTypeForShow(){
-      let typesWillBeShow = {}
-    for(let type in this.activityTypesShow )  {
-    if(this.activityTypesShow[type]){
-      typesWillBeShow[type] = this.filtredActivitiesForTableView[type]
-    }
-    }
-    return typesWillBeShow
+    currentActivityTypeForShow() {
+      let typesWillBeShow = {};
+      for (let type in this.activityTypesShow) {
+        if (this.activityTypesShow[type]) {
+          typesWillBeShow[type] = this.filtredActivitiesForTableView[type];
+        }
+      }
+      return typesWillBeShow;
     },
     receivedActivitiesPerPercent() {
       let currentAllreceivedActivities = this.filtredActivitiesForTableView
@@ -796,9 +813,9 @@ let all = [doneActivities, receivedActivities, inWorkActivities,replacementActiv
       });
     },
   },
-  components:{
-    activityModal
-  }
+  components: {
+    activityModal,
+  },
 };
 </script>
 

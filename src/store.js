@@ -2,7 +2,7 @@ import Vuex from "vuex";
 import Vue from "vue";
 import axios from "axios";
 
-import config from './config.js';
+import config from '../public/config'
 let APIUrl = config.APIUrl
 Vue.use(Vuex);
 
