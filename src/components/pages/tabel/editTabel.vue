@@ -1,5 +1,10 @@
 <template>
-  <div @mouseup="unsetSomeClicked">
+  <div
+    @mouseup="unsetSomeClicked"
+    @keydown.ctrl.67="tryCopy"
+    @keydown.ctrl.88="tryMove"
+    tabindex="0"
+  >
     <div class="columns">
       <div class="column is-6 is-offset-3">
         <div class="columns center data-nachalo-konec">
@@ -92,7 +97,7 @@
       <description-table></description-table>
     </div>
 
-    <div class="table-container" v-dragscroll>
+    <div class="table-container">
       <table class="table is-striped is-hoverable">
         <thead>
           <tr>
@@ -683,6 +688,19 @@ export default {
           Number(dataOfDay.replace(",", "."))
         ),
       };
+    },
+    tryCopy() {
+      if (!(this.some.step == 3)) {
+        return;
+      }
+      this.history.copy = true;
+      this.moveSome();
+    },
+    tryMove() {
+      if (!(this.some.step == 3)) {
+        return;
+      }
+      this.moveSome();
     },
   },
   watch: {

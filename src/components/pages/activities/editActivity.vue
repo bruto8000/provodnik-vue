@@ -2,7 +2,7 @@
   <div class="container">
     <h1 class="center title is-1">Изменение активности</h1>
     <div class="columns">
-      <div class="column is-3 ">
+      <div class="column is-3">
         <div class="center">Дата спуска</div>
         <input
           v-model.lazy="activity.fdate"
@@ -25,8 +25,8 @@
           placeholder="Выберите дату"
         />
       </div>
-      <div class="column is-6 center ">
-        <div class="  ">Название</div>
+      <div class="column is-6 center">
+        <div class="">Название</div>
         <input
           placeholder="Введите Название"
           v-model="activity.nazvanie"
@@ -37,8 +37,8 @@
       </div>
     </div>
     <div class="columns">
-      <div class="column is-3 p-1 center ">
-        <div class="  ">Вид бизнеса</div>
+      <div class="column is-3 p-1 center">
+        <div class="">Вид бизнеса</div>
         <div class="">
           <select v-model="activity.bizness" id="bizness">
             <option value="" disabled selected>Вид бизнеса</option>
@@ -53,8 +53,8 @@
           </select>
         </div>
       </div>
-      <div class="column is-3  p-1 center">
-        <div class="  ">Тип запуска</div>
+      <div class="column is-3 p-1 center">
+        <div class="">Тип запуска</div>
         <div class="">
           <select v-model="activity.zapusk" id="zapusk">
             <option value="" disabled selected>Тип запуска</option>
@@ -62,22 +62,19 @@
             <option value="Перезапуск ТП">Перезапуск ТП</option>
             <option value="Закрытие ТП">Закрытие ТП</option>
             <option value="Офсет">Офсет</option>
-            <option value="Симплификация/Репайсинг"
-              >Симплификация/Репайсинг</option
-            >
+            <option value="Симплификация/Репайсинг">
+              Симплификация/Репайсинг
+            </option>
             <option value="Запуск Услуги">Запуск Услуги</option>
-            <option value="Изменение условий услуги"
-              >Изменение условий услуги</option
-            >
-            <option value="Изменение условий акции"
-              >Изменение условий акции</option
-            >
-            <option value="Закрытие услуги">Закрытие услуги</option>
+            <option value="Изменение условий услиги">
+              Изменение условий услиги
+            </option>
+            <option value="Закрытие условий">Закрытие условий</option>
             <option value="Запуск акции">Запуск акции</option>
             <option value="Закрытие акции">Закрытие акции</option>
-            <option value="SMS/push/email рассылка"
-              >SMS/push/email рассылка</option
-            >
+            <option value="SMS/push/email рассылка">
+              SMS/push/email рассылка
+            </option>
             <option value="Запуск Города">Запуск Города</option>
             <option value="Оборудование">Оборудование</option>
           </select>
@@ -85,7 +82,7 @@
       </div>
 
       <div class="column is-3 center p-1">
-        <div class="  ">Сложность</div>
+        <div class="">Сложность</div>
         <select v-model="activity.difficulty" id="difficulty">
           <option value="1">1</option>
           <option value="1.5">1.5</option>
@@ -96,17 +93,18 @@
           <option value="ДПП">ДПП</option>
         </select>
       </div>
-      <div class="column is-3 center ">
-         <input-employee
-            v-model="activity.zakazchik"
-                    placeholder="Введите заказчика"
-                 header='Заказчик'   >
+      <div class="column is-3 center">
+        <input-employee
+          v-model="activity.zakazchik"
+          placeholder="Введите заказчика"
+          header="Заказчик"
+        >
         </input-employee>
       </div>
     </div>
     <div class="columns">
       <div class="column is-6 p-1">
-        <div class="   center">Сопровождающий</div>
+        <div class="center">Сопровождающий</div>
         <div class="">
           <select v-model="activity.soprovod" id="soprovod">
             <option value="" selected>Сопровождающий</option>
@@ -114,19 +112,20 @@
               v-for="employee in employees"
               :key="employee.nid"
               :value="employee['full_name']"
-              >{{ employee["full_name"] }}
+            >
+              {{ employee["full_name"] }}
             </option>
           </select>
         </div>
       </div>
 
-      <div class="column is-3  p-1 center ">
+      <div class="column is-3 p-1 center">
         <div class="">Статус</div>
         <div class="">
           <select v-model="activity.status" id="status">
             <option value="" disabled selected>Статус</option>
-            <option value="В работе">В работе </option>
-            <option value="Выполнено">Выполнено </option>
+            <option value="В работе">В работе</option>
+            <option value="Выполнено">Выполнено</option>
             <option value="Отложено">Отложено</option>
             <option value="Отменено">Отменено</option>
             <option value="ДПП актив">ДПП актив</option>
@@ -135,8 +134,8 @@
         </div>
       </div>
 
-      <div class="column is-3 center  p-1 ">
-        <div class="  ">Флаги</div>
+      <div class="column is-3 center p-1">
+        <div class="">Флаги</div>
         <select
           placeholder="Флаги"
           v-model="activity.flags"
@@ -177,13 +176,11 @@
     <ul class="collapsible">
       <li>
         <div class="collapsible-header">
-          <h3 class="title is-4 has-text-centered">
-            Абонентская база
-          </h3>
+          <h3 class="title is-4 has-text-centered">Абонентская база</h3>
         </div>
         <div class="collapsible-body">
           <div class="AB">
-            <h1 class="title  is-4  has-text-centered">
+            <h1 class="title is-4 has-text-centered">
               Абонентская база
 
               <button class="button is-primary" @click="openABmodal()">
@@ -194,14 +191,14 @@
             <div
               v-for="(table, idx) in activity.AB"
               :key="idx"
-              class=" my-5 box center"
+              class="my-5 box center"
             >
               <button class="button is-danger left" @click="deleteAB(table)">
                 -
               </button>
 
               <div class="column is-6 is-offset-3" v-if="table.type == 'small'">
-                <table class="table  is-narrow is-fullwidth ">
+                <table class="table is-narrow is-fullwidth">
                   <tr>
                     <td>Вид бизнеса</td>
                     <td>АБ</td>
@@ -257,12 +254,12 @@
                       type="text"
                       placeholder="Выберите дату"
                       @change="changeTableRange(table)"
-                      class="datepicker input  table-date"
+                      class="datepicker input table-date"
                       v-model.lazy="table.fdate"
                     />
                   </div>
 
-                  <div class="column is-3 ">
+                  <div class="column is-3">
                     <input
                       type="text"
                       placeholder="Выберите дату"
@@ -280,7 +277,12 @@
                         <td>
                           <button
                             v-show="usedTypes(table).length < 5"
-                            class="dropdown-trigger button is-primary dropdownTableRow "
+                            class="
+                              dropdown-trigger
+                              button
+                              is-primary
+                              dropdownTableRow
+                            "
                             :data-target="'dropdown' + idx"
                           >
                             Действие
@@ -378,11 +380,11 @@
               <div class="modal-content">
                 <h4 class="my-5 title is-4">Выберите тип новых данных</h4>
 
-                <div class="columns ">
-                  <div class="column  has-text-centered box is-clickable mx-5">
+                <div class="columns">
+                  <div class="column has-text-centered box is-clickable mx-5">
                     <table
                       @click="addABtabel('small')"
-                      class="table modal-close  is-narrow is-fullwidth "
+                      class="table modal-close is-narrow is-fullwidth"
                     >
                       <tr>
                         <td>Вид бизнеса</td>
@@ -420,10 +422,10 @@
                     </table>
                   </div>
 
-                  <div class="column is-clickable box  table ">
+                  <div class="column is-clickable box table">
                     <table
                       @click="addABtabel('big')"
-                      class="table modal-close is-narrow is-fullwidth "
+                      class="table modal-close is-narrow is-fullwidth"
                     >
                       <tr>
                         <td>Действие</td>
@@ -471,9 +473,7 @@
       </li>
       <li>
         <div class="collapsible-header">
-          <h3 class="title is-4 ">
-            Статус по запуску
-          </h3>
+          <h3 class="title is-4">Статус по запуску</h3>
         </div>
         <div class="collapsible-body">
           <div class="statusZapusk">
@@ -514,7 +514,7 @@
                 <div class="column">
                   <input
                     type="text"
-                    class="input is-primary  datepicker statusZapuskDate"
+                    class="input is-primary datepicker statusZapuskDate"
                     v-model.lazy="row.srok"
                   />
                 </div>
@@ -528,9 +528,7 @@
 
       <li>
         <div class="collapsible-header">
-          <h3 class="title is-4">
-            Риски
-          </h3>
+          <h3 class="title is-4">Риски</h3>
         </div>
         <div class="collapsible-body">
           <div class="risks">
@@ -593,12 +591,10 @@
 
       <li>
         <div class="collapsible-header">
-          <h3 class="title is-4">
-            Аудиты
-          </h3>
+          <h3 class="title is-4">Аудиты</h3>
         </div>
         <div class="collapsible-body">
-          <div class="audits ">
+          <div class="audits">
             <h3 class="center fluid-text title is-4">
               Голос клиента (Аудит)
               <button
@@ -634,14 +630,13 @@
                   <select class="selectColor" v-model="audit.type">
                     <option value="public">Публичный</option>
                     <option value="private">Приватный</option>
-
                   </select>
                 </div>
               </div>
 
               <div class="columns">
                 <div class="column is-6">
-                  <table class=" centered">
+                  <table class="centered">
                     <thead>
                       <tr class="my-1">
                         <th>
@@ -711,9 +706,7 @@
 
       <li>
         <div class="collapsible-header">
-          <h3 class="title is-4">
-            Баги
-          </h3>
+          <h3 class="title is-4">Баги</h3>
         </div>
         <div class="collapsible-body">
           <div class="bugs">
@@ -732,7 +725,7 @@
             <div class="if-fullwidth w100" v-if="activity.bugs.length">
               <div class="columns">
                 <div class="column is-2">Описание</div>
-                <div class="column is-4">Ответственный за исполнение</div>
+                <div class="column is-4">Ответственный за исправление</div>
                 <div class="column is-2">Срок решения</div>
                 <div class="column is-2">Комментарий</div>
                 <div class="column is-2">Статус</div>
@@ -757,8 +750,9 @@
                       v-for="(employee, idx) in employees"
                       :key="idx"
                       :value="employee['full_name']"
-                      >{{ employee["full_name"] }}</option
                     >
+                      {{ employee["full_name"] }}
+                    </option>
                   </select>
                 </div>
                 <div class="column is-2">
@@ -793,15 +787,11 @@
 
       <li>
         <div class="collapsible-header">
-          <h3 class="title is-4">
-            Доп. информация
-          </h3>
+          <h3 class="title is-4">Доп. информация</h3>
         </div>
         <div class="collapsible-body">
           <div class="statusZapusk">
-            <h3 class="title is-4 has-text-centered">
-              Доп. информация
-            </h3>
+            <h3 class="title is-4 has-text-centered">Доп. информация</h3>
 
             <div class="froala">
               <label for="pbody"> Доп. информация</label>
@@ -819,23 +809,19 @@
 
       <li>
         <div class="collapsible-header">
-          <h3 class="title is-4">
-            Прогноз по запускам/План Факт
-          </h3>
+          <h3 class="title is-4">Прогноз по запускам/План Факт</h3>
         </div>
         <div class="collapsible-body">
-
-  <e-grafiks class="column px-6 mx-6 is-offset-1" :eGrafiks.sync="activity.eGrafiks"></e-grafiks>
-
-        
+          <e-grafiks
+            class="column px-6 mx-6 is-offset-1"
+            :eGrafiks.sync="activity.eGrafiks"
+          ></e-grafiks>
         </div>
       </li>
 
       <li>
         <div class="collapsible-header">
-          <h3 class="title is-4">
-            Теги
-          </h3>
+          <h3 class="title is-4">Теги</h3>
         </div>
         <div class="collapsible-body">
           <tags :tags.sync="activity.tags" :needEditingTagsBody="true"></tags>
@@ -848,7 +834,16 @@
         @click="editActivity"
         :disabled="buttonIsLoading"
         :class="{ 'is-loading': buttonIsLoading }"
-        class="button has-text-white is-large is-primary column is-12 black-text title is-3"
+        class="
+          button
+          has-text-white
+          is-large is-primary
+          column
+          is-12
+          black-text
+          title
+          is-3
+        "
       >
         Изменить активность
       </div>
@@ -859,7 +854,16 @@
         @click="openDeletingModal"
         :disabled="buttonIsLoading"
         :class="{ 'is-loading': buttonIsLoading }"
-        class="button has-text-white is-large is-danger column is-12 black-text title is-3"
+        class="
+          button
+          has-text-white
+          is-large is-danger
+          column
+          is-12
+          black-text
+          title
+          is-3
+        "
       >
         Удалить активность
       </div>
@@ -974,7 +978,7 @@ export default {
       deletingModal: null,
     };
   },
-  mounted: function() {
+  mounted: function () {
     this.editor = new FroalaEditor("#pbody", {
       // Set the file upload URL.
 
@@ -1051,7 +1055,7 @@ export default {
         setTimeout(() => {
           this.dopeditor.html.set(this.activity.dopinfo);
         }, 1000);
-        this.$nextTick(function() {
+        this.$nextTick(function () {
           M.FormSelect.init(document.querySelectorAll("select"));
           M.Collapsible.init(document.querySelectorAll(".collapsible"));
           this.initStatusZapusk();
@@ -1089,7 +1093,7 @@ export default {
       );
       this.kalendar[1] = this.$Kalendar.set({}, "#fdate");
     },
-    editActivity: function(event) {
+    editActivity: function (event) {
       if (!this.validateALL()) {
         return;
       }
@@ -1134,20 +1138,17 @@ export default {
 
       this.activity.eGrafiks.forEach((eGrafik, idx) => {
         debugger;
-  
-          
-          activityToSend.eGrafiks[idx] = {
 
-            ...eGrafik,
-            grafik: null,
-            grafikModal: null,
-            datasets: eGrafik.datasets.map((dataset) => ({
-              ...dataset,
-              _meta: null,
-            })),
-          };
-                  debugger;
-  
+        activityToSend.eGrafiks[idx] = {
+          ...eGrafik,
+          grafik: null,
+          grafikModal: null,
+          datasets: eGrafik.datasets.map((dataset) => ({
+            ...dataset,
+            _meta: null,
+          })),
+        };
+        debugger;
       });
 
       window.activityToSend = activityToSend;
@@ -1182,7 +1183,7 @@ export default {
       }
     },
 
-    undateZapusk: function() {
+    undateZapusk: function () {
       this.undate = !this.undate;
       this.activity.sdate = this.undate ? "Не определена" : "";
     },
@@ -1260,7 +1261,6 @@ export default {
       }
     },
     createDonut(audit) {
-
       if (!audit) {
         return;
       }
@@ -1288,7 +1288,6 @@ export default {
         labels.push(row.propName);
       });
 
-
       audit.donut = new Chart(ctx, {
         type: "doughnut",
         data: {
@@ -1314,8 +1313,6 @@ export default {
 
         // These labels appear in the legend and in the tooltips when hovering different arcs
       });
-
-
     },
     updateDonut(audit) {
       if (!audit.donut) {
@@ -1484,8 +1481,9 @@ export default {
         this.activity.statusZapusk.filter((v, idx) => {
           if (!v.opisanie) {
             M.toast({
-              html: `Вы не ввели имя для строки ${idx +
-                1} в статусе по запуску`,
+              html: `Вы не ввели имя для строки ${
+                idx + 1
+              } в статусе по запуску`,
             });
             return true;
           }
@@ -1940,7 +1938,7 @@ export default {
     },
   },
   watch: {
-    activity: function(n, o) {
+    activity: function (n, o) {
       this.$nextTick();
     },
     employees() {

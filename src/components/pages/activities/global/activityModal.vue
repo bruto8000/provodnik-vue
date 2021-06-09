@@ -269,7 +269,7 @@
                   <div>Описание</div>
                 </div>
                 <div class="column is-4">
-                  <div>Ответственный за исполнение</div>
+                  <div>Ответственный за исправление</div>
                 </div>
                 <div class="column is-2">
                   <div>Срок решения</div>

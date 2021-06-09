@@ -12,18 +12,18 @@
         </input-select>
       </div>
 
-      <div class="column is-4 ">
+      <div class="column is-4">
         <input-date :value.sync="project.fdate" header="Дата старта проекта">
         </input-date>
       </div>
 
-      <div class="column is-4 ">
+      <div class="column is-4">
         <input-date
           :value.sync="project.sdate"
           header="Дата завершения проекта"
-          :canUndate=true
-          :showKvartalBtn=true
-          :showMonthBtn=true
+          :canUndate="true"
+          :showKvartalBtn="true"
+          :showMonthBtn="true"
         >
         </input-date>
       </div>
@@ -39,40 +39,48 @@
         <input-text :value.sync="project.description" header="Описание проекта">
         </input-text>
       </div>
-
-    
     </div>
-<div class="columns">
+    <div class="columns">
+      <div class="column is-12 my-2">
+        <h4 class="title is-4 center my-1">
+          Рабочая группа
+          <button
+            class="button is-danger"
+            @click="deleteWorkGroupItem(-1)"
+            :disabled="!project.workGroup.length"
+          >
+            -
+          </button>
+          <button class="button is-primary" @click="addWorkGroupItem">+</button>
+        </h4>
 
- <div class="column is-12 my-2">
-   <h4 class="title is-4 center my-1">Рабочая группа 
-     <button class="button is-danger" @click="deleteWorkGroupItem(-1)" :disabled='!project.workGroup.length'>-</button> 
-     <button class="button is-primary" @click='addWorkGroupItem'>+</button>
-     </h4>
-
-     <input-employee  v-model="workGroupInput" @keyup.enter.native="addWorkGroupItem" placeholder=" (Нажмите Enter или + сверху)" >
-     </input-employee>
-     
-
-  <div class="field is-grouped is-grouped-multiline">
-      <div v-for="(workGroupItem,idx) in project.workGroup" :key='idx' class="tags has-addons m-2">
-        <span
-         
-          class="tag is-clickable is-medium is-info"
-   
-
-        
-          > {{workGroupItem}}</span
+        <input-employee
+          v-model="workGroupInput"
+          @keyup.enter.native="addWorkGroupItem"
+          placeholder=" (Нажмите Enter или + сверху)"
         >
-        <a class="tag is-delete is-medium" @click="deleteWorkGroupItem(idx)"></a>
+        </input-employee>
+
+        <div class="field is-grouped is-grouped-multiline">
+          <div
+            v-for="(workGroupItem, idx) in project.workGroup"
+            :key="idx"
+            class="tags has-addons m-2"
+          >
+            <span class="tag is-clickable is-medium is-info">
+              {{ workGroupItem }}</span
+            >
+            <a
+              class="tag is-delete is-medium"
+              @click="deleteWorkGroupItem(idx)"
+            ></a>
+          </div>
+        </div>
       </div>
     </div>
-
-      </div>
-</div>
 
     <div class="columns">
-        <div class="column is-4 p-0">
+      <div class="column is-4 p-0">
         <input-select
           :options="businessTypeOptions"
           :value.sync="project.businessType"
@@ -80,7 +88,6 @@
         >
         </input-select>
       </div>
-     
 
       <div class="column is-4 p-0">
         <input-select
@@ -97,38 +104,30 @@
       </div>
     </div>
 
-    <div
-      class=""
-    
-    >
-    
-        <input-select
-          :value.sync="project.projectType"
-          header="Тип проекта"
-          :options="projectTypeOptions"
-          required
-        >
-        </input-select>
-
-      <div
-        class="my-6"
-       v-if="project.projectType == 'Качественный'"
+    <div class="">
+      <input-select
+        :value.sync="project.projectType"
+        header="Тип проекта"
+        :options="projectTypeOptions"
+        required
       >
-        <input-text 
+      </input-select>
+
+      <div class="my-6" v-if="project.projectType == 'Качественный'">
+        <input-text
           v-model="project.efficiency.title"
           header="Эффективность"
           required
         >
         </input-text>
       </div>
-
     </div>
 
-<div   v-if="project.projectType == 'Количественный'">
+    <div v-if="project.projectType == 'Количественный'">
       <div class="my-5 is-flex is-justify-align-center">
         <vs-dropdown>
           <button class="button is-primary" href="#">
-           Добавить влияние 
+            Добавить влияние
             <vs-icon class="" icon="expand_more"></vs-icon>
           </button>
 
@@ -139,8 +138,8 @@
             <vs-dropdown-item @click="addEfficiency('tNPS')">
               tNPS
             </vs-dropdown-item>
-            <vs-dropdown-item @click="addEfficiency('tFCR')">
-              tFCR
+            <vs-dropdown-item @click="addEfficiency('FCR')">
+              FCR
             </vs-dropdown-item>
 
             <vs-dropdown-item @click="addEfficiency('CR')">
@@ -154,7 +153,7 @@
             </vs-dropdown-item>
           </vs-dropdown-menu>
         </vs-dropdown>
-             <button
+        <button
           class="button is-danger mx-2"
           :disabled="!project.efficiency.rows.length"
           @click="deleteEfficiency()"
@@ -163,32 +162,24 @@
         </button>
       </div>
 
+      <div v-if="project.efficiency.rows.length">
+        <div class="columns">
+          <div class="column is-4">Влияние</div>
+          <div class="column is-4">Было</div>
+          <div class="column is-4">Стало</div>
+        </div>
 
-
-      <div v-if='project.efficiency.rows.length'>
-    
-    <div class="columns">
-
-<div class="column is-4">Влияние</div>
-<div class="column is-4">Было</div>
-<div class="column is-4">Стало</div>
-
-    </div>
-
-<div class="columns" :key='idx' v-for="(row,idx) in project.efficiency.rows">
-    
-<div class="column is-4">{{row.influence}}</div>
-<div class="column is-4"><input-text v-model="row.was" /></div>
-<div class="column is-4"><input-text v-model="row.now" /></div>
-
-
-
-
-
-</div>
+        <div
+          class="columns"
+          :key="idx"
+          v-for="(row, idx) in project.efficiency.rows"
+        >
+          <div class="column is-4">{{ row.influence }}</div>
+          <div class="column is-4"><input-text v-model="row.was" /></div>
+          <div class="column is-4"><input-text v-model="row.now" /></div>
+        </div>
       </div>
-</div>
-
+    </div>
 
     <div class="columns">
       <div
@@ -202,16 +193,14 @@
 </template>
 
 <script>
-import inputEmployee from '../../globalComponents/inputEmployee.vue';
-
+import inputEmployee from "../../globalComponents/inputEmployee.vue";
 
 export default {
   components: { inputEmployee },
- 
 
   data() {
     return {
-      workGroupInput:"",
+      workGroupInput: "",
       InputSelectdate: "",
       project: {
         accompanying: "",
@@ -262,19 +251,19 @@ export default {
       ],
     };
   },
-  mounted: function() {},
+  mounted: function () {},
   methods: {
-    addWorkGroupItem(){
-      console.log(this.workGroupInput)
-if(!this.workGroupInput.length){
-  this.$vs.notify({text:'Пусто.', title:'Ошибка', color:'red'});
-  return;
-}
-this.project.workGroup.push(this.workGroupInput);
-this.workGroupInput = '';
+    addWorkGroupItem() {
+      console.log(this.workGroupInput);
+      if (!this.workGroupInput.length) {
+        this.$vs.notify({ text: "Пусто.", title: "Ошибка", color: "red" });
+        return;
+      }
+      this.project.workGroup.push(this.workGroupInput);
+      this.workGroupInput = "";
     },
-    deleteWorkGroupItem(idx){
-this.project.workGroup.splice(idx,1)
+    deleteWorkGroupItem(idx) {
+      this.project.workGroup.splice(idx, 1);
     },
     addEfficiency(type) {
       this.project.efficiency.rows.push({
@@ -286,7 +275,7 @@ this.project.workGroup.splice(idx,1)
     deleteEfficiency() {
       this.project.efficiency.rows.length && this.project.efficiency.rows.pop();
     },
-    addProject: function(event) {
+    addProject: function (event) {
       event.target.classList.toggle("is-loading");
       if (!this.validateAll()) {
         setTimeout(() => {
@@ -334,8 +323,11 @@ this.project.workGroup.splice(idx,1)
       }
       return true;
     },
-  validateEfficiency() {
-      if (!this.project.efficiency.title && this.project.projectType == 'Качественный') {
+    validateEfficiency() {
+      if (
+        !this.project.efficiency.title &&
+        this.project.projectType == "Качественный"
+      ) {
         M.toast({
           html: `Не заполнено поле ${this.projectNameErrors.efficiency}`,
         });

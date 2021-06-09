@@ -274,6 +274,8 @@ export default {
   position: fixed;
   top: 20px;
   left: 20px;
+  z-index: 100;
+  background-color: white;
 }
 
 ul + .dropdown-content {
