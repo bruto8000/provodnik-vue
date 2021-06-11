@@ -2,8 +2,8 @@ import Vuex from "vuex";
 import Vue from "vue";
 import axios from "axios";
 
-import config from '../public/config'
-let APIUrl = config.APIUrl
+import config from "../public/config";
+let APIUrl = config.APIUrl;
 Vue.use(Vuex);
 
 const showReceivingError = function(err) {
@@ -13,7 +13,7 @@ const showReceivingError = function(err) {
 };
 
 const getEmployees = (store) => {
-  axios.get( APIUrl + "/vendor/showEmployees").then(
+  axios.get(APIUrl + "/vendor/showEmployees").then(
     (result) => {
       store.dispatch("insertItems", {
         items: result.data.reverse(),
@@ -30,11 +30,8 @@ const getTabel = (store) => {
   setTimeout(() => {
     axios
       .all([
-        axios.get( APIUrl + "/vendor/showTabel"),
-        axios.get(
-          APIUrl + "/vendor/showHolidays"
-         
-        ),
+        axios.get(APIUrl + "/vendor/showTabel"),
+        axios.get(APIUrl + "/vendor/showHolidays"),
       ])
       .then(
         axios.spread((Tres, Dres) => {
@@ -141,6 +138,7 @@ const parsingFunctions = {
 
 const store = new Vuex.Store({
   state: {
+    role: "guest",
     activities: [],
     infoQueries: [],
     projects: [],
@@ -358,6 +356,9 @@ const store = new Vuex.Store({
         return project.id != projectForDelete.id;
       });
     },
+    setRole(state, role) {
+      state.role = role;
+    },
   },
   actions: {
     async editEmployee(context, editedEmployee) {
@@ -373,17 +374,15 @@ const store = new Vuex.Store({
       );
     },
     async deleteEmployee(context, deletableEmployee) {
-      axios
-        .post( APIUrl + "/vendor/deleteEmployee", deletableEmployee)
-        .then(
-          (result) => {
-            M.toast({ html: "Сотрудник удален" });
-            context.commit("deleteEmployee", deletableEmployee);
-          },
-          (error) => {
-            M.toast({ html: "Сотрудник НЕ удален" + error });
-          }
-        );
+      axios.post(APIUrl + "/vendor/deleteEmployee", deletableEmployee).then(
+        (result) => {
+          M.toast({ html: "Сотрудник удален" });
+          context.commit("deleteEmployee", deletableEmployee);
+        },
+        (error) => {
+          M.toast({ html: "Сотрудник НЕ удален" + error });
+        }
+      );
     },
     addEmployee(context, newEmployee) {
       return axios
@@ -398,7 +397,7 @@ const store = new Vuex.Store({
         })
         .catch((err) => {
           if (err.response.data == "NID") {
-            return Promise.reject("Уникальный ID уже существует");
+            return Promise.reject("Уникальный ID или Логин уже существует");
           } else {
             return Promise.reject(
               "Что-то не так. Зовите программиста" + err.response.data
@@ -407,22 +406,19 @@ const store = new Vuex.Store({
         });
     },
     async saveTabel(context, newTabel) {
-      axios
-        .post(
-           APIUrl + "/vendor/saveTabel",
-         newTabel
-        )
-        .then((res) => {
+      axios.post(APIUrl + "/vendor/saveTabel", newTabel).then(
+        (res) => {
           M.toast({
             html: "Данные сохранены.",
           });
-            context.commit("setTabel", JSON.parse(JSON.stringify(newTabel)));
-          } ,(err)=>{
-            M.toast({
-              html: "Синхронизация не удалась" + err.message,
-            });
+          context.commit("setTabel", JSON.parse(JSON.stringify(newTabel)));
+        },
+        (err) => {
+          M.toast({
+            html: "Синхронизация не удалась" + err.message,
           });
-      
+        }
+      );
     },
     insertItems(
       context,

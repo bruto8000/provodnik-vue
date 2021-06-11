@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="text2 center ">{{ header }}</div>
+    <div class="text2 center">{{ header }}</div>
     <input
       v-model="innerText"
-      type="text"
+      :type="type || 'text'"
       class="center input"
       :placeholder="placeholder"
     />
@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  props: ["value", "header", "placeholder"],
+  props: ["value", "header", "placeholder", "type"],
   data() {
     return {
       innerText: "",
@@ -27,9 +27,10 @@ export default {
   methods: {},
   watch: {
     innerText(n) {
-      if (this.value != n) {this.$emit("update:value", n);
+      if (this.value != n) {
+        this.$emit("update:value", n);
 
- this.$emit("input", n);
+        this.$emit("input", n);
       }
     },
     value(n) {

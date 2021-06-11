@@ -3,33 +3,45 @@ import VueRouter from "vue-router";
 
 // Index //
 
-
 // Employees //
-import employees from "./components/pages/employees/employees.vue";
+const employees = () => import("./components/pages/employees/employees.vue");
 
 // Tabel //
-import showTabel from "./components/pages/tabel/showTabel.vue";
-import editTabel from "./components/pages/tabel/editTabel.vue";
+const showTabel = () => import("./components/pages/tabel/showTabel.vue");
+const editTabel = () => import("./components/pages/tabel/editTabel.vue");
 
 // Activities //
-import distribution from "./components/pages/activities/distribution.vue";
-import addActivity from "./components/pages/activities/addActivity.vue";
-import showActivities from "./components/pages/activities/showActivities.vue";
-import editActivity from "./components/pages/activities/editActivity.vue";
-import publicCalendar from "./components/pages/activities/publicCalendar.vue";
+const distribution = () =>
+  import("./components/pages/activities/distribution.vue");
+const addActivity = () =>
+  import("./components/pages/activities/addActivity.vue");
+const showActivities = () =>
+  import("./components/pages/activities/showActivities.vue");
+const editActivity = () =>
+  import("./components/pages/activities/editActivity.vue");
+const publicCalendar = () =>
+  import("./components/pages/activities/publicCalendar.vue");
 
 // InfoQueries //
-import addInfoQuery from "./components/pages/infoQueries/addInfoQuery.vue";
-import showInfoQueries from "./components/pages/infoQueries/showInfoQueries.vue";
-import editInfoQuery from "./components/pages/infoQueries/editInfoQuery.vue";
-
+const addInfoQuery = () =>
+  import("./components/pages/infoQueries/addInfoQuery.vue");
+const showInfoQueries = () =>
+  import("./components/pages/infoQueries/showInfoQueries.vue");
+const editInfoQuery = () =>
+  import("./components/pages/infoQueries/editInfoQuery.vue");
 
 // Projects //
-import addProject from "./components/pages/projects/addProject.vue"
-import showProjects from "./components/pages/projects/showProjects.vue"
-import editProject from "./components/pages/projects/editProject.vue"
+const addProject = () => import("./components/pages/projects/addProject.vue");
+const showProjects = () =>
+  import("./components/pages/projects/showProjects.vue");
+const editProject = () => import("./components/pages/projects/editProject.vue");
 
-import test from './components/globalComponents/inputEmployee.vue'
+const test = () => import("./components/globalComponents/inputEmployee.vue");
+
+// Auth //
+const authLogin = () => import("./components/pages/auth/authLogin.vue");
+const authRegister = () => import("./components/pages/auth/authRegister.vue");
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -49,7 +61,9 @@ const routes = [
   { path: "/show-projects", component: showProjects },
   { path: "/edit-project", component: editProject },
   { path: "/test", component: test },
-  { path: "*", redirect: '/' },
+  { path: "/login", component: authLogin },
+  { path: "/register", component: authRegister },
+  { path: "*", redirect: "/" },
 ];
 const router = new VueRouter({
   routes,
