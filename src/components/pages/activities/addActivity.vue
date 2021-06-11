@@ -213,6 +213,11 @@ export default {
         zakazchik: "",
         flags: [],
         difficulty: "",
+        statusZapusk: [],
+        risks: [],
+        audits: [],
+        AB: [],
+        bugs: [],
         //  opisanieBody: "", Will added Automaticly
         //   opisanie: "", OLD
       },

@@ -1,6 +1,6 @@
 <template>
   <vs-popup :active.sync="active" class="holamundo" :title="infoQuery.nazvanie">
-    <div class="m-5 ">
+    <div class="m-5">
       <div v-if="infoQuery.inicatior" class="m-2 is-size-5">
         Инициатор : {{ infoQuery.inicatior }}
       </div>
@@ -74,7 +74,7 @@ export default {
     };
   },
   watch: {
-    infoQuery: function(n, o) {
+    infoQuery: function (n, o) {
       this.calculateSubstitutionDays();
     },
   },
@@ -118,10 +118,14 @@ export default {
     currentEmployee() {
       return this.employees.find(
         (employee) =>
+          this.infoQuery.otvetstveniy &&
           employee.full_name.trim() == this.infoQuery.otvetstveniy.trim()
       );
     },
     employeeWorkedDays() {
+      if (!this.currentEmployee) {
+        return [];
+      }
       return this.tabel.filter((day) => {
         return (
           this.rangeOfStatusesSeperately.includes(day.date) &&

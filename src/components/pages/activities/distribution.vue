@@ -523,6 +523,9 @@ export default {
     employees() {
       return [...this.$store.state.employees, { full_name: "Итого" }];
     },
+    employeesFullNames() {
+      return this.employees.map((em) => em.full_name);
+    },
     activities() {
       return this.$store.state.activities;
     },
@@ -531,7 +534,8 @@ export default {
         let employeeActivities = this.activities.filter(
           (activity) =>
             activity.soprovod == employee.full_name ||
-            employee.full_name == "Итого"
+            (employee.full_name == "Итого" &&
+              this.employeesFullNames.includes(activity.soprovod))
         );
         let doneActivities = employeeActivities
           .filter((activity) => activity.status.trim() == "Выполнено")
@@ -782,18 +786,25 @@ export default {
         );
       });
     },
-    plan() {
-      let plan = 0;
-      this.tabelFiltred.forEach((day) => {
-        if (!day.vixod) {
-          if (day.isNextDayVixod) {
-            plan += 7;
-          } else {
-            plan += 8.25;
+    plansPerEmployee() {
+      return this.employees.map((employee, eidx) => {
+        let plan = 0;
+
+        this.tabelFiltred.forEach((day, idx) => {
+          if (
+            !day.vixod &&
+            day.body[employee.nid] &&
+            day.body[employee.nid].trim().length
+          ) {
+            if (day.isNextDayVixod) {
+              plan += 7;
+            } else {
+              plan += 8.25;
+            }
           }
-        }
+        });
+        return plan;
       });
-      return plan;
     },
     coefficientPerEmployee() {
       return this.employees.map((employee, eidx) => {
@@ -808,7 +819,10 @@ export default {
         });
         return {
           full_name: employee.full_name,
-          coefficient: ((1 - fact / (this.plan || 1)) * 100).toFixed(0),
+          coefficient: (
+            (1 - fact / (this.plansPerEmployee[eidx] || 1)) *
+            100
+          ).toFixed(0),
         };
       });
     },

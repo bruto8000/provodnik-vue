@@ -180,7 +180,14 @@
         </div>
       </div>
     </div>
-
+    <div class="columns">
+      <input-text
+        class="column is-12"
+        v-model="project.comment"
+        placeholder="Комментарий"
+      >
+      </input-text>
+    </div>
     <div class="columns">
       <div
         @click="addProject"
@@ -212,7 +219,7 @@ export default {
         workGroup: [],
         status: "",
         CA: "",
-
+        comment: "",
         projectType: "",
         efficiency: {
           title: "",

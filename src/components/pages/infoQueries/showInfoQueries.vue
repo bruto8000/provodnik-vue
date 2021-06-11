@@ -81,6 +81,7 @@
     >
       <div
         class="columns hover__bg"
+        :class="{ 'has-background-danger-light': infoQuery.days > 7 }"
         v-for="infoQuery in infoQueriesFiltred"
         :key="infoQuery.id"
         @click="openInfoQuery(infoQuery)"
@@ -104,6 +105,8 @@
 
 <script>
 import infoQueryModal from "./infoQueryModal.vue";
+import dateRange from "../../../js/utils/dateRange.js";
+import convertNormalDateToStringDate from "../../../js/utils/convertNormalDateToStringDate.js";
 export default {
   mounted: function () {
     this.readQueryParams();
@@ -326,7 +329,55 @@ export default {
       };
     },
     infoQueries() {
-      return this.$store.state.infoQueries;
+      return this.$store.state.infoQueries.map((infoQuery) => {
+        let currentEmployee = this.employees.find(
+          (employee) =>
+            infoQuery.otvetstveniy &&
+            employee.full_name.trim() == infoQuery.otvetstveniy.trim()
+        );
+        if (!currentEmployee) {
+          return {
+            ...infoQuery,
+            days: 0,
+          };
+        }
+        let filtredWithStatus = infoQuery.statuses
+          ? infoQuery.statuses.filter((status) => {
+              if (["Назначено", "В работе"].includes(status.type)) {
+                return true;
+              }
+              return false;
+            })
+          : [];
+
+        let rangeOfStatusesSeperately = [];
+        filtredWithStatus.forEach((status) => {
+          rangeOfStatusesSeperately.push(
+            ...dateRange(
+              status.fdate,
+              status.sdate || convertNormalDateToStringDate(new Date())
+            )
+          );
+        });
+
+        let employeeWorkedDays = this.tabel.filter((day) => {
+          return (
+            rangeOfStatusesSeperately.includes(day.date) &&
+            day.body[currentEmployee.nid] &&
+            !isNaN(Number(day.body[currentEmployee.nid]))
+          );
+        });
+
+        let rangeOfStatusesWithTimesheet = employeeWorkedDays
+          .filter((day) => rangeOfStatusesSeperately.includes(day.date))
+          .map((day) => day.date)
+          .slice(1);
+
+        return {
+          ...infoQuery,
+          days: rangeOfStatusesWithTimesheet.length,
+        };
+      });
     },
     employees() {
       return this.$store.state.employees;
@@ -346,6 +397,9 @@ export default {
           (employee) => employee.full_name
         ),
       };
+    },
+    tabel() {
+      return this.$store.state.tabel;
     },
   },
   components: {

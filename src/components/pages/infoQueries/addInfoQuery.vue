@@ -5,9 +5,8 @@
       <div class="column is-4">
         <input-employee v-model="infoQuery.inicatior" header="Инициатор">
         </input-employee>
-    
       </div>
-      <div class="column is-4 ">
+      <div class="column is-4">
         <input-date
           :value.sync="infoQuery.fdate"
           header="Дата получения запроса"
@@ -15,23 +14,22 @@
         </input-date>
       </div>
 
-      <div class="column is-4 ">
+      <div class="column is-4">
         <input-date
           :value.sync="infoQuery.sdate"
           header="Дата отработки запроса"
-   
         >
         </input-date>
       </div>
     </div>
 
     <div class="columns">
-      <div class="column is-4">
+      <div class="column is-6">
         <input-text :value.sync="infoQuery.nazvanie" header="Название запроса">
         </input-text>
       </div>
 
-      <div class="column is-4 p-0">
+      <div class="column is-6 p-0">
         <input-select
           :value.sync="infoQuery.otvetstveniy"
           header="Ответственный от ДОК"
@@ -40,8 +38,15 @@
         >
         </input-select>
       </div>
-      <div class="column is-4">
+    </div>
+
+    <div class="columns">
+      <div class="column is-6">
         <input-text :value.sync="infoQuery.otchot" header="Отчет о выполнении">
+        </input-text>
+      </div>
+      <div class="column is-6">
+        <input-text :value.sync="infoQuery.produkt" header="Продукт">
         </input-text>
       </div>
     </div>
@@ -78,7 +83,7 @@
       <h3 class="title is-3">
         Статусы
         <button
-          class="button is-primary dropdown-trigger "
+          class="button is-primary dropdown-trigger"
           data-target="statusesDropdown"
           @click="addStatus()"
         >
@@ -86,7 +91,7 @@
         </button>
 
         <button
-          class="button is-danger "
+          class="button is-danger"
           :disabled="!infoQuery.statuses.length"
           @click="deleteStatus()"
         >
@@ -95,9 +100,9 @@
       </h3>
 
       <div class="columns p-0" v-if="infoQuery.statuses.length">
-        <div class="column   is-size-4 is-4 has-text-centered  ">Статус</div>
-        <div class="column is-size-4 is-4 has-text-centered ">С</div>
-        <div class="column is-size-4  is-4 has-text-centered ">По</div>
+        <div class="column is-size-4 is-4 has-text-centered">Статус</div>
+        <div class="column is-size-4 is-4 has-text-centered">С</div>
+        <div class="column is-size-4 is-4 has-text-centered">По</div>
       </div>
       <div
         class="columns"
@@ -131,7 +136,7 @@
 </template>
 
 <script>
-import convertStringDateToNormalDate from '../../../js/utils/convertStringDateToNormalDate'
+import convertStringDateToNormalDate from "../../../js/utils/convertStringDateToNormalDate";
 export default {
   data() {
     return {
@@ -168,7 +173,7 @@ export default {
       requiredRows: ["nazvanie", "otvetstveniy"],
     };
   },
-  mounted: function() {},
+  mounted: function () {},
   methods: {
     addStatus() {
       this.infoQuery.statuses.push({
@@ -180,7 +185,7 @@ export default {
     deleteStatus() {
       this.infoQuery.statuses.length && this.infoQuery.statuses.pop();
     },
-    addInfoQuery: function(event) {
+    addInfoQuery: function (event) {
       event.target.classList.toggle("is-loading");
       if (!this.validateAll()) {
         setTimeout(() => {
@@ -228,7 +233,7 @@ export default {
       }
       return true;
     },
-   validateStatuses() {
+    validateStatuses() {
       try {
         this.infoQuery.statuses.forEach((status, idxOfStatuses, statuses) => {
           if (
@@ -247,8 +252,9 @@ export default {
               convertStringDateToNormalDate(status.sdate)
           ) {
             throw new Error(
-              `Некорректно заполнены даты в статусах. Поле номер ${idxOfStatuses +
-                1}`
+              `Некорректно заполнены даты в статусах. Поле номер ${
+                idxOfStatuses + 1
+              }`
             );
           }
           if (
@@ -257,7 +263,9 @@ export default {
               convertStringDateToNormalDate(statuses[idxOfStatuses - 1].fdate)
           ) {
             throw new Error(
-              `Некорректно заполнены даты в статусах. Поле номер ${idxOfStatuses} и поле номер ${idxOfStatuses+1}.`
+              `Некорректно заполнены даты в статусах. Поле номер ${idxOfStatuses} и поле номер ${
+                idxOfStatuses + 1
+              }.`
             );
           }
         });

@@ -102,6 +102,25 @@
         </input-select>
       </div>
     </div>
+
+    <div class="">
+      <input-select
+        :value.sync="project.projectType"
+        header="Тип проекта"
+        :options="projectTypeOptions"
+        required
+      >
+      </input-select>
+
+      <div class="my-6" v-if="project.projectType == 'Качественный'">
+        <input-text
+          v-model="project.efficiency.title"
+          header="Эффективность"
+          required
+        >
+        </input-text>
+      </div>
+    </div>
     <div v-if="project.projectType == 'Количественный'">
       <div class="my-5 is-flex is-justify-align-center">
         <vs-dropdown>
@@ -159,7 +178,14 @@
         </div>
       </div>
     </div>
-
+    <div class="columns">
+      <input-text
+        class="column is-12"
+        v-model="project.comment"
+        placeholder="Комментарий"
+      >
+      </input-text>
+    </div>
     <div class="columns my-4">
       <div
         @click="editProject"

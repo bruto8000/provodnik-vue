@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="columns">
-      <div class="column is-3 is-offset-3 center ">
+      <div class="column is-3 is-offset-3 center">
         <span>Дата начала:</span>
         <input type="text" class="datepicker input" v-model.lazy="date1" />
       </div>
@@ -11,11 +11,11 @@
         <input type="text" class="datepicker input" v-model.lazy="date2" />
       </div>
 
-    <description-table></description-table>
+      <description-table></description-table>
     </div>
 
     <h1 class="center title is-1">Табель</h1>
-    <div class="column is-12 p-0" style="overflow: auto;">
+    <div class="column is-12 p-0" style="overflow: auto">
       <table class="table is-hoverable" id="allTable">
         <tbody>
           <tr>
@@ -25,20 +25,22 @@
             </th>
           </tr>
           <tr>
-            <th style="text-align: center;">ФИО</th>
+            <th style="text-align: center">ФИО</th>
             <th v-for="day in tabelFiltred" class="center" :key="day.date">
               {{ day.date | dayOfWeek }}
             </th>
           </tr>
           <tr class="center" v-for="employee in employees" :key="employee.nid">
             <td
-              style="width: 1%;
-                white-space: nowrap; text-align: left;
+              style="
+                width: 1%;
+                white-space: nowrap;
+                text-align: left;
                 position: sticky;
-    left:0;
-    z-index: 2;
-    background: white;
-                "
+                left: 0;
+                z-index: 2;
+                background: white;
+              "
             >
               {{ employee["full_name"] }}
             </td>
@@ -58,14 +60,12 @@
     <hr />
 
     <div class="block">
-      <h2 class="center fluid-text title is-2">
-        План/Факт
-      </h2>
+      <h2 class="center fluid-text title is-2">План/Факт</h2>
 
       <div class="columns">
         <div class="column is-offset-4 is-4 center">
           <table
-            class="table is-striped is-hoverable center w100 "
+            class="table is-striped is-hoverable center w100"
             id="planFact"
           >
             <tr>
@@ -77,8 +77,8 @@
             </tr>
 
             <tr v-for="employee in employees" :key="employee.nid">
-              <td style="text-align: left;">{{ employee["full_name"] }}</td>
-              <td>{{ plan | filterDotZeroZero }}</td>
+              <td style="text-align: left">{{ employee["full_name"] }}</td>
+              <td>{{ employee.plan | filterDotZeroZero }}</td>
               <td>{{ employee.factWithoutZ | filterDotZeroZero }}</td>
               <td>{{ employee.fact | filterDotZeroZero }}</td>
               <td>{{ employee.koeff }}</td>
@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import descriptionTable from './descriptionTable.vue';
+import descriptionTable from "./descriptionTable.vue";
 export default {
   components: { descriptionTable },
   data() {
@@ -129,11 +129,11 @@ export default {
         presomes: [],
         input: "",
       },
-      employees: []
+      employees: [],
     };
   },
-  mounted: function() {
-this.employees = this.$store.state.employees
+  mounted: function () {
+    this.employees = this.$store.state.employees;
     let year = new Date().getFullYear();
     let month = new Date().getMonth();
     let kvartal = "";
@@ -160,7 +160,7 @@ this.employees = this.$store.state.employees
   },
 
   methods: {
-    dateRange: function() {
+    dateRange: function () {
       let date1 = this.date1;
       let date2 = this.date2;
 
@@ -257,7 +257,7 @@ this.employees = this.$store.state.employees
       this.range = dates;
       return dates;
     },
-    createTable: function() {
+    createTable: function () {
       //THIS IS FOR BACKEND
       //             let range = this.dateRange();
       // range.forEach((element,idx) => {
@@ -270,37 +270,44 @@ this.employees = this.$store.state.employees
       // });
     },
     planFactCalculate() {
-      this.plan = 0;
       this.employees.forEach((em) => {
         em.fact = 0;
         em.factWithoutZ = 0;
+        em.plan = 0;
       });
 
       this.tabelFiltred.forEach((v, idx) => {
         this.employees.forEach((em, eidx) => {
           for (let nid in v.body) {
             if (em.nid == nid) {
-              if (v.body[nid].trim().toUpperCase() == "З") {  
+              if (!v.vixod && v.body[em.nid] && v.body[em.nid].trim().length) {
+                if (v.isNextDayVixod) {
+                  em.plan += 7;
+                } else {
+                  em.plan += 8.25;
+                }
+              }
+
+              if (v.body[nid].trim().toUpperCase() == "З") {
                 em.fact += 8.25;
-              } else if (!isNaN(Number(v.body[nid].trim().replace(/\,/g, ".")))) {
+              } else if (
+                !isNaN(Number(v.body[nid].trim().replace(/\,/g, ".")))
+              ) {
                 em.fact += Number(v.body[nid].trim().replace(/\,/g, "."));
-                em.factWithoutZ += Number(v.body[nid].trim().replace(/\,/g, "."));
+                em.factWithoutZ += Number(
+                  v.body[nid].trim().replace(/\,/g, ".")
+                );
               }
             }
           }
         });
-        if (!v.vixod) {
-          if (v.isNextDayVixod) {
-            this.plan += 7;
-          } else {
-            this.plan += 8.25;
-          }
-        }
       });
 
       this.employees.forEach((employee) => {
         employee.koeff =
-          ((1 - employee.factWithoutZ / this.plan) * 100).toFixed(0) + "%";
+          ((1 - employee.factWithoutZ / (employee.plan || 1)) * 100).toFixed(
+            0
+          ) + "%";
       });
     },
     classObjForTd(day, employee) {
@@ -322,7 +329,7 @@ this.employees = this.$store.state.employees
     },
   },
   watch: {
-    someInput: function(n, o) {
+    someInput: function (n, o) {
       if (this.some.step === 3) {
         this.some.somes.forEach((element) => {
           element.somes.forEach((v) => {
@@ -331,7 +338,7 @@ this.employees = this.$store.state.employees
         });
       }
     },
-    date1: function(n, o) {
+    date1: function (n, o) {
       if (n.split(" ").length == 3 && this.date2.split(" ").length == 3) {
         this.dateRange();
         return;
@@ -342,7 +349,7 @@ this.employees = this.$store.state.employees
       }
       return;
     },
-    date2: function(n, o) {
+    date2: function (n, o) {
       if (n.split(" ").length == 3 && this.date1.split(" ").length == 3) {
         this.dateRange();
         return;
@@ -354,17 +361,18 @@ this.employees = this.$store.state.employees
       }
       return;
     },
-    tabelFiltred: function(n) {
-
+    tabelFiltred: function (n) {
       this.planFactCalculate();
     },
-    employeesFromState(n){
-         this.employees = this.$store.state.employees.map(employee=>{return Object.assign({},employee)});
-             this.planFactCalculate();
-    }
+    employeesFromState(n) {
+      this.employees = this.$store.state.employees.map((employee) => {
+        return Object.assign({}, employee);
+      });
+      this.planFactCalculate();
+    },
   },
   computed: {
-    tabelFiltred: function() {
+    tabelFiltred: function () {
       if (!this.range.length) return [];
 
       try {
@@ -382,13 +390,12 @@ this.employees = this.$store.state.employees
     tabel() {
       return this.$store.state.tabel;
     },
-    employeesFromState(){
-      return this.$store.state.employees      
-    }
-  
+    employeesFromState() {
+      return this.$store.state.employees;
+    },
   },
   filters: {
-    dayOfWeek: function(val) {
+    dayOfWeek: function (val) {
       let parts = val.split(" ");
 
       let filtredDate = new Date(parts[2], parts[1] - 1, parts[0]);
@@ -416,10 +423,7 @@ this.employees = this.$store.state.employees
       return val.toFixed(2);
     },
     cutYear(val) {
-      return val
-        .split(" ")
-        .slice(0, -1)
-        .join(" ");
+      return val.split(" ").slice(0, -1).join(" ");
     },
   },
 };

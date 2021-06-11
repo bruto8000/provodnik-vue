@@ -3,10 +3,10 @@
     <h1 class="center title is-1 my-5">Изменения Инфозапроса</h1>
     <div class="columns my-5">
       <div class="column is-4">
-   <input-employee v-model="infoQuery.inicatior" header="Инициатор">
+        <input-employee v-model="infoQuery.inicatior" header="Инициатор">
         </input-employee>
       </div>
-      <div class="column is-4 ">
+      <div class="column is-4">
         <input-date
           :value.sync="infoQuery.fdate"
           header="Дата получения запроса"
@@ -14,7 +14,7 @@
         </input-date>
       </div>
 
-      <div class="column is-4 ">
+      <div class="column is-4">
         <input-date
           :value.sync="infoQuery.sdate"
           header="Дата отработки запроса"
@@ -22,14 +22,13 @@
         </input-date>
       </div>
     </div>
-
     <div class="columns">
-      <div class="column is-4">
+      <div class="column is-6">
         <input-text :value.sync="infoQuery.nazvanie" header="Название запроса">
         </input-text>
       </div>
 
-      <div class="column is-4 p-0">
+      <div class="column is-6 p-0">
         <input-select
           :value.sync="infoQuery.otvetstveniy"
           header="Ответственный от ДОК"
@@ -38,8 +37,15 @@
         >
         </input-select>
       </div>
-      <div class="column is-4">
+    </div>
+
+    <div class="columns">
+      <div class="column is-6">
         <input-text :value.sync="infoQuery.otchot" header="Отчет о выполнении">
+        </input-text>
+      </div>
+      <div class="column is-6">
+        <input-text :value.sync="infoQuery.produkt" header="Продукт">
         </input-text>
       </div>
     </div>
@@ -76,7 +82,7 @@
       <h3 class="title is-3">
         Статусы
         <button
-          class="button is-primary dropdown-trigger "
+          class="button is-primary dropdown-trigger"
           data-target="statusesDropdown"
           @click="addStatus()"
         >
@@ -84,7 +90,7 @@
         </button>
 
         <button
-          class="button is-danger "
+          class="button is-danger"
           :disabled="!infoQuery.statuses.length"
           @click="deleteStatus()"
         >
@@ -93,9 +99,9 @@
       </h3>
 
       <div class="columns p-0" v-if="infoQuery.statuses.length">
-        <div class="column   is-size-4 is-4 has-text-centered  ">Статус</div>
-        <div class="column is-size-4 is-4 has-text-centered ">С</div>
-        <div class="column is-size-4  is-4 has-text-centered ">По</div>
+        <div class="column is-size-4 is-4 has-text-centered">Статус</div>
+        <div class="column is-size-4 is-4 has-text-centered">С</div>
+        <div class="column is-size-4 is-4 has-text-centered">По</div>
       </div>
       <div
         class="columns"
@@ -128,7 +134,17 @@
     <div class="columns">
       <div
         @click="openDeletingModal"
-        class="button my-4 has-text-white is-large is-danger column is-12 black-text title is-3"
+        class="
+          button
+          my-4
+          has-text-white
+          is-large is-danger
+          column
+          is-12
+          black-text
+          title
+          is-3
+        "
       >
         Удалить инфозапрос
       </div>
@@ -179,7 +195,7 @@ export default {
       requiredRows: ["nazvanie", "otvetstveniy"],
     };
   },
-  created: function() {
+  created: function () {
     if (!this.infoQuery.id) {
       M.toast({
         html: "Неверная ссылка,  перенаправление...",
@@ -204,7 +220,7 @@ export default {
     deleteStatus() {
       this.infoQuery.statuses.length && this.infoQuery.statuses.pop();
     },
-    editInfoQuery: function(event) {
+    editInfoQuery: function (event) {
       event.target.classList.toggle("is-loading");
       if (!this.validateAll()) {
         setTimeout(() => {
@@ -291,8 +307,9 @@ export default {
               convertStringDateToNormalDate(status.sdate)
           ) {
             throw new Error(
-              `Некорректно заполнены даты в статусах. Поле номер ${idxOfStatuses +
-                1}`
+              `Некорректно заполнены даты в статусах. Поле номер ${
+                idxOfStatuses + 1
+              }`
             );
           }
           if (
@@ -301,7 +318,9 @@ export default {
               convertStringDateToNormalDate(statuses[idxOfStatuses - 1].fdate)
           ) {
             throw new Error(
-              `Некорректно заполнены даты в статусах. Поле номер ${idxOfStatuses} и поле номер ${idxOfStatuses+1}.`
+              `Некорректно заполнены даты в статусах. Поле номер ${idxOfStatuses} и поле номер ${
+                idxOfStatuses + 1
+              }.`
             );
           }
         });
