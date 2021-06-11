@@ -34,8 +34,13 @@ import GlobalComponentsInit from "./components/globalComponents/init.js";
 
 import router from "./router.js";
 import store from "./store.js";
-new Vue({
-  router,
-  store,
-  render: (h) => h(App),
-}).$mount("#app");
+
+async function init() {
+  await store.dispatch("getRole");
+  new Vue({
+    router,
+    store,
+    render: (h) => h(App),
+  }).$mount("#app");
+}
+init();

@@ -91,8 +91,9 @@
         is-align-content-center
       "
     >
-      <div class="p-6">
+      <div class="p-6 has-text-centered">
         <h1 class="is-2 title">ПРОЕКТ МИ</h1>
+        <h5 class="title is-5">Роль [{{ roleName }}]</h5>
       </div>
       <div class="is-flex is-align-items-center">
         <button
@@ -107,6 +108,15 @@
           class="title mx-2 is-3 has-text-centered is-primary button"
         >
           Загрузить архив
+        </button>
+      </div>
+
+      <div v-if="role == 'guest'" class="is-flex is-align-items-center">
+        <button
+          @click="gotoAuthPage"
+          class="title mx-2 my-1 is-3 has-text-centered is-danger button"
+        >
+          Войти в систему
         </button>
       </div>
     </div>
@@ -181,6 +191,11 @@ export default {
         projects: "Проекты",
       },
       waitingForBackend: false,
+      roles: {
+        admin: "Администратор",
+        guest: "Гость",
+        user: "Пользователь",
+      },
     };
   },
   mounted() {
@@ -240,10 +255,19 @@ export default {
           this.waitingForBackend = false;
         });
     },
+    gotoAuthPage() {
+      this.$router.push({ path: "/login" });
+    },
   },
   computed: {
     path() {
       return this.$route.path;
+    },
+    roleName() {
+      return this.roles[this.$store.state.role] || "Гость";
+    },
+    role() {
+      return this.$store.state.role;
     },
     catGetArchive() {
       let fdate = this.archive.fdate;

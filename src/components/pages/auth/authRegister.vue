@@ -39,7 +39,7 @@
         >
           Регистрация
         </div>
-        <div class="button mx-2 is-danger" @click="gotoLogin">Войти</div>
+        <div class="button mx-2 is-danger" @click="gotoLogin">Вход</div>
       </div>
     </div>
   </div>
@@ -87,7 +87,7 @@ export default {
         } else {
           this.$vs.notify({
             title: "Ошибка",
-            text: "Неизвестная ошибка. В консоли можно увидеть подрубности.",
+            text: "Неизвестная ошибка. В консоли можно увидеть подробности.",
             color: "danger",
           });
         }

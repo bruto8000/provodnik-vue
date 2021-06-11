@@ -620,6 +620,22 @@ const store = new Vuex.Store({
         );
       });
     },
+    /// ROLE ///
+    async getRole({ commit }) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get(APIUrl + "/vendor/auth/role")
+          .then((res) => {
+            console.log(res);
+            let role = res.data.role;
+            commit("setRole", role || "guest");
+            resolve();
+          })
+          .catch((err) => {
+            resolve(err);
+          });
+      });
+    },
   },
   getters: {
     trueNID: (state) => state.employees.map((em) => em.nid),
