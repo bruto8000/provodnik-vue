@@ -29,7 +29,7 @@
         type="password"
       ></input-text>
       <div class="has-text-centered">
-        <div
+        <button
           class="button mx-2 is-primary"
           @click="register"
           :class="{
@@ -38,7 +38,7 @@
           :disabled="!canRegister || waitingForResponce"
         >
           Регистрация
-        </div>
+        </button>
         <div class="button mx-2 is-danger" @click="gotoLogin">Вход</div>
       </div>
     </div>

@@ -111,13 +111,24 @@
         </button>
       </div>
 
-      <div v-if="role == 'guest'" class="is-flex is-align-items-center">
-        <button
-          @click="gotoAuthPage"
-          class="title mx-2 my-1 is-3 has-text-centered is-danger button"
-        >
-          Войти в систему
-        </button>
+      <div
+        v-if="role == 'guest'"
+        class="is-align-items-center has-text-centered"
+      >
+        <div class="">
+          <button
+            @click="gotoAuthPage"
+            class="title mx-2 my-1 is-3 has-text-centered is-danger button"
+          >
+            Войти в систему
+          </button>
+        </div>
+        <div class="">
+          <p>
+            Для роли [Гость] Доступна только страница [Календарь], в разделе
+            [Активности]
+          </p>
+        </div>
       </div>
     </div>
 
@@ -212,9 +223,14 @@ export default {
     );
   },
   methods: {
-    routeTo(route) {
+    routeTo(path) {
       this.closeMe();
-      this.$router.push(route);
+      if (this.$route.path == path) {
+        return;
+      }
+      this.$router.push(path).catch((err) => {
+        console.dir(err);
+      });
     },
     openArchivingModal() {
       this.archiveModalShow = true;
@@ -256,7 +272,9 @@ export default {
         });
     },
     gotoAuthPage() {
-      this.$router.push({ path: "/login" });
+      this.$router.push({ path: "/login" }).catch((err) => {
+        console.log(err);
+      });
     },
   },
   computed: {

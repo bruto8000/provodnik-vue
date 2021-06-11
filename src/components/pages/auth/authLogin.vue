@@ -20,7 +20,7 @@
         type="password"
       ></input-text>
       <div class="has-text-centered">
-        <div
+        <button
           class="button mx-2 is-primary"
           :disabled="!canLogin || waitingForResponce"
           @click="signIn"
@@ -29,7 +29,7 @@
           }"
         >
           Войти
-        </div>
+        </button>
         <div class="button mx-2 is-danger" @click="gotoRegister">
           Регистрация
         </div>
