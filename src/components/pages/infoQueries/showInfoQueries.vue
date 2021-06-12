@@ -6,7 +6,11 @@
           class="
             center
             column
-            is-12 is-justify-content-center is-flex is-align-items-center
+            is-4
+            is-offset-4
+            is-justify-content-center
+            is-flex
+            is-align-items-center
           "
         >
           <h1 class="title is-1 mx-2">Инфозапросы</h1>
@@ -27,6 +31,12 @@
               alt=""
             />
           </div>
+        </div>
+        <div class="column is-2 is-offset-2">
+          <label class="p-6">
+            <input type="checkbox" v-model="onlyOverdue" />
+            <span>Только просроченные</span>
+          </label>
         </div>
       </div>
     </div>
@@ -122,7 +132,7 @@ export default {
     return {
       needInfoQueryModal: false,
       filters: ["filterSelect", "filterInput", "sort"],
-
+      onlyOverdue: false,
       kalendar: "",
       currentDisplayingInfoQuery: {},
       infoQueryNames: {
@@ -297,6 +307,10 @@ export default {
               )
                 return false;
             }
+          }
+
+          if (this.onlyOverdue && v.days <= 7) {
+            return false;
           }
 
           return true;

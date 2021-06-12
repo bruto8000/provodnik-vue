@@ -1137,8 +1137,6 @@ export default {
       activityToSend.eGrafiks = [];
 
       this.activity.eGrafiks.forEach((eGrafik, idx) => {
-        debugger;
-
         activityToSend.eGrafiks[idx] = {
           ...eGrafik,
           grafik: null,
@@ -1148,7 +1146,6 @@ export default {
             _meta: null,
           })),
         };
-        debugger;
       });
 
       window.activityToSend = activityToSend;
@@ -1384,23 +1381,10 @@ export default {
         M.FormSelect.init(document.querySelectorAll("select"));
       });
     },
-    validateOcenka() {
-      if (
-        this.activity.ocenka.type == "С ошибкой" &&
-        this.activity.ocenka.reason == ""
-      ) {
-        M.toast({
-          html: "Оценка активности выбрана с ошибкой, но не выбрана причина",
-        });
-        return false;
-      }
-      return true;
-    },
     validateALL() {
       return (
         this.validateMainRows() &&
         this.validateAudits() &&
-        this.validateOcenka() &&
         this.validateStatusZapusk() &&
         this.validateRisks() &&
         this.validateBugs() &&

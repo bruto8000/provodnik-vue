@@ -218,6 +218,9 @@ export default {
         audits: [],
         AB: [],
         bugs: [],
+        zamenas: [],
+        tags: [],
+        eGrafiks: [],
         //  opisanieBody: "", Will added Automaticly
         //   opisanie: "", OLD
       },

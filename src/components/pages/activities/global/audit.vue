@@ -4,6 +4,7 @@
 
 <script>
 import { nanoid } from "nanoid";
+import { copyImagePlugin } from "../../../../js/plugins/chartPlugins";
 export default {
   props: ["audit"],
   data() {
@@ -53,6 +54,7 @@ export default {
           ],
           labels: labels,
         },
+        plugins: [copyImagePlugin],
 
         // These labels appear in the legend and in the tooltips when hovering different arcs
       });

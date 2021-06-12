@@ -152,7 +152,7 @@
                 <input
                   type="text"
                   v-model.lazy="eGrafik.fdate"
-                  class="datepicker  datepickerEGrafik input"
+                  class="datepicker datepickerEGrafik input"
                   :disabled="eGrafik.loadType == 'db'"
                 />
               </div>
@@ -160,14 +160,14 @@
                 <input
                   type="text"
                   v-model.lazy="eGrafik.sdate"
-                  class="datepicker datepickerEGrafik  input"
+                  class="datepicker datepickerEGrafik input"
                   :disabled="eGrafik.loadType == 'db'"
                 />
               </div>
             </div>
-            <div class="is-flex is-justify-content-center ">
+            <div class="is-flex is-justify-content-center">
               <button
-                class="button is-danger  is-offset-4 is-size-5"
+                class="button is-danger is-offset-4 is-size-5"
                 @click="initGrafik(eGrafik)"
                 :disabled="eGrafik.loadType == 'db'"
               >
@@ -179,7 +179,7 @@
             <div class="column is-12">
               <canvas
                 :id="grafikRandomId + idx"
-                style="background-color: #fff; width:100%"
+                style="background-color: #fff; width: 100%"
               ></canvas>
             </div>
           </div>
@@ -302,9 +302,9 @@
                 />
               </div>
             </div>
-            <div class="is-flex is-justify-content-center ">
+            <div class="is-flex is-justify-content-center">
               <button
-                class="button is-danger  is-offset-4 is-size-5"
+                class="button is-danger is-offset-4 is-size-5"
                 @click="initGrafik(eGrafik)"
                 :disabled="eGrafik.loadType == 'db'"
               >
@@ -356,6 +356,7 @@
 
 <script>
 import { nanoid } from "nanoid";
+import { copyImagePlugin } from "../../../../js/plugins/chartPlugins";
 export default {
   props: ["eGrafiks", "showOnly"],
 
@@ -389,14 +390,6 @@ export default {
       imageCopyModal: null,
       fileloadstatus: "waiting", //waiting, loaded. parsed
       eGrafikImg: "",
-      whiteBackgroundPlugin: {
-        beforeDraw: function(c) {
-          let ctx = c.chart.ctx;
-          ctx.fillStyle = "white";
-          ctx.fillRect(0, 0, c.chart.width, c.chart.height);
-        },
-      },
-
       // eGrafiks: [
       //   //   {type: "", //zapusk | planFact
       //   //   range : [dates],
@@ -469,7 +462,7 @@ export default {
         let values = Object.values(oJS[0]);
         let keys = Object.keys(oJS[0]);
 
-        let normalizeFunction = function(values) {
+        let normalizeFunction = function (values) {
           let format = "dd/mm/yy";
           values.forEach((v, idx) => {
             let splited = v.split("/");
@@ -536,7 +529,7 @@ export default {
       }
       this.fileloadstatus = "parsed";
     },
-    dateRange: function(date1, date2, splitString = " ", yearLength = 4) {
+    dateRange: function (date1, date2, splitString = " ", yearLength = 4) {
       ///DATE
       let parts = date1.split(" ");
 
@@ -607,10 +600,7 @@ export default {
         if (yearLength == 4) {
           dateForPush += theDate.getFullYear();
         } else {
-          dateForPush += theDate
-            .getFullYear()
-            .toString()
-            .slice(2, 4);
+          dateForPush += theDate.getFullYear().toString().slice(2, 4);
         }
         dates.push(dateForPush);
         theDate.setDate(theDate.getDate() + 1);
@@ -632,10 +622,7 @@ export default {
       if (yearLength == 4) {
         dateForPush += theDate.getFullYear();
       } else {
-        dateForPush += theDate
-          .getFullYear()
-          .toString()
-          .slice(2, 4);
+        dateForPush += theDate.getFullYear().toString().slice(2, 4);
       }
       dates.push(dateForPush);
 
@@ -726,7 +713,7 @@ export default {
 
             tooltips: {
               callbacks: {
-                label: function(tooltipItem, data) {
+                label: function (tooltipItem, data) {
                   if (
                     data.datasets[tooltipItem.datasetIndex].pointStyle ==
                     "triangle"
@@ -760,17 +747,15 @@ export default {
               ],
             },
           },
-          plugins: [this.whiteBackgroundPlugin],
+          plugins: [copyImagePlugin],
         });
       }, 1000);
     },
     updateGrafik(eGrafik) {
-      eGrafik[
-        this.showOnly ? "grafikModal" : "grafik"
-      ].data.labels = eGrafik.range.slice();
-      eGrafik[
-        this.showOnly ? "grafikModal" : "grafik"
-      ].data.datasets = eGrafik.datasets.slice();
+      eGrafik[this.showOnly ? "grafikModal" : "grafik"].data.labels =
+        eGrafik.range.slice();
+      eGrafik[this.showOnly ? "grafikModal" : "grafik"].data.datasets =
+        eGrafik.datasets.slice();
       eGrafik[this.showOnly ? "grafikModal" : "grafik"].update();
     },
     async initDates(
@@ -831,11 +816,12 @@ export default {
 
           eGrafik.range.forEach((date) => {
             if (this.datesFromXSXZapusk.values.includes(date)) {
-              let key = this.datesFromXSXZapusk.keys[
-                this.datesFromXSXZapusk.values.indexOf(
-                  this.datesFromXSXZapusk.values.find((v) => date == v)
-                )
-              ];
+              let key =
+                this.datesFromXSXZapusk.keys[
+                  this.datesFromXSXZapusk.values.indexOf(
+                    this.datesFromXSXZapusk.values.find((v) => date == v)
+                  )
+                ];
               employeeObject.data.push(Math.round(currentRow[key]) || 0);
             } else {
               employeeObject.data.push(0);
@@ -862,11 +848,12 @@ export default {
 
         eGrafik.range.forEach((date) => {
           if (this.datesFromXSXPlanFact.values.includes(date)) {
-            let key = this.datesFromXSXPlanFact.keys[
-              this.datesFromXSXPlanFact.values.indexOf(
-                this.datesFromXSXPlanFact.values.find((v) => date == v)
-              )
-            ];
+            let key =
+              this.datesFromXSXPlanFact.keys[
+                this.datesFromXSXPlanFact.values.indexOf(
+                  this.datesFromXSXPlanFact.values.find((v) => date == v)
+                )
+              ];
 
             employeeObject.data.push(Math.round(currentRow[key]) || 0);
           } else {
@@ -893,11 +880,12 @@ export default {
 
           eGrafik.range.forEach((date) => {
             if (this.datesFromXSXPlanFact.values.includes(date)) {
-              let key = this.datesFromXSXPlanFact.keys[
-                this.datesFromXSXPlanFact.values.indexOf(
-                  this.datesFromXSXPlanFact.values.find((v) => date == v)
-                )
-              ];
+              let key =
+                this.datesFromXSXPlanFact.keys[
+                  this.datesFromXSXPlanFact.values.indexOf(
+                    this.datesFromXSXPlanFact.values.find((v) => date == v)
+                  )
+                ];
 
               employeeObject.data.push(
                 Math.round(
@@ -991,9 +979,8 @@ export default {
     copyImg(eGrafik) {
       if (!eGrafik[this.showOnly ? "grafikModal" : "grafik"]) return;
 
-      this.eGrafikImg = eGrafik[
-        this.showOnly ? "grafikModal" : "grafik"
-      ].toBase64Image();
+      this.eGrafikImg =
+        eGrafik[this.showOnly ? "grafikModal" : "grafik"].toBase64Image();
       this.imageCopyModal.open();
     },
   },
@@ -1005,11 +992,12 @@ export default {
       }
 
       this.$nextTick().then(() => {
-  this.eGrafiks &&   this.eGrafiks.forEach((eGrafik) => {
-          eGrafik.loadType = "db"; ///LOADED FROM DataBase
+        this.eGrafiks &&
+          this.eGrafiks.forEach((eGrafik) => {
+            eGrafik.loadType = "db"; ///LOADED FROM DataBase
 
-          this.initGrafik(eGrafik);
-        });
+            this.initGrafik(eGrafik);
+          });
 
         this.initDates();
         this.initSelect();

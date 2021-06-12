@@ -315,7 +315,7 @@ export default {
           if (
             statuses[idxOfStatuses - 1] &&
             convertStringDateToNormalDate(status.fdate) <
-              convertStringDateToNormalDate(statuses[idxOfStatuses - 1].fdate)
+              convertStringDateToNormalDate(statuses[idxOfStatuses - 1].sdate)
           ) {
             throw new Error(
               `Некорректно заполнены даты в статусах. Поле номер ${idxOfStatuses} и поле номер ${

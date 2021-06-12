@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import { copyImagePlugin } from "../../../../js/plugins/chartPlugins";
+
 import { nanoid } from "nanoid";
 export default {
   props: ["table"],
@@ -16,37 +18,33 @@ export default {
     this.renderMe();
   },
   methods: {
-    renderMe() {  
+    renderMe() {
+      let ctx = document.getElementById(this.myRandomId);
 
-
-        let ctx = document.getElementById(
-         this. myRandomId
-        );
-
-     this.me = new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: this.table.range,
-            datasets: this.table.TRs.map((TR, idxOfTR) => {
-              return {
-                data: TR.inputs.map((input) => input.value),
-                label: TR.type,
-                fill: false,
-                borderColor: this.table.colors[idxOfTR],
-                backgroundColor: this.table.colors[idxOfTR],
-              };
-            }),
-          },
-        });
-
+      this.me = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: this.table.range,
+          datasets: this.table.TRs.map((TR, idxOfTR) => {
+            return {
+              data: TR.inputs.map((input) => input.value),
+              label: TR.type,
+              fill: false,
+              borderColor: this.table.colors[idxOfTR],
+              backgroundColor: this.table.colors[idxOfTR],
+            };
+          }),
+        },
+        plugins: [copyImagePlugin],
+      });
     },
-    destroyMe(){
-        this.me.destroy();
-    }
+    destroyMe() {
+      this.me.destroy();
+    },
   },
-  destroyed(){
-      this.destroyMe();
-  }
+  destroyed() {
+    this.destroyMe();
+  },
 };
 </script>
 
