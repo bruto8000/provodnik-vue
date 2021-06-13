@@ -5,20 +5,29 @@
       <br />
 
       <div class="columns">
-        <div class="column is-4">Сотрудник (ФИО)</div>
-        <div class="column is-4">Логин *</div>
-        <div class="column is-4">Уникальный ID</div>
+        <div class="column is-5">Сотрудник (ФИО)</div>
+        <div class="column is-2">Логин *</div>
+        <div class="column is-2">Уникальный ID</div>
+        <div class="column is-3">Роль</div>
       </div>
 
       <div class="columns">
-        <div class="column is-4">
-          <input class="input" type="text" name="" id="" v-model="full_name" />
+        <div class="column is-5">
+          <input class="input" type="text" name="" v-model="full_name" />
         </div>
-        <div class="column is-4">
-          <input class="input" type="text" name="" id="" v-model="login" />
+        <div class="column is-2">
+          <input class="input" type="text" name="" v-model="login" />
         </div>
-        <div class="column is-4">
-          <input class="input" type="text" name="" id="" v-model="nid" />
+        <div class="column is-2">
+          <input class="input" type="text" name="" v-model="nid" />
+        </div>
+        <div class="column is-3 p-0">
+          <input-select
+            :options="roles"
+            type="text"
+            name=""
+            :value.sync="role"
+          />
         </div>
       </div>
 
@@ -35,9 +44,10 @@
       </div>
     </div>
     <div class="columns" v-for="employee in employees" :key="employee.nid">
-      <div class="column is-5">{{ employee.full_name }}</div>
-      <div class="column is-3">{{ employee.login }}</div>
+      <div class="column is-4">{{ employee.full_name }}</div>
+      <div class="column is-2">{{ employee.login }}</div>
       <div class="column is-2">{{ employee.nid }}</div>
+      <div class="column is-2">{{ roles[employee.role] }}</div>
       <div class="column is-2">
         <span class="icon is-large">
           <i
@@ -60,13 +70,14 @@
       <div class="modal-content">
         <h4 class="title is-4">Редактирование сотрудника</h4>
         <div class="columns my-2">
-          <div class="column is-4">Сотрудник (ФИО)</div>
-          <div class="column is-4">Логин</div>
-          <div class="column is-4">Уникальный ID</div>
+          <div class="column is-5">Сотрудник (ФИО)</div>
+          <div class="column is-2">Логин</div>
+          <div class="column is-2">Уникальный ID</div>
+          <div class="column is-3">Роль</div>
         </div>
 
         <div class="columns my-2">
-          <div class="column is-4">
+          <div class="column is-5">
             <input
               class="input"
               type="text"
@@ -75,7 +86,7 @@
               v-model="EditableEmployee.full_name"
             />
           </div>
-          <div class="column is-4">
+          <div class="column is-2">
             <input
               class="input"
               type="text"
@@ -85,7 +96,7 @@
               disabled
             />
           </div>
-          <div class="column is-4">
+          <div class="column is-2">
             <input
               class="input"
               type="text"
@@ -95,10 +106,22 @@
               disabled
             />
           </div>
+          <div class="column is-3 p-1">
+            <input-select
+              :options="roles"
+              type="text"
+              name=""
+              id=""
+              :value.sync="EditableEmployee.role"
+              :disabled="currentLogin == EditableEmployee.login"
+            />
+          </div>
         </div>
       </div>
       <div class="modal-footer">
-        <a class="button is-info modal-close" @click="editOnServ">Изменить</a>
+        <a class="button is-info modal-close mx-2" @click="editOnServ"
+          >Изменить</a
+        >
         <a class="button is-primary modal-close">Закрыть</a>
       </div>
     </div>
@@ -111,18 +134,22 @@
         </p>
 
         <div class="columns">
-          <div class="column is-4">Сотрудник (ФИО)</div>
-          <div class="column is-4">Логин</div>
-          <div class="column is-4">Уникальный ID</div>
+          <div class="column is-5">Сотрудник (ФИО)</div>
+          <div class="column is-2">Логин</div>
+          <div class="column is-2">Уникальный ID</div>
+          <div class="column is-3">Роль</div>
         </div>
         <div class="columns">
-          <div class="column is-4">
+          <div class="column is-5">
             {{ EditableEmployee.full_name }}
           </div>
-          <div class="column is-4">
+          <div class="column is-2">
             {{ EditableEmployee.login }}
           </div>
-          <div class="column is-4">
+          <div class="column is-2">
+            {{ EditableEmployee.nid }}
+          </div>
+          <div class="column is-3">
             {{ EditableEmployee.nid }}
           </div>
         </div>
@@ -130,7 +157,7 @@
       <div class="modal-footer">
         <a
           href="#!"
-          class="modal-close button is-danger"
+          class="modal-close button is-danger mx-2"
           @click="deleteFromServ"
           >Удалить</a
         >
@@ -147,7 +174,9 @@ export default {
       full_name: "",
       nid: "",
       login: "",
+      role: "",
       EditableEmployee: {},
+      roles: { admin: "Администратор", moderator: "Модератор" },
       modals: {
         editModal: null,
         deleteModal: null,
@@ -163,7 +192,7 @@ export default {
   },
   methods: {
     addToServ: function (event) {
-      if (!this.full_name || !this.nid || !this.login) {
+      if (!this.full_name || !this.nid || !this.login || !this.role) {
         M.toast({ html: "Упс, что-то пусто" });
         return;
       }
@@ -173,6 +202,7 @@ export default {
           full_name: this.full_name,
           nid: this.nid,
           login: this.login,
+          role: this.role,
         })
         .then(() => {
           M.toast({ html: `Сотрудник успешно добавлен` });
@@ -208,6 +238,9 @@ export default {
   computed: {
     employees() {
       return this.$store.state.employees;
+    },
+    currentLogin() {
+      return this.$store.state.login;
     },
   },
 };

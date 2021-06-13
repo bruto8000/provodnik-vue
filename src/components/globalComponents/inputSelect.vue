@@ -1,24 +1,25 @@
 <template>
   <div>
-    <div class="center text2 ">{{ header }}</div>
+    <div class="center text2">{{ header }}</div>
     <select
+      :disabled="disabled"
       v-model="innerSelected"
       type="text"
       class="center"
       :id="'sel' + rnd_id"
     >
       <option value="" :disabled="required">{{ placeholder }}</option>
-      <template v-if='Array.isArray(options)'>
-   <option v-for="(option, idx) in options" :key="idx" :value="option">{{
-        option
-      }}</option>
+      <template v-if="Array.isArray(options)">
+        <option v-for="(option, idx) in options" :key="idx" :value="option">
+          {{ option }}
+        </option>
       </template>
       <template v-else>
-         <option v-for="(option, prop) in options" :key="prop" :value="prop">{{
-        option
-      }}</option>  
+        <option v-for="(option, prop) in options" :key="prop" :value="prop">
+          {{ option }}
+        </option>
       </template>
-   
+
       <slot></slot>
     </select>
   </div>
@@ -26,7 +27,7 @@
 
 <script>
 export default {
-  props: ["value", "header", "options", "placeholder", "required"],
+  props: ["value", "header", "options", "placeholder", "required", "disabled"],
 
   data() {
     return {
@@ -50,7 +51,6 @@ export default {
   },
   methods: {
     initMe() {
-    
       if (!!this.me) {
         this.me.destroy();
         this.me = null;
@@ -58,7 +58,7 @@ export default {
 
       if (!this.rnd_id) {
         while (true) {
-       this.rnd_id = (Math.random() * 2000).toFixed();
+          this.rnd_id = (Math.random() * 2000).toFixed();
 
           if (!document.getElementById("sel" + this.rnd_id)) break;
         }
@@ -76,14 +76,18 @@ export default {
     },
     value(n) {
       this.innerSelected = n;
+      this.initMe();
     },
     options() {
       this.initMe();
     },
+    disabled() {
+      this.initMe();
+    },
   },
-  activated(){
-        this.initMe();
-  }
+  activated() {
+    this.initMe();
+  },
 };
 </script>
 

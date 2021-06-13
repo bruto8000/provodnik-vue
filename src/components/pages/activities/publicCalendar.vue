@@ -1,12 +1,10 @@
 <template>
   <div>
-    <h1 class="title is-2 has-text-centered">
-      Календарь активностей
-    </h1>
+    <h1 class="title is-2 has-text-centered">Календарь активностей</h1>
     <vs-tabs v-model="currentTab">
       <vs-tab label="Календарь">
         <calendar
-          style="overflow-x:inherit"
+          style="overflow-x: inherit"
           language="ru"
           :data-source="activities"
           always-half-day="true"
@@ -19,7 +17,7 @@
         </calendar>
       </vs-tab>
       <vs-tab label="Таблица">
-        <div style="overflow: auto; ">
+        <div style="overflow: auto">
           <h3 class="title is-3">
             {{ header }}
           </h3>
@@ -39,7 +37,7 @@
             </tr>
 
             <tr
-              class=" hover__bg"
+              class="hover__bg"
               v-for="activity in currentActivities"
               :key="activity.id"
               @click="openactivity(activity)"
@@ -61,7 +59,7 @@
 
     <activity-modal
       :show.sync="needActivityModal"
-      :admin="false"
+      role="guest"
     ></activity-modal>
   </div>
 </template>
@@ -142,7 +140,7 @@ export default {
       currentMonth: 0,
     };
   },
-  mounted: function() {
+  mounted: function () {
     this.$nextTick(() => {
       this.monthSet();
     });
@@ -154,22 +152,21 @@ export default {
       // Here Is magic, and please, dount touch. Please. Dont Fu#$@ng touch this.
       this.$nextTick(() => {
         for (let i = 0; i < 12; i++) {
-        
           this.monthSpans.push(document.getElementById("monthSpan" + i));
           this.monthWrappers.push(document.getElementById("monthWrapper" + i));
         }
         this.monthWrappers.forEach((e, idx) => {
-          if(!e)return;
+          if (!e) return;
           e.onclick = () => {
             this.monthCheck(idx);
           };
         });
 
         this.monthSpans.forEach((e, idx) => {
-    if(!e)return;
+          if (!e) return;
           if (this.monthsWithUnsetDate.includes(idx)) {
-          e.classList.add("mdi");
-          e.classList.add("mdi-message-alert");
+            e.classList.add("mdi");
+            e.classList.add("mdi-message-alert");
 
             this.monthWrappers[idx].dataset.position = "bottom";
             this.monthWrappers[idx].classList.add("tooltipped");
@@ -182,7 +179,6 @@ export default {
       });
     },
     monthCheck(idx) {
-      
       if (
         (this.currentActivities = this.unsetDateActivities.filter((v) => {
           return v.month == idx;
@@ -227,7 +223,7 @@ export default {
     },
     stopSelect(ms) {
       if (!ms) ms = 3000;
- 
+
       this.canReWriteSelected = false;
       this.selected = true;
       setTimeout(() => {

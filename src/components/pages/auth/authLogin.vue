@@ -55,8 +55,9 @@ export default {
     gotoMain() {
       this.$router.push({ path: "/" });
     },
-    setMyRole(role) {
+    setMyRoleAndLogin(role, login) {
       this.$store.commit("setRole", role);
+      this.$store.commit("setLogin", login);
     },
     async signIn() {
       try {
@@ -75,7 +76,7 @@ export default {
         this.clearInputs();
         this.gotoMain();
         console.log(respnoce.data);
-        this.setMyRole(respnoce.data.role);
+        this.setMyRoleAndLogin(respnoce.data.role, respnoce.data.login);
       } catch (err) {
         console.dir(err);
         if (err.response && err.response.data) {

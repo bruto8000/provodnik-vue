@@ -77,6 +77,20 @@
             </li>
           </ul>
         </vs-collapse-item>
+
+        <vs-collapse-item>
+          <div slot="header">
+            <span class="is-size-3">Обратная связь</span>
+          </div>
+          <ul>
+            <li class="is-clickable p-1">
+              <a
+                href="mailto:AGGrigoryan@kaluga.beeline.ru?subject=Обратная%20связь%20по%20инструменту%20ProjectMI&body=Доброго%20времени%20суток. "
+                >Написать разработчику</a
+              >
+            </li>
+          </ul>
+        </vs-collapse-item>
       </vs-collapse>
     </div>
 
@@ -94,6 +108,9 @@
       <div class="p-6 has-text-centered">
         <h1 class="is-2 title">ПРОЕКТ МИ</h1>
         <h5 class="title is-5">Роль [{{ roleName }}]</h5>
+        <h5 class="title is-5" v-if="currentEmployee">
+          ФИО [{{ currentEmployee.full_name }}]
+        </h5>
       </div>
       <div class="is-flex is-align-items-center">
         <button
@@ -166,7 +183,7 @@
       </div>
     </vs-popup>
 
-    <div class="fixed-button">
+    <div class="fixed-button" v-show="role != 'guest'">
       <vs-button
         @click="openMe"
         color="#00d1b2"
@@ -286,6 +303,19 @@ export default {
     },
     role() {
       return this.$store.state.role;
+    },
+    login() {
+      return this.$store.state.login;
+    },
+    currentEmployee() {
+      if (!this.login) {
+        return "";
+      }
+
+      return this.employees.find((employee) => employee.login == this.login);
+    },
+    employees() {
+      return this.$store.state.employees;
     },
     catGetArchive() {
       let fdate = this.archive.fdate;

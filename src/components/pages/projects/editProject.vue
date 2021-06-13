@@ -270,7 +270,7 @@ export default {
       M.toast({
         html: "Неверная ссылка,  перенаправление...",
       });
-      this.$router.push({ path: "/show-projects" });
+      this.$router.push({ path: "/" });
     }
   },
   methods: {

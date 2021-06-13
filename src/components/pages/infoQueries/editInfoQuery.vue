@@ -200,7 +200,7 @@ export default {
       M.toast({
         html: "Неверная ссылка,  перенаправление...",
       });
-      this.$router.push({ path: "/show-info-queries" });
+      this.$router.push({ path: "/" });
     }
   },
   methods: {
@@ -268,7 +268,7 @@ export default {
       return this.validateRows() && this.validateStatuses();
     },
     goToShowPage() {
-      this.$router.push({ path: "/show-info-queries" });
+      this.$router.push({ path: "/" });
     },
     validateRows() {
       try {

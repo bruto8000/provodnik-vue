@@ -9,7 +9,7 @@
         <h1 class="title is-1">{{ activity.nazvanie }}</h1>
 
         <div class="dates is-flex box is-justify-content-space-around">
-          <div class="" v-if="activity.fdate">
+          <div class="" v-if="activity.fdate && !isGuest">
             <div class="is-size-4">Дата спуска</div>
             <div class="is-size-4">{{ activity.fdate }}</div>
           </div>
@@ -207,7 +207,7 @@
                   v-for="(audit, idx) in activity.audits"
                   :key="idx"
                 >
-                  <template v-if="!isGuest || audit.type == 'public'">
+                  <template>
                     <h4 class="center fluid-text title is-4">
                       {{ audit.name }}
                     </h4>
@@ -480,7 +480,16 @@ export default {
       },
     },
     activity() {
-      return this.$store.state.currentDisplayingActivity;
+      let activity = this.$store.state.currentDisplayingActivity;
+      return {
+        ...activity,
+        audits:
+          activity.audits && activity.audits.length
+            ? activity.audits.filter(
+                (audit) => !this.isGuest || audit.type == "public"
+              )
+            : activity.audits,
+      };
     },
   },
   methods: {

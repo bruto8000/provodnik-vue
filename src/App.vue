@@ -17,12 +17,14 @@ export default {
     setTimeout(() => {
       this.preloader = false;
     }, 200);
+
     this.setRouteGuardParams();
     this.setRouteLoaderParams();
   },
   data() {
     return {
       preloader: false,
+      firstRouteDetected: false,
     };
   },
 
@@ -52,23 +54,31 @@ export default {
     },
     setRouteGuardParams() {
       this.$router.beforeEach((to, from, next) => {
-        console.log("eror?");
+        console.log("from", from);
+        console.log("Beffore Each");
         if (
-          to.matched.some(
-            (record) =>
-              record.meta.requiresModerator || record.meta.requiresAdmin
-          )
+          (to.meta.requiresModerator && this.role == "guest") ||
+          (to.meta.requiresAdmin && this.role != "admin")
         ) {
-          if (this.role == "guest") {
-            this.showRoleError();
-            next({ path: "/" });
-          } else {
-            next();
-          }
+          this.showRoleError();
+          next(false);
         } else {
           next();
         }
       });
+    },
+    checkFirstRoute(route) {
+      console.log("checking first route");
+      console.log(this.$route);
+      console.log(this.$route.path);
+
+      if (
+        (route.meta.requiresModerator && this.role == "guest") ||
+        (route.meta.requiresAdmin && this.role != "admin")
+      ) {
+        this.showRoleError();
+        this.$router.push({ path: "/" });
+      }
     },
     showRoleError() {
       this.$vs.notify({
@@ -82,6 +92,15 @@ export default {
   computed: {
     role() {
       return this.$store.state.role;
+    },
+  },
+  watch: {
+    $route(route, from) {
+      if (this.firstRouteDetected) {
+        return;
+      }
+      this.checkFirstRoute(route);
+      this.firstRouteDetected = true;
     },
   },
 };

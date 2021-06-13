@@ -1046,7 +1046,7 @@ export default {
         M.toast({
           html: "Неверная ссылка,  перенаправление...",
         });
-        this.$router.push({ path: "/show-activities" });
+        this.$router.push({ path: "/" });
       } else {
         if (this.activity.opisanieBody)
           setTimeout(() => {
@@ -1910,7 +1910,7 @@ export default {
           this.$vs.notify({
             text: "Активность удалена ",
           });
-          this.$router.push({ path: "/show-activities" });
+          this.$router.push({ path: "/" });
         })
         .catch((e) => {
           this.$vs.notify({

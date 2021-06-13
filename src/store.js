@@ -139,6 +139,7 @@ const parsingFunctions = {
 const store = new Vuex.Store({
   state: {
     role: "guest",
+    login: "",
     activities: [],
     infoQueries: [],
     projects: [],
@@ -274,6 +275,7 @@ const store = new Vuex.Store({
         if (employee.nid == editedEmployee.nid) {
           employee.full_name = editedEmployee.full_name;
           employee.login = editedEmployee.login;
+          employee.role = editedEmployee.role;
         }
       });
     },
@@ -358,6 +360,9 @@ const store = new Vuex.Store({
     },
     setRole(state, role) {
       state.role = role;
+    },
+    setLogin(state, login) {
+      state.login = login;
     },
   },
   actions: {
@@ -628,7 +633,10 @@ const store = new Vuex.Store({
           .then((res) => {
             console.log(res);
             let role = res.data.role;
+            let login = res.data.login;
+            debugger;
             commit("setRole", role || "guest");
+            commit("setLogin", login || "");
             resolve();
           })
           .catch((err) => {
